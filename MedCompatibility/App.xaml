@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MedCompatibility.Converters"
+             x:Class="MedCompatibility.App">
+    <Application.Resources>
+    <ResourceDictionary>
+
+        <!-- ================= ЦВЕТА (Light Theme) ================= -->
+        <!-- Спокойный медицинский сине-бирюзовый -->
+        <Color x:Key="Primary">#00796B</Color> 
+        <!-- Более темная версия для нажатий -->
+        <Color x:Key="PrimaryDark">#004D40</Color> 
+        
+        <!-- Вторичный цвет (для ссылок или акцентов) -->
+        <Color x:Key="Secondary">#0097A7</Color>
+
+        <!-- Фон приложения (очень светло-серый/голубой) -->
+        <Color x:Key="AppBackground">#F5F7FA</Color>
+        
+        <!-- Поверхность карточек (чистый белый) -->
+        <Color x:Key="Surface">#FFFFFF</Color>
+
+        <!-- Текст -->
+        <Color x:Key="TextPrimary">#263238</Color> <!-- Темно-серый, почти черный -->
+        <Color x:Key="TextSecondary">#78909C</Color> <!-- Серый -->
+        <Color x:Key="TextPlaceholder">#B0BEC5</Color>
+
+        <!-- Статусы -->
+        <Color x:Key="Error">#D32F2F</Color>
+
+        <!-- Градиент для фона страниц -->
+        <LinearGradientBrush x:Key="PageBackgroundGradient" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#E3F2FD" Offset="0.0" /> <!-- Светло-голубой сверху -->
+            <GradientStop Color="#F5F7FA" Offset="0.5" /> <!-- Переход в серый -->
+            <GradientStop Color="#FFFFFF" Offset="1.0" /> <!-- Белый снизу -->
+        </LinearGradientBrush>
+
+        <!-- ================= СТИЛИ ================= -->
+
+        <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+            <Setter Property="Background" Value="{StaticResource PageBackgroundGradient}" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <!-- Заголовок -->
+        <Style x:Key="HeaderLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        </Style>
+
+        <!-- Подзаголовок -->
+        <Style x:Key="SubHeaderLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+
+        <!-- Карточка (Frame) - добавляем тень и скругления -->
+        <Style x:Key="CardFrame" TargetType="Frame">
+            <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+            <Setter Property="CornerRadius" Value="24" />
+            <Setter Property="BorderColor" Value="Transparent" />
+            <Setter Property="Padding" Value="30" />
+            <Setter Property="MaximumWidthRequest" Value="420" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <!-- Новая тень: более размытая и заметная -->
+            <Setter Property="Shadow">
+                <Shadow Brush="#90A4AE" Offset="0,10" Radius="30" Opacity="0.15"/>
+            </Setter>
+        </Style>
+
+        <!-- Поля ввода -->
+        <!-- Поле ввода: Подсветка рамки при фокусе -->
+        <Style x:Key="InputFrame" TargetType="Border">
+            <Setter Property="Stroke" Value="#E0E0E0" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+            <Setter Property="BackgroundColor" Value="#FAFAFA" />
+            <Setter Property="Padding" Value="15,2" />
+            <Setter Property="HeightRequest" Value="52" />
+            
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        
+                        <!-- PointerOver работает для Border в MAUI -->
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke" Value="#B0BEC5" />
+                                <Setter Property="BackgroundColor" Value="#FFFFFF" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Entry">
+            <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            <Setter Property="PlaceholderColor" Value="{StaticResource TextPlaceholder}" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+
+        <!-- Основная кнопка (Primary) -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="HeightRequest" Value="54" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Shadow">
+                <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="10" Opacity="0.3"/>
+            </Setter>
+    
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                
+                        <!-- Наведение (работает на Desktop) -->
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="#00897B" /> <!-- Чуть светлее -->
+                                <Setter Property="Scale" Value="1.02" /> <!-- Легкое увеличение -->
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <!-- Нажатие -->
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
+                                <Setter Property="Scale" Value="0.98" /> <!-- Эффект клика -->
+                                <Setter Property="Shadow">
+                                    <Shadow Brush="Transparent" /> <!-- Тень пропадает при нажатии -->
+                                </Setter>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+        
+        <!-- Вторичная кнопка (Outline) - Исправленная версия -->
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+            <Setter Property="BorderColor" Value="{StaticResource Primary}" />
+            <Setter Property="BorderWidth" Value="2" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="HeightRequest" Value="54" />
+            <Setter Property="FontSize" Value="16" />
+
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        
+                        <!-- PointerOver убрали, чтобы не мигало -->
+                        
+                        <!-- Оставляем только эффект нажатия -->
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="#E0F2F1" /> <!-- Легкий фон при нажатии -->
+                                <Setter Property="Opacity" Value="0.8" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+        
+        
+        
+        <!-- Текстовая кнопка (Text) -->
+        <Style x:Key="TextButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            <Setter Property="HeightRequest" Value="40" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+        
+        
+        <local:BoolToTextConverter x:Key="BoolToTextConverter" />
+        <local:BoolToColorConverter x:Key="BoolToColorConverter" />
+        
+    </ResourceDictionary>
+</Application.Resources>
+
+</Application>

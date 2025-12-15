@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             x:Class="MedCompatibility.Pages.Shared.CodeScannerPage"
+             Title="Сканер"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="Black">
+
+    <Grid>
+        <!-- Камера (на весь экран) -->
+        <controls:CameraBarcodeReaderView 
+            x:Name="BarcodeReader"
+            BarcodesDetected="BarcodeReader_BarcodesDetected"
+            IsDetecting="True"
+            IsTorchOn="False" 
+            Options="{Binding BarcodeOptions}"/>
+
+        <!-- UI Наложения (Прицел) -->
+        <Grid RowDefinitions="*, 300, *" ColumnDefinitions="*, 300, *">
+            <!-- Полупрозрачное затемнение -->
+            <BoxView Grid.Row="0" Grid.ColumnSpan="3" Color="#80000000"/>
+            <BoxView Grid.Row="2" Grid.ColumnSpan="3" Color="#80000000"/>
+            <BoxView Grid.Row="1" Grid.Column="0" Color="#80000000"/>
+            <BoxView Grid.Row="1" Grid.Column="2" Color="#80000000"/>
+            
+            <!-- Рамка сканирования (Активная зона) -->
+            <Border Grid.Row="1" Grid.Column="1" 
+                    Stroke="{StaticResource Primary}" 
+                    StrokeThickness="3"
+                    BackgroundColor="Transparent"
+                    StrokeShape="RoundRectangle 20"/>
+
+            <!-- Подсказка сверху -->
+            <Label Grid.Row="0" Grid.ColumnSpan="3" 
+                   Text="Наведите камеру на штрихкод" 
+                   TextColor="White" FontSize="16"
+                   HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,0,30"/>
+            
+            <!-- Кнопка Отмена снизу -->
+            <Button Grid.Row="2" Grid.ColumnSpan="3"
+                    Text="Отмена"
+                    Clicked="OnCancelClicked"
+                    VerticalOptions="Start" HorizontalOptions="Center" 
+                    Margin="0,30,0,0"
+                    BackgroundColor="{StaticResource Surface}" 
+                    TextColor="{StaticResource TextPrimary}"
+                    CornerRadius="20" HeightRequest="50" WidthRequest="150"/>
+        </Grid>
+    </Grid>
+</ContentPage>

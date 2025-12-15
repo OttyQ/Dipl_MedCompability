@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
+             xmlns:models="clr-namespace:MedCompatibility.Models"
+             x:Class="MedCompatibility.Pages.Admin.SystemLogsPage"
+             Title="Системные логи"
+             BackgroundColor="{StaticResource AppBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <!-- Основной контент с отступами -->
+        <Grid RowDefinitions="Auto, *" Padding="10">
+            
+            <!-- ВЕРХНЯЯ ЧАСТЬ (Адаптивная ширина) -->
+            <VerticalStackLayout Spacing="15" HorizontalOptions="Fill" 
+                                 WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
+                <VerticalStackLayout.HorizontalOptions>
+                     <OnPlatform x:TypeArguments="LayoutOptions">
+                         <On Platform="WinUI" Value="Center" />
+                         <On Platform="Android,iOS" Value="Fill" />
+                     </OnPlatform>
+                </VerticalStackLayout.HorizontalOptions>
+
+                <!-- 1. ШАПКА -->
+                <Grid ColumnDefinitions="48, *, 48" HeightRequest="48" Margin="0,0,0,5">
+                    <!-- Кнопка Назад -->
+                    <Border StrokeShape="RoundRectangle 24" BackgroundColor="White" StrokeThickness="0" 
+                            HeightRequest="48" WidthRequest="48" Padding="0" HorizontalOptions="Start">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                        </Border.Shadow>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnBackClicked"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="←" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#333" Margin="0,0,0,2"/>
+                    </Border>
+                    
+                    <!-- Заголовок -->
+                    <Label Grid.Column="1" Text="История активности" 
+                           FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
+                           VerticalOptions="Center" HorizontalOptions="Center"/>
+                </Grid>
+
+                <!-- 2. ИНФО-ПАНЕЛЬ (Статус БД) -->
+                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="16" HorizontalOptions="Fill">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.05"/>
+                    </Border.Shadow>
+                    
+                    <Grid ColumnDefinitions="*, Auto">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Статус системы" FontSize="12" TextColor="{StaticResource TextSecondary}" FontAttributes="Bold"/>
+                            <Label Text="Мониторинг базы данных и действий пользователей" FontSize="11" TextColor="#9E9E9E"/>
+                        </VerticalStackLayout>
+
+                        <!-- Индикатор БД -->
+                        <Border Grid.Column="1" StrokeShape="RoundRectangle 10" BackgroundColor="{Binding DbStatusColor}" 
+                                StrokeThickness="0" Padding="12,6" VerticalOptions="Center">
+                            <Label Text="{Binding DbStatusText}" TextColor="White" FontSize="12" FontAttributes="Bold"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- 3. СПИСОК ЛОГОВ -->
+            <RefreshView Grid.Row="1" Command="{Binding LoadLogsCommand}" IsRefreshing="{Binding IsBusy}" Margin="0,15,0,0">
+                <CollectionView ItemsSource="{Binding Logs}"
+                                HorizontalOptions="Fill" 
+                                WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
+                     <CollectionView.HorizontalOptions>
+                         <OnPlatform x:TypeArguments="LayoutOptions">
+                             <On Platform="WinUI" Value="Center" />
+                             <On Platform="Android,iOS" Value="Fill" />
+                         </OnPlatform>
+                    </CollectionView.HorizontalOptions>
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="📭" FontSize="40" HorizontalOptions="Center"/>
+                            <Label Text="Логов пока нет" TextColor="#999" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:scan">
+                            <!-- Карточка лога -->
+                            <Border StrokeShape="RoundRectangle 12" BackgroundColor="White" StrokeThickness="0" Margin="0,0,0,10" Padding="12">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
+                                </Border.Shadow>
+                                
+                                <Grid ColumnDefinitions="40, *, Auto" ColumnSpacing="12">
+                                    
+                                    <!-- Иконка типа действия -->
+                                    <Frame HeightRequest="40" WidthRequest="40" CornerRadius="10"
+                                           BackgroundColor="#E3F2FD" Padding="0" BorderColor="Transparent" 
+                                           HorizontalOptions="Start" VerticalOptions="Start">
+                                        <Label Text="🔎" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Frame>
+
+                                    <!-- Основная информация -->
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <!-- Кто -->
+                                        <Label Text="{Binding User.Login}" FontAttributes="Bold" FontSize="15" 
+                                               TextColor="{StaticResource TextPrimary}" LineBreakMode="TailTruncation"/>
+                                        
+                                        <!-- Что сделал -->
+                                        <Label FontSize="13" TextColor="{StaticResource TextSecondary}" LineBreakMode="TailTruncation">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Сканировал: " />
+                                                    <Span Text="{Binding Medicine.TradeName}" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </VerticalStackLayout>
+
+                                    <!-- Время -->
+                                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" Spacing="0">
+                                        <Label Text="{Binding ScannedAt, StringFormat='{0:HH:mm}'}" 
+                                               FontSize="14" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" HorizontalOptions="End"/>
+                                        <Label Text="{Binding ScannedAt, StringFormat='{0:dd.MM}'}" 
+                                               FontSize="11" TextColor="#9E9E9E" HorizontalOptions="End"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+    </Grid>
+</ContentPage>

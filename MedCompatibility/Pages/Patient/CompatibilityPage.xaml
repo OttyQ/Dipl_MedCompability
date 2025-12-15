@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
+             xmlns:models="clr-namespace:MedCompatibility.Models"
+             x:Class="MedCompatibility.Pages.Patient.CompatibilityPage"
+             Title="Совместимость"
+             BackgroundColor="{StaticResource Surface}">
+
+    <Grid RowDefinitions="Auto, *">
+        <!-- Шапка -->
+        <Grid Grid.Row="0" HeightRequest="60" BackgroundColor="{StaticResource Surface}">
+            <Label Text="Проверка совместимости" 
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center"/>
+        </Grid>
+
+        <ScrollView Grid.Row="1" Padding="20">
+            <VerticalStackLayout Spacing="20">
+
+                <!-- Блок выбора лекарств -->
+                <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
+                    
+                    <!-- Лекарство А -->
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 10" 
+                            Stroke="{StaticResource Primary}" StrokeThickness="2"
+                            HeightRequest="120" BackgroundColor="White">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectMedicineACommand}"/>
+                        </Border.GestureRecognizers>
+                        
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
+                            <Label Text="💊" FontSize="30" HorizontalOptions="Center"/>
+                            <Label Text="{Binding MedicineA.TradeName, TargetNullValue='Нажмите для выбора'}" 
+                                   TextColor="{StaticResource TextPrimary}" 
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center"
+                                   LineBreakMode="TailTruncation"/>
+                            <Label Text="Лекарство 1" FontSize="10" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Иконка плюса -->
+                    <Label Grid.Column="1" Text="+" FontSize="30" VerticalOptions="Center" HorizontalOptions="Center" TextColor="{StaticResource Primary}"/>
+
+                    <!-- Лекарство Б -->
+                    <Border Grid.Column="2" StrokeShape="RoundRectangle 10" 
+                            Stroke="{StaticResource Primary}" StrokeThickness="2"
+                            HeightRequest="120" BackgroundColor="White">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectMedicineBCommand}"/>
+                        </Border.GestureRecognizers>
+                        
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
+                            <Label Text="💊" FontSize="30" HorizontalOptions="Center"/>
+                            <Label Text="{Binding MedicineB.TradeName, TargetNullValue='Нажмите для выбора'}" 
+                                   TextColor="{StaticResource TextPrimary}" 
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center"
+                                   LineBreakMode="TailTruncation"/>
+                            <Label Text="Лекарство 2" FontSize="10" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Кнопки действия -->
+                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="Проверить" 
+                            Command="{Binding CheckCommand}" 
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            FontAttributes="Bold"
+                            HeightRequest="50"/>
+                    
+                    <Button Grid.Column="1" Text="🗑️" 
+                            Command="{Binding ClearCommand}" 
+                            BackgroundColor="{StaticResource Surface}" 
+                            TextColor="Red"
+                            BorderColor="Red"
+                            BorderWidth="1"
+                            CornerRadius="10"
+                            WidthRequest="50"
+                            HeightRequest="50"/>
+                </Grid>
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
+
+                <!-- Статус -->
+                <Label Text="{Binding StatusMessage}" 
+                       TextColor="{StaticResource TextSecondary}" 
+                       HorizontalTextAlignment="Center"
+                       FontAttributes="Italic"/>
+
+                <!-- Результаты -->
+                <VerticalStackLayout IsVisible="{Binding HasConflicts}" Spacing="10">
+                    <Label Text="Найденные взаимодействия:" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource TextPrimary}"/>
+                    
+                    <CollectionView ItemsSource="{Binding FoundConflicts}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:interaction">
+                                <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" 
+                                        BackgroundColor="White" Margin="0,0,0,10" Padding="15">
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                                    </Border.Shadow>
+
+                                    <VerticalStackLayout Spacing="8">
+                                        <!-- Заголовок с уровнем риска -->
+                                        <Grid ColumnDefinitions="*, Auto">
+                                            <Label Text="{Binding RiskLevel.Name}" 
+                                                   TextColor="Red" FontAttributes="Bold" FontSize="16"/>
+                                        </Grid>
+                                        
+                                        <!-- Вещества -->
+                                         <Label>
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Вещества: " TextColor="{StaticResource TextSecondary}"/>
+                                                    <Span Text="{Binding SubstanceId1Navigation.Name}" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                                                    <Span Text=" ↔ " TextColor="{StaticResource TextSecondary}"/>
+                                                    <Span Text="{Binding SubstanceId2Navigation.Name}" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                        <BoxView HeightRequest="1" Color="{StaticResource Secondary}" Opacity="0.3"/>
+
+                                        <!-- Описание -->
+                                        <Label Text="{Binding Description}" TextColor="{StaticResource TextPrimary}"/>
+                                        
+                                        <!-- Рекомендация -->
+                                        <Label Text="{Binding Recommendation, StringFormat='Рекомендация: {0}'}" 
+                                               TextColor="{StaticResource Primary}">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Recommendation}" Value="{x:Null}">
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Recommendation}" Value="">
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

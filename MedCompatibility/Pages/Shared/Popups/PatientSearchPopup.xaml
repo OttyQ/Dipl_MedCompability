@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:models="clr-namespace:MedCompatibility.Models"
+               x:Class="MedCompatibility.Pages.Shared.Popups.PatientSearchPopup"
+               Color="Transparent"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               CanBeDismissedByTappingOutsideOfPopup="True"
+               Opened="OnPopupOpened">
+
+    <Border StrokeShape="RoundRectangle 20"
+            BackgroundColor="White"
+            WidthRequest="350"
+            HeightRequest="500"
+            StrokeThickness="0"
+            Padding="20">
+
+        <Grid RowDefinitions="Auto, Auto, Auto, *, Auto" RowSpacing="12">
+
+            <Label Grid.Row="0"
+                   Text="Добавить пациента"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="Black"/>
+
+            <SearchBar Grid.Row="1"
+                       x:Name="SearchInput"
+                       Placeholder="Фамилия или логин..."
+                       TextChanged="OnSearchTextChanged"
+                       BackgroundColor="#F0F0F0"/>
+
+            <ActivityIndicator Grid.Row="2"
+                               x:Name="Loader"
+                               IsVisible="False"
+                               IsRunning="False"
+                               Color="#2563EB"
+                               HeightRequest="24"/>
+
+            <!-- ВАЖНО: CollectionView сам скроллится, ScrollView тут не нужен -->
+            <CollectionView Grid.Row="3"
+                            x:Name="ResultsList"
+                            SelectionMode="Single"
+                            SelectionChanged="OnSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label Text="Пациенты не найдены"
+                           TextColor="#999"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:user">
+                        <Border Padding="12"
+                                Margin="0,0,0,8"
+                                BackgroundColor="#F5F5F5"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="0">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding LastName}"
+                                       FontAttributes="Bold"
+                                       FontSize="16"
+                                       TextColor="Black"/>
+                                <Label Text="{Binding FirstName}"
+                                       FontSize="14"
+                                       TextColor="Gray"/>
+                                <Label Text="{Binding Login, StringFormat='@{0}'}"
+                                       FontSize="12"
+                                       TextColor="Gray"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Grid.Row="4"
+                    Text="Закрыть"
+                    Clicked="OnCloseClicked"
+                    BackgroundColor="#E0E0E0"
+                    TextColor="Black"/>
+        </Grid>
+    </Border>
+</toolkit:Popup>

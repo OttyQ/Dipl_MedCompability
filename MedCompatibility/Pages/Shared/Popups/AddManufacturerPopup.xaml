@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="MedCompatibility.Pages.Shared.Popups.AddManufacturerPopup"
+               Color="Transparent"
+               CanBeDismissedByTappingOutsideOfPopup="False">
+
+    <Border StrokeShape="RoundRectangle 20"
+            BackgroundColor="White" 
+            Stroke="{StaticResource Primary}"
+            StrokeThickness="1"
+            Padding="0" 
+            WidthRequest="320" 
+            VerticalOptions="Center"
+            Shadow="{Shadow Brush=Black, Offset='0,5', Radius=15, Opacity=0.2}">
+
+        <VerticalStackLayout Spacing="0">
+            
+            <!-- Заголовок -->
+            <Label Text="Новый производитель" 
+                   FontAttributes="Bold" 
+                   FontSize="18" 
+                   HorizontalOptions="Center" 
+                   TextColor="#1F2937"
+                   Padding="20,20,20,10"/>
+
+            <VerticalStackLayout Spacing="12" Padding="20">
+                <!-- Название -->
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F3F4F6" StrokeThickness="0" HeightRequest="48" Padding="12,0">
+                    <Entry x:Name="NameEntry" 
+                           Placeholder="Название завода *" 
+                           TextChanged="OnTextChanged"
+                           PlaceholderColor="#9CA3AF" 
+                           TextColor="#1F2937" 
+                           FontSize="14"
+                           VerticalOptions="Center"/>
+                </Border>
+
+                <!-- Страна (ГЛАВНОЕ ИСПРАВЛЕНИЕ: Label + Прозрачный Picker) -->
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F3F4F6" StrokeThickness="0" HeightRequest="48" Padding="12,0">
+                    <Grid>
+                        <!-- 1. Текст, который ВСЕГДА виден -->
+                        <Label Text="{Binding Source={x:Reference CountryPicker}, Path=SelectedItem}"
+                               TextColor="#1F2937"
+                               FontSize="14"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start"
+                               LineBreakMode="TailTruncation"
+                               Margin="0,0,25,0"/>
+
+                        <!-- 2. Иконка стрелочки -->
+                        <Label Text="▼" TextColor="#6B7280" FontSize="10" HorizontalOptions="End" VerticalOptions="Center"/>
+
+                        <!-- 3. Невидимый Picker, который ловит нажатия -->
+                        <Picker x:Name="CountryPicker" 
+                                Title="Выберите страну"
+                                Opacity="0"
+                                VerticalOptions="Fill" 
+                                HorizontalOptions="Fill">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Республика Беларусь</x:String>
+                                    <x:String>Россия</x:String>
+                                    <x:String>Германия</x:String>
+                                    <x:String>Индия</x:String>
+                                    <x:String>Китай</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                    </Grid>
+                </Border>
+
+                <!-- Город -->
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F3F4F6" StrokeThickness="0" HeightRequest="48" Padding="12,0">
+                    <Entry x:Name="CityEntry" Placeholder="Город" PlaceholderColor="#9CA3AF" TextColor="#1F2937" FontSize="14" VerticalOptions="Center"/>
+                </Border>
+
+                <!-- Описание (ИСПРАВЛЕНИЕ: Явный белый фон для редактора) -->
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F3F4F6" StrokeThickness="0" HeightRequest="80" Padding="12,8">
+                    <Editor x:Name="DescEntry" 
+                            Placeholder="Описание (опционально)" 
+                            PlaceholderColor="#9CA3AF" 
+                            TextColor="#1F2937" 
+                            BackgroundColor="Transparent"
+                            FontSize="14"
+                            AutoSize="TextChanges"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Кнопки -->
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="12" Padding="20,0,20,20">
+                <Button Grid.Column="0"
+                        Text="Отмена" 
+                        Clicked="OnCancelClicked" 
+                        BackgroundColor="White" 
+                        TextColor="#4B5563"
+                        BorderColor="#D1D5DB"
+                        BorderWidth="1"
+                        CornerRadius="8"
+                        HeightRequest="44"
+                        FontSize="14"/>
+                
+                <Button x:Name="CreateBtn"
+                        Grid.Column="1"
+                        Text="Создать" 
+                        Clicked="OnSaveClicked" 
+                        BackgroundColor="{StaticResource Primary}" 
+                        TextColor="White"
+                        CornerRadius="8"
+                        HeightRequest="44"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        IsEnabled="False" 
+                        Opacity="0.5"/>
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>

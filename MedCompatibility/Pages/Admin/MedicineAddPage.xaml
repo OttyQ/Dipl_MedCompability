@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:MedCompatibility.Models"
+             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
+             xmlns:converters="clr-namespace:MedCompatibility.Converters"
+             x:Class="MedCompatibility.Pages.Admin.MedicineAddPage"
+             Title="Новое лекарство"
+             BackgroundColor="{StaticResource AppBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNullConverter x:Key="IsNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *">
+        
+        <!-- 1. ШАПКА -->
+        <Grid ColumnDefinitions="48, *, 48" HeightRequest="48" Margin="10,5">
+            <Border StrokeShape="RoundRectangle 24" BackgroundColor="White" StrokeThickness="0" 
+                    HeightRequest="48" WidthRequest="48" Padding="0" HorizontalOptions="Start">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                </Border.Shadow>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="←" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#333" Margin="0,0,0,2"/>
+            </Border>
+            
+            <Label Grid.Column="1" Text="Новое лекарство" 
+                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
+                   VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Grid>
+
+        <!-- 2. ФОРМА (Скролл) -->
+        <ScrollView Grid.Row="1" Padding="15">
+            <VerticalStackLayout Spacing="20" HorizontalOptions="Fill" Margin="0"> 
+                
+                <!-- Блок 1: Основная информация -->
+                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.05"/>
+                    </Border.Shadow>
+                    
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Основная информация" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource Primary}"/>
+                        
+                        <!-- Название -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Торговое название *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                            <Border x:Name="NameBorder" StrokeShape="RoundRectangle 8" BackgroundColor="#F5F7FA" StrokeThickness="1" Stroke="Transparent" HeightRequest="44" Padding="10,0">
+                                <Entry Text="{Binding NewMedicine.TradeName}" Placeholder="Например: Терафлю" PlaceholderColor="{StaticResource TextSecondary}" TextColor="{StaticResource TextPrimary}" FontSize="14" VerticalOptions="Center"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- МНН -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="МНН (Международное название) *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                            <Border x:Name="MnnBorder" StrokeShape="RoundRectangle 8" BackgroundColor="#F5F7FA" StrokeThickness="1" Stroke="Transparent" HeightRequest="44" Padding="10,0">
+                                <Entry Text="{Binding NewMedicine.INN}" Placeholder="Например: Парацетамол + Фенилэфрин..." PlaceholderColor="{StaticResource TextSecondary}" TextColor="{StaticResource TextPrimary}" FontSize="14" VerticalOptions="Center"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Форма выпуска -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Форма выпуска *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                            <Border x:Name="FormBorder" StrokeShape="RoundRectangle 8" BackgroundColor="#F5F7FA" StrokeThickness="1" Stroke="Transparent" HeightRequest="44" Padding="10,0">
+                                <Entry Text="{Binding NewMedicine.Form}" Placeholder="Например: Порошок, Таблетки" PlaceholderColor="{StaticResource TextSecondary}" TextColor="{StaticResource TextPrimary}" FontSize="14" VerticalOptions="Center"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        
+                        <!-- Описание / Инструкция -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Описание / Инструкция" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                            <Border StrokeShape="RoundRectangle 10" 
+                                    BackgroundColor="#F5F7FA" 
+                                    StrokeThickness="0" 
+                                    HeightRequest="100" 
+                                    Padding="10">
+                                <Editor Text="{Binding NewMedicine.Description}"
+                                        Placeholder="Введите описание..."
+                                        PlaceholderColor="{StaticResource TextSecondary}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        BackgroundColor="Transparent"
+                                        AutoSize="TextChanges"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Блок 2: Идентификация -->
+                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.05"/>
+                    </Border.Shadow>
+                    
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Идентификация" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource Primary}"/>
+
+                        <!-- GTIN + Сканер -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Штрихкод (GTIN) *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                            <Grid ColumnDefinitions="*, 50" ColumnSpacing="10">
+                                <Border x:Name="GtinBorder" StrokeShape="RoundRectangle 8" BackgroundColor="#F5F7FA" StrokeThickness="1" Stroke="Transparent" HeightRequest="44" Padding="10,0">
+                                    <Entry Text="{Binding NewMedicine.GTIN}" Placeholder="Сканируйте или введите" PlaceholderColor="{StaticResource TextSecondary}" TextColor="{StaticResource TextPrimary}" Keyboard="Numeric" FontSize="14" VerticalOptions="Center"/>
+                                </Border>
+                                
+                                <Button Grid.Column="1" Text="📷" 
+                                        FontSize="24"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        Command="{Binding ScanBarcodeCommand}"
+                                        HeightRequest="44" WidthRequest="44"
+                                        Padding="0" 
+                                        VerticalOptions="Center"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <!-- Производитель -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Производитель *" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+
+                            <Grid ColumnDefinitions="*, 50" ColumnSpacing="10">
+                                <!-- Контейнер ввода -->
+                                <Border x:Name="ManufacturerBorder" 
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="#F5F7FA"
+                                        StrokeThickness="1" 
+                                        Stroke="Transparent"
+                                        Padding="10,5"
+                                        MinimumHeightRequest="50"
+                                        VerticalOptions="Fill">
+
+                                    <Grid>
+                                        <!-- Текст выбранного -->
+                                        <Label Text="{Binding SelectedManufacturer.Name}"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               FontSize="13"
+                                               VerticalOptions="Center"
+                                               LineBreakMode="WordWrap"
+                                               MaxLines="2" />
+
+                                        <!-- Плейсхолдер -->
+                                        <Label Text="Выберите завод"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               FontSize="14"
+                                               VerticalOptions="Center"
+                                               IsVisible="{Binding SelectedManufacturer, Converter={StaticResource IsNullConverter}}" />
+
+                                        <!-- Прозрачный Picker -->
+                                        <Picker ItemsSource="{Binding Manufacturers}"
+                                                SelectedItem="{Binding SelectedManufacturer}"
+                                                ItemDisplayBinding="{Binding Name}"
+                                                Opacity="0"
+                                                VerticalOptions="Fill"
+                                                HorizontalOptions="Fill" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- Кнопка добавления -->
+                                <Button Grid.Column="1" Text="+" FontSize="28" TextColor="{StaticResource Primary}"
+                                        BackgroundColor="Transparent" Padding="0"
+                                        HeightRequest="50" WidthRequest="50"
+                                        VerticalOptions="Center"
+                                        Command="{Binding AddManufacturerCommand}" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Блок 3: Состав -->
+                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.05"/>
+                    </Border.Shadow>
+                    
+                    <VerticalStackLayout Spacing="15">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="Активные вещества" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource Primary}" VerticalOptions="Center"/>
+                            <Button Grid.Column="1" Text="+ Добавить" FontSize="12" HeightRequest="30" Padding="10,0" CornerRadius="15"
+                                    BackgroundColor="{StaticResource Primary}" TextColor="White"
+                                    Command="{Binding AddSubstanceCommand}"/>
+                        </Grid>
+
+                        <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Start" Direction="Row">
+                            <BindableLayout.ItemsSource>
+                                <Binding Path="AddedSubstances"/>
+                            </BindableLayout.ItemsSource>
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:activesubstance">
+                                    <Border StrokeShape="RoundRectangle 14" BackgroundColor="#E3F2FD" StrokeThickness="0" Padding="10,6" Margin="0,0,8,8">
+                                        <HorizontalStackLayout Spacing="6">
+                                            <Label Text="{Binding Name}" FontSize="13" TextColor="#1565C0" VerticalOptions="Center"/>
+                                            <Label Text="✕" FontSize="12" TextColor="#1565C0" FontAttributes="Bold" VerticalOptions="Center">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MedicineAddViewModel}}, Path=RemoveSubstanceCommand}"
+                                                                          CommandParameter="{Binding .}"/>
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                        
+                        <!-- Плейсхолдер для списка веществ -->
+                        <Label Text="Нет добавленных веществ" FontSize="12" TextColor="#999" HorizontalOptions="Center" IsVisible="False">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding AddedSubstances.Count}" Value="0">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Сообщение об ошибке -->
+                <Label x:Name="ErrorLabel" 
+                       Text="Заполните все обязательные поля" 
+                       TextColor="#FF5252" 
+                       FontSize="14" 
+                       HorizontalOptions="Center" 
+                       IsVisible="False"
+                       Margin="0,5"/>
+
+                <!-- Кнопка Сохранить (Clicked вместо Command для UI-валидации) -->
+                <Button Text="Сохранить лекарство" 
+                        BackgroundColor="{StaticResource Primary}" TextColor="White"
+                        CornerRadius="10" HeightRequest="50" FontSize="16" FontAttributes="Bold"
+                        Clicked="OnSaveClicked"
+                        Margin="0,0,0,30"
+                        Shadow="{Shadow Brush={StaticResource Primary}, Offset='0,4', Radius=8, Opacity=0.3}"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

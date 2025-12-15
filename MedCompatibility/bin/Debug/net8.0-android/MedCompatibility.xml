@@ -1,0 +1,1312 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MedCompatibility</name>
+    </assembly>
+    <members>
+        <member name="T:MedCompatibility.ViewModels.Admin.AdminHomeViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.PatientsCount">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.patientsCount"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.DoctorsCount">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.doctorsCount"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.logoutCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.LogoutCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.LogoutCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.LogoutAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.goToUsersCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToUsersCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToUsersCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToUsersAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.goToMedicinesCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToMedicinesCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToMedicinesCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToMedicinesAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.goToConflictsCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToConflictsCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToConflictsCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToConflictsAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.goToSystemCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToSystemCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToSystemCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.AdminHomeViewModel.GoToSystemAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Admin.InteractionAddViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.CurrentInteraction">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.currentInteraction"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.Types">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.types"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.Risks">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.risks"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SelectedType">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.selectedType"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SelectedRisk">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.selectedRisk"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.Substance1">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.substance1"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.Substance2">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.substance2"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.PageTitle">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.pageTitle"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.ButtonText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.buttonText"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.selectSubstance1Command">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SelectSubstance1Command"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SelectSubstance1Command">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SelectSubstance1Async"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.selectSubstance2Command">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SelectSubstance2Command"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SelectSubstance2Command">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SelectSubstance2Async"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.saveCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SaveCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SaveCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.InteractionAddViewModel.SaveAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Admin.InteractionsListViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.Interactions">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.interactions"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.IsBusy">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.isBusy"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.loadDataCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.LoadDataCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.LoadDataCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.LoadDataAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.deleteInteractionCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.DeleteInteractionCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.DeleteInteractionCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.DeleteInteractionAsync(MedCompatibility.Models.interaction)"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.goToAddInteractionCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.GoToAddInteractionCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.GoToAddInteractionCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.GoToAddInteractionAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.editInteractionCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.EditInteractionCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.EditInteractionCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.InteractionsListViewModel.EditInteractionAsync(MedCompatibility.Models.interaction)"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Admin.MedicineAddViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.NewMedicine">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.newMedicine"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.Manufacturers">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.manufacturers"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.SelectedManufacturer">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.selectedManufacturer"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.AddedSubstances">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.addedSubstances"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.PageTitle">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.pageTitle"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.ButtonText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.buttonText"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.saveCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.SaveCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.SaveCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.SaveAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.scanBarcodeCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.ScanBarcodeCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.ScanBarcodeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.ScanBarcodeAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.addManufacturerCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.AddManufacturerCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.AddManufacturerCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.AddManufacturerAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.addSubstanceCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.AddSubstanceCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.AddSubstanceCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.AddSubstanceAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.removeSubstanceCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.RemoveSubstanceCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.RemoveSubstanceCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicineAddViewModel.RemoveSubstance(MedCompatibility.Models.activesubstance)"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Admin.MedicinesListViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.Medicines">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.medicines"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.Manufacturers">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.manufacturers"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.SearchText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.searchText"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.SelectedManufacturer">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.selectedManufacturer"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.IsBusy">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.isBusy"/>
+        </member>
+        <member name="M:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.OnSelectedManufacturerChanged(System.String)">
+            <summary>Executes the logic for when <see cref="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.SelectedManufacturer"/> just changed.</summary>
+            <param name="value">The new property value that was set.</param>
+            <remarks>This method is invoked right after the value of <see cref="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.SelectedManufacturer"/> is changed.</remarks>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.loadDataCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.LoadDataCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.LoadDataCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.LoadDataAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.refreshDataCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.RefreshDataCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.RefreshDataCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.RefreshDataAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.resetFiltersCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.ResetFiltersCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.ResetFiltersCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.ResetFiltersAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.deleteMedicineCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.DeleteMedicineCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.DeleteMedicineCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.DeleteMedicineAsync(MedCompatibility.Models.medicine)"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.editMedicineCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.EditMedicineCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.EditMedicineCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.EditMedicineAsync(MedCompatibility.Models.medicine)"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.goToAddMedicineCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.GoToAddMedicineCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.GoToAddMedicineCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.MedicinesListViewModel.GoToAddMedicineAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Admin.SystemLogsViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.Logs">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.logs"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.IsBusy">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.isBusy"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.DbStatusText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.dbStatusText"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.DbStatusColor">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.dbStatusColor"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.loadLogsCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.LoadLogsCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.LoadLogsCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.SystemLogsViewModel.LoadLogsAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Admin.UsersListViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.Users">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.UsersListViewModel.users"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.SearchText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.UsersListViewModel.searchText"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.SelectedRole">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.UsersListViewModel.selectedRole"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.SelectedStatus">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Admin.UsersListViewModel.selectedStatus"/>
+        </member>
+        <member name="M:MedCompatibility.ViewModels.Admin.UsersListViewModel.OnSelectedRoleChanged(System.String)">
+            <summary>Executes the logic for when <see cref="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.SelectedRole"/> just changed.</summary>
+            <param name="value">The new property value that was set.</param>
+            <remarks>This method is invoked right after the value of <see cref="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.SelectedRole"/> is changed.</remarks>
+        </member>
+        <member name="M:MedCompatibility.ViewModels.Admin.UsersListViewModel.OnSelectedStatusChanged(System.String)">
+            <summary>Executes the logic for when <see cref="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.SelectedStatus"/> just changed.</summary>
+            <param name="value">The new property value that was set.</param>
+            <remarks>This method is invoked right after the value of <see cref="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.SelectedStatus"/> is changed.</remarks>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.UsersListViewModel.loadDataCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.LoadDataCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.LoadDataCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.UsersListViewModel.LoadDataAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.UsersListViewModel.deleteUserCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.DeleteUserCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.DeleteUserCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.UsersListViewModel.DeleteUserAsync(MedCompatibility.Models.user)"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.UsersListViewModel.toggleStatusCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.ToggleStatusCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.ToggleStatusCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.UsersListViewModel.ToggleStatusAsync(MedCompatibility.Models.user)"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Admin.UsersListViewModel.resetFiltersCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.ResetFiltersCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Admin.UsersListViewModel.ResetFiltersCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Admin.UsersListViewModel.ResetFiltersAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.WelcomeText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.welcomeText"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.PatientsCount">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.patientsCount"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.PrescriptionsCount">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.prescriptionsCount"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.logoutCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.LogoutCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.LogoutCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.LogoutAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.goToPatientsCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToPatientsCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToPatientsCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToPatientsAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.goToMedicinesCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToMedicinesCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToMedicinesCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToMedicinesAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.goToInteractionsCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToInteractionsCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToInteractionsCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToInteractionsAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.goToProfileCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToProfileCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToProfileCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorHomeViewModel.GoToProfileAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.Patient">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.patient"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.Prescriptions">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.prescriptions"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.IsBusy">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.isBusy"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.loadDataCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.LoadDataCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.LoadDataCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.LoadDataAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.addMedicineCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.AddMedicineCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.AddMedicineCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.AddMedicineAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.goBackCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.GoBackCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.GoBackCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.GoBackAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.logoutCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.LogoutCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.LogoutCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel.LogoutAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.Patients">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.patients"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.IsLoading">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.isLoading"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.loadDataCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.LoadDataCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.LoadDataCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.LoadDataAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.addPatientCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.AddPatientCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.AddPatientCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.AddPatientAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.openPatientCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.OpenPatientCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.OpenPatientCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.OpenPatientAsync(MedCompatibility.Models.user)"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.goBackCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.GoBackCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.GoBackCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.GoBackAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.logoutCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.LogoutCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.LogoutCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Doctor.DoctorPatientsViewModel.LogoutAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Patient.CompatibilityViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.MedicineA">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.medicineA"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.MedicineB">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.medicineB"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.FoundConflicts">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.foundConflicts"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.IsBusy">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.isBusy"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.HasConflicts">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.hasConflicts"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.StatusMessage">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.statusMessage"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.selectMedicineACommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.SelectMedicineACommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.SelectMedicineACommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.SelectMedicineAAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.selectMedicineBCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.SelectMedicineBCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.SelectMedicineBCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.SelectMedicineBAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.checkCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.CheckCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.CheckCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.CheckAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.clearCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.ClearCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.ClearCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.CompatibilityViewModel.Clear"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Patient.HistoryViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.HistoryItems">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.HistoryViewModel.historyItems"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.IsGuest">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.HistoryViewModel.isGuest"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.IsUser">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.HistoryViewModel.isUser"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.IsBusy">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.HistoryViewModel.isBusy"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.HistoryViewModel.loadHistoryCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.LoadHistoryCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.LoadHistoryCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.HistoryViewModel.LoadHistoryAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.HistoryViewModel.goToLoginCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.GoToLoginCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.GoToLoginCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.HistoryViewModel.GoToLoginAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.HistoryViewModel.goToDetailsCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.GoToDetailsCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.HistoryViewModel.GoToDetailsCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.HistoryViewModel.GoToDetailsAsync(MedCompatibility.Models.scan)"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.SelectedMedicine">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.selectedMedicine"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.SubstancesText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.substancesText"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.IsLoading">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.isLoading"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.goBackCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.GoBackCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.GoBackCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.MedicineDetailsViewModel.GoBackAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Patient.ProfileViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.FullName">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.fullName"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.RoleName">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.roleName"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.IsGuest">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.isGuest"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.IsUser">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.isUser"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.EditFirstName">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.editFirstName"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.EditLastName">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.editLastName"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.EditMiddleName">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.editMiddleName"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.IsEditing">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.isEditing"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.loadProfileCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.LoadProfileCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.LoadProfileCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.ProfileViewModel.LoadProfile"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.startEditingCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.StartEditingCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.StartEditingCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.ProfileViewModel.StartEditing"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.cancelEditingCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.CancelEditingCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.CancelEditingCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.ProfileViewModel.CancelEditing"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.saveChangesCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.SaveChangesCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.SaveChangesCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.ProfileViewModel.SaveChangesAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.logoutCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.LogoutCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.LogoutCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.ProfileViewModel.LogoutAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.ProfileViewModel.goToLoginCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.GoToLoginCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ProfileViewModel.GoToLoginCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.ProfileViewModel.GoToLoginAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Patient.ScanPageViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.SearchQuery">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ScanPageViewModel.searchQuery"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.FoundMedicine">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ScanPageViewModel.foundMedicine"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.IsMedicineVisible">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ScanPageViewModel.isMedicineVisible"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.IsNotFoundVisible">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ScanPageViewModel.isNotFoundVisible"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.StatusMessage">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Patient.ScanPageViewModel.statusMessage"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.ScanPageViewModel.searchCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.SearchCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.SearchCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.ScanPageViewModel.SearchAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Patient.ScanPageViewModel.scanBarcodeCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.ScanBarcodeCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Patient.ScanPageViewModel.ScanBarcodeCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Patient.ScanPageViewModel.ScanBarcodeAsync"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Shared.LoginViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.Login">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.login"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.Password">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.password"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.ErrorMessage">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.errorMessage"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.IsErrorVisible">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.isErrorVisible"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.IsDbWarningVisible">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.isDbWarningVisible"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.DbWarningText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.dbWarningText"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.IsDbAvailable">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.isDbAvailable"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.IsPasswordHidden">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.isPasswordHidden"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.EyeIconText">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.LoginViewModel.eyeIconText"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Shared.LoginViewModel.showDbDetailsCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Shared.LoginViewModel.ShowDbDetailsCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.ShowDbDetailsCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Shared.LoginViewModel.ShowDbDetailsAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Shared.LoginViewModel.loginCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Shared.LoginViewModel.LoginCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.LoginCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Shared.LoginViewModel.LoginAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Shared.LoginViewModel.goToRegisterCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Shared.LoginViewModel.GoToRegisterCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.GoToRegisterCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Shared.LoginViewModel.GoToRegisterAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Shared.LoginViewModel.guestLoginCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Shared.LoginViewModel.GuestLoginCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.GuestLoginCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Shared.LoginViewModel.GuestLoginAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Shared.LoginViewModel.togglePasswordVisibilityCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Shared.LoginViewModel.TogglePasswordVisibilityCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.LoginViewModel.TogglePasswordVisibilityCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Shared.LoginViewModel.TogglePasswordVisibility"/>.</summary>
+        </member>
+        <member name="T:MedCompatibility.ViewModels.Shared.RegisterViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.FirstName">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.firstName"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.LastName">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.lastName"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.MiddleName">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.middleName"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.Login">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.login"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.Password">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.password"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.ConfirmPassword">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.confirmPassword"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.ErrorMessage">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.errorMessage"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.IsErrorVisible">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.isErrorVisible"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.AvailableRoles">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.availableRoles"/>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.SelectedRole">
+            <inheritdoc cref="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.selectedRole"/>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.registerCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.RegisterCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.RegisterCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Shared.RegisterViewModel.RegisterAsync"/>.</summary>
+        </member>
+        <member name="F:MedCompatibility.ViewModels.Shared.RegisterViewModel.goBackCommand">
+            <summary>The backing field for <see cref="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.GoBackCommand"/>.</summary>
+        </member>
+        <member name="P:MedCompatibility.ViewModels.Shared.RegisterViewModel.GoBackCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:MedCompatibility.ViewModels.Shared.RegisterViewModel.GoBackAsync"/>.</summary>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Button.TextColorTo(Microsoft.Maui.Controls.Button,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_DatePicker.TextColorTo(Microsoft.Maui.Controls.DatePicker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Editor.TextColorTo(Microsoft.Maui.Controls.Editor,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Entry.TextColorTo(Microsoft.Maui.Controls.Entry,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_InputView.TextColorTo(Microsoft.Maui.Controls.InputView,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Label.TextColorTo(Microsoft.Maui.Controls.Label,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Picker.TextColorTo(Microsoft.Maui.Controls.Picker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_RadioButton.TextColorTo(Microsoft.Maui.Controls.RadioButton,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_SearchBar.TextColorTo(Microsoft.Maui.Controls.SearchBar,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_TimePicker.TextColorTo(Microsoft.Maui.Controls.TimePicker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="T:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs">
+            <summary>
+            A helper type providing cached, reusable <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instances
+            for all properties generated with <see cref="T:CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PatientsCount">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PatientsCount" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.DoctorsCount">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "DoctorsCount" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.CurrentInteraction">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "CurrentInteraction" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Types">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Types" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Risks">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Risks" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedType">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedType" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedRisk">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedRisk" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Substance1">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Substance1" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Substance2">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Substance2" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PageTitle">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PageTitle" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ButtonText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ButtonText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Interactions">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Interactions" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsBusy">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsBusy" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.NewMedicine">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "NewMedicine" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Manufacturers">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Manufacturers" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedManufacturer">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedManufacturer" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.AddedSubstances">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "AddedSubstances" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Medicines">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Medicines" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SearchText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SearchText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Logs">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Logs" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.DbStatusText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "DbStatusText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.DbStatusColor">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "DbStatusColor" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Users">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Users" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedRole">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedRole" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedStatus">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedStatus" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.WelcomeText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "WelcomeText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PrescriptionsCount">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PrescriptionsCount" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Patient">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Patient" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Prescriptions">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Prescriptions" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Patients">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Patients" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsLoading">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsLoading" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.MedicineA">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "MedicineA" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.MedicineB">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "MedicineB" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.FoundConflicts">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "FoundConflicts" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.HasConflicts">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "HasConflicts" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.StatusMessage">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "StatusMessage" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.HistoryItems">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "HistoryItems" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsGuest">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsGuest" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsUser">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsUser" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SelectedMedicine">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SelectedMedicine" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SubstancesText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SubstancesText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.FullName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "FullName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.RoleName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "RoleName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.EditFirstName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "EditFirstName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.EditLastName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "EditLastName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.EditMiddleName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "EditMiddleName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsEditing">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsEditing" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsNotEditing">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsNotEditing" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.SearchQuery">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "SearchQuery" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.FoundMedicine">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "FoundMedicine" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsMedicineVisible">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsMedicineVisible" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsNotFoundVisible">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsNotFoundVisible" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Login">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Login" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Password">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Password" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ErrorMessage">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ErrorMessage" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsErrorVisible">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsErrorVisible" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsDbWarningVisible">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsDbWarningVisible" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.DbWarningText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "DbWarningText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsDbAvailable">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsDbAvailable" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsPasswordHidden">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsPasswordHidden" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.EyeIconText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "EyeIconText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.FirstName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "FirstName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.LastName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "LastName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.MiddleName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "MiddleName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ConfirmPassword">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ConfirmPassword" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.AvailableRoles">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "AvailableRoles" generated properties.</summary>
+        </member>
+        <member name="T:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs">
+            <summary>
+            A helper type providing cached, reusable <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instances
+            for all properties generated with <see cref="T:CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PatientsCount">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PatientsCount" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.DoctorsCount">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "DoctorsCount" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.CurrentInteraction">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "CurrentInteraction" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Types">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Types" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Risks">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Risks" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedType">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedType" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedRisk">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedRisk" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Substance1">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Substance1" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Substance2">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Substance2" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PageTitle">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PageTitle" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ButtonText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ButtonText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Interactions">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Interactions" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsBusy">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsBusy" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.NewMedicine">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "NewMedicine" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Manufacturers">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Manufacturers" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedManufacturer">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedManufacturer" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.AddedSubstances">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "AddedSubstances" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Medicines">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Medicines" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SearchText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SearchText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Logs">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Logs" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.DbStatusText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "DbStatusText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.DbStatusColor">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "DbStatusColor" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Users">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Users" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedRole">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedRole" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedStatus">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedStatus" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.WelcomeText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "WelcomeText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PrescriptionsCount">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PrescriptionsCount" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Patient">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Patient" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Prescriptions">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Prescriptions" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Patients">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Patients" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsLoading">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsLoading" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.MedicineA">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "MedicineA" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.MedicineB">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "MedicineB" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.FoundConflicts">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "FoundConflicts" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.HasConflicts">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "HasConflicts" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.StatusMessage">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "StatusMessage" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.HistoryItems">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "HistoryItems" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsGuest">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsGuest" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsUser">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsUser" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedMedicine">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SelectedMedicine" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SubstancesText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SubstancesText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.FullName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "FullName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.RoleName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "RoleName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.EditFirstName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "EditFirstName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.EditLastName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "EditLastName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.EditMiddleName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "EditMiddleName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsEditing">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsEditing" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsNotEditing">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsNotEditing" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SearchQuery">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "SearchQuery" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.FoundMedicine">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "FoundMedicine" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsMedicineVisible">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsMedicineVisible" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsNotFoundVisible">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsNotFoundVisible" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Login">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Login" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Password">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Password" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ErrorMessage">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ErrorMessage" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsErrorVisible">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsErrorVisible" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsDbWarningVisible">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsDbWarningVisible" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.DbWarningText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "DbWarningText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsDbAvailable">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsDbAvailable" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsPasswordHidden">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsPasswordHidden" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.EyeIconText">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "EyeIconText" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.FirstName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "FirstName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.LastName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "LastName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.MiddleName">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "MiddleName" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ConfirmPassword">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ConfirmPassword" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.AvailableRoles">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "AvailableRoles" generated properties.</summary>
+        </member>
+    </members>
+</doc>

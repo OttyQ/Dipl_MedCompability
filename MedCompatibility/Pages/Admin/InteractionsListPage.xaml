@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
+             xmlns:models="clr-namespace:MedCompatibility.Models"
+             xmlns:converters="clr-namespace:MedCompatibility.Converters"
+             x:Class="MedCompatibility.Pages.Admin.InteractionsListPage"
+             Title="Конфликты лекарств"
+             BackgroundColor="{StaticResource AppBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNullConverter x:Key="IsNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *">
+        
+        <!-- 1. ШАПКА -->
+        <Grid Grid.Row="0" ColumnDefinitions="48, *, 48" HeightRequest="48" Margin="10,10,10,5">
+            <!-- Кнопка Назад (ИСПРАВЛЕНО: возвращаем Tapped="OnBackClicked") -->
+            <Border StrokeShape="RoundRectangle 24" BackgroundColor="White" StrokeThickness="0" 
+                    HeightRequest="48" WidthRequest="48" Padding="0" HorizontalOptions="Start">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                </Border.Shadow>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="←" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#333" Margin="0,0,0,2"/>
+            </Border>
+            
+            <Label Grid.Column="1" Text="Взаимодействия" 
+                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
+                   VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Grid>
+
+        <!-- 2. СПИСОК -->
+        <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
+            
+            <CollectionView ItemsSource="{Binding Interactions}"
+                            HorizontalOptions="Center"
+                            MaximumWidthRequest="800"
+                            WidthRequest="{OnPlatform Android='-1', WinUI='800'}" 
+                            SelectionMode="None">
+                
+                <CollectionView.Margin>
+                    <OnPlatform x:TypeArguments="Thickness">
+                        <On Platform="WinUI" Value="0,20" /> 
+                        <On Platform="Android,iOS" Value="10,10" />
+                    </OnPlatform>
+                </CollectionView.Margin>
+
+                <CollectionView.EmptyView>
+                    <Label Text="Список взаимодействий пуст" TextColor="#999" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </CollectionView.EmptyView>
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:interaction">
+                        <!-- Карточка -->
+                        <Border StrokeShape="RoundRectangle 12" BackgroundColor="White" StrokeThickness="0" Margin="0,0,0,12" Padding="15">
+                            
+                            <!-- ИСПРАВЛЕНО: Добавляем жест редактирования СЮДА, на саму карточку -->
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InteractionsListViewModel}}, Path=EditInteractionCommand}"
+                                    CommandParameter="{Binding .}"/>
+                            </Border.GestureRecognizers>
+                            
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
+                            </Border.Shadow>
+                            
+                            <Grid RowDefinitions="Auto, Auto, Auto" RowSpacing="8">
+                                <!-- Заголовок -->
+                                <Label FontSize="16" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" LineBreakMode="WordWrap">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding SubstanceId1Navigation.Name}"/>
+                                            <Span Text=" + " TextColor="#CCC"/>
+                                            <Span Text="{Binding SubstanceId2Navigation.Name}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                                <!-- Риск и Тип -->
+                                <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto">
+                                    <!-- Бэйдж уровня риска -->
+                                    <Border StrokeShape="RoundRectangle 6" StrokeThickness="0" Padding="8,4" VerticalOptions="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BackgroundColor" Value="#E0F7FA"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding RiskLevelId}" Value="3">
+                                                        <Setter Property="BackgroundColor" Value="#FFEBEE"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding RiskLevelId}" Value="2">
+                                                        <Setter Property="BackgroundColor" Value="#FFF3E0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        
+                                        <Label Text="{Binding RiskLevel.Name}" FontSize="11" FontAttributes="Bold">
+                                            <Label.Style>
+                                                <Style TargetType="Label">
+                                                    <Setter Property="TextColor" Value="#006064"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding RiskLevelId}" Value="3">
+                                                            <Setter Property="TextColor" Value="#C62828"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding RiskLevelId}" Value="2">
+                                                            <Setter Property="TextColor" Value="#EF6C00"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                    </Border>
+
+                                    <!-- Тип -->
+                                    <Label Grid.Column="1" Text="{Binding InteractionType.Name}" 
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}" 
+                                           VerticalOptions="Center" Margin="10,0,0,0"/>
+
+                                    <!-- Удалить (кнопка перехватывает нажатие, чтобы не сработал Edit) -->
+                                    <Button Grid.Column="2" Text="🗑" 
+                                            TextColor="#FF5252" BackgroundColor="Transparent"
+                                            FontSize="18" Padding="0" HeightRequest="30" WidthRequest="30"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InteractionsListViewModel}}, Path=DeleteInteractionCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                </Grid>
+                                
+                                <!-- Описание -->
+                                <Label Grid.Row="2" Text="{Binding Description}" 
+                                       FontSize="13" TextColor="{StaticResource TextPrimary}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Кнопка Добавить (FAB) -->
+        <Button Grid.Row="1" Text="+" 
+                FontSize="30" TextColor="White" BackgroundColor="{StaticResource Primary}"
+                CornerRadius="28" WidthRequest="56" HeightRequest="56"
+                HorizontalOptions="End" VerticalOptions="End" Margin="20"
+                Shadow="{Shadow Brush={StaticResource Primary}, Offset='0,4', Radius=10, Opacity=0.4}"
+                Command="{Binding GoToAddInteractionCommand}"/>
+    </Grid>
+</ContentPage>

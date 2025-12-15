@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:models="clr-namespace:MedCompatibility.Models"
+               x:Class="MedCompatibility.Pages.Shared.Popups.MedicineSelectionPopup"
+               Color="Transparent"
+               CanBeDismissedByTappingOutsideOfPopup="True">
+
+    <Border StrokeShape="RoundRectangle 20" 
+            BackgroundColor="{StaticResource Surface}"
+            WidthRequest="320"
+            HeightRequest="500"
+            Padding="20">
+        
+        <Grid RowDefinitions="Auto, Auto, Auto, *">
+            
+            <!-- Заголовок -->
+            <Label Grid.Row="0" Text="Выбор лекарства" 
+                   FontSize="18" FontAttributes="Bold" 
+                   HorizontalOptions="Center" Margin="0,0,0,15"
+                   TextColor="{StaticResource TextPrimary}"/>
+
+            <!-- Быстрые действия -->
+            <Grid Grid.Row="1" ColumnDefinitions="*, *" ColumnSpacing="10" Margin="0,0,0,15">
+                <!-- Кнопка Сканер -->
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="{StaticResource Primary}" HeightRequest="40">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnScanClicked"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="📷 Сканер" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center"/>
+                </Border>
+
+                <!-- Кнопка История -->
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="{StaticResource Secondary}" HeightRequest="40">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnHistoryClicked"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="📜 История" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center"/>
+                </Border>
+            </Grid>
+
+            <!-- Поиск -->
+            <Border Grid.Row="2" StrokeShape="RoundRectangle 10" Stroke="{StaticResource TextSecondary}" StrokeThickness="1" HeightRequest="45" Margin="0,0,0,10">
+                <Grid ColumnDefinitions="*, Auto">
+                    <Entry x:Name="SearchEntry" Placeholder="Название или штрихкод..." 
+                           TextColor="{StaticResource TextPrimary}"
+                           VerticalOptions="Center" Margin="10,0"
+                           TextChanged="OnSearchTextChanged"/>
+                    <ActivityIndicator x:Name="SearchLoader" IsRunning="False" Color="{StaticResource Primary}" Grid.Column="1" Margin="0,0,10,0"/>
+                </Grid>
+            </Border>
+
+            <!-- Список результатов -->
+            <CollectionView Grid.Row="3" x:Name="MedicinesList" SelectionMode="Single" SelectionChanged="OnSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label Text="Начните ввод для поиска..." 
+                           HorizontalOptions="Center" VerticalOptions="Center" 
+                           TextColor="{StaticResource TextSecondary}"/>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:medicine">
+                        <Border StrokeShape="RoundRectangle 10" BackgroundColor="White" Margin="0,5" Padding="10">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding TradeName}" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                                <Label Text="{Binding Manufacturer.Name}" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                <Label Text="{Binding GTIN}" FontSize="10" TextColor="{StaticResource TextSecondary}"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Кнопка Закрыть (крестик в углу) -->
+            <ImageButton Grid.Row="0" Source="dotnet_bot.png" IsVisible="false"/> <!-- Заглушка, можно добавить крестик -->
+        </Grid>
+    </Border>
+</toolkit:Popup>
