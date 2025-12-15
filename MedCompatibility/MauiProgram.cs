@@ -14,6 +14,7 @@ using MedCompatibility.ViewModels.Admin;
 using MedCompatibility.ViewModels.Doctor;
 using MedCompatibility.ViewModels.Patient;
 using MedCompatibility.ViewModels.Shared;
+using UraniumUI;
 using ZXing.Net.Maui.Controls;
 
 namespace MedCompatibility;
@@ -28,6 +29,8 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .UseUraniumUI()          
+            .UseUraniumUIMaterial()  
             .UseBarcodeReader()
             .ConfigureFonts(fonts =>
             {
