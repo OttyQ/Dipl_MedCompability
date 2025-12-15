@@ -1,194 +1,464 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:MedCompatibility.Converters"
-             x:Class="MedCompatibility.App">
+<Application
+    x:Class="MedCompatibility.App"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:local="clr-namespace:MedCompatibility.Converters"
+    xmlns:m="clr-namespace:UraniumUI.Material.Resources;assembly=UraniumUI.Material"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Application.Resources>
-    <ResourceDictionary>
+        <ResourceDictionary>
 
-        <!-- ================= ЦВЕТА (Light Theme) ================= -->
-        <!-- Спокойный медицинский сине-бирюзовый -->
-        <Color x:Key="Primary">#00796B</Color> 
-        <!-- Более темная версия для нажатий -->
-        <Color x:Key="PrimaryDark">#004D40</Color> 
-        
-        <!-- Вторичный цвет (для ссылок или акцентов) -->
-        <Color x:Key="Secondary">#0097A7</Color>
+            <ResourceDictionary.MergedDictionaries>
+                <m:StyleResource />
+                <!--  базовые стили Uranium Material  -->
+            </ResourceDictionary.MergedDictionaries>
 
-        <!-- Фон приложения (очень светло-серый/голубой) -->
-        <Color x:Key="AppBackground">#F5F7FA</Color>
-        
-        <!-- Поверхность карточек (чистый белый) -->
-        <Color x:Key="Surface">#FFFFFF</Color>
+            <!--  ==================== ЦВЕТОВАЯ ПАЛИТРА (Medical Theme) ====================  -->
 
-        <!-- Текст -->
-        <Color x:Key="TextPrimary">#263238</Color> <!-- Темно-серый, почти черный -->
-        <Color x:Key="TextSecondary">#78909C</Color> <!-- Серый -->
-        <Color x:Key="TextPlaceholder">#B0BEC5</Color>
+            <!--  Основные медицинские цвета  -->
+            <Color x:Key="Primary">#00796B</Color>
+            <!--  Бирюзовый (основной)  -->
+            <Color x:Key="PrimaryDark">#004D40</Color>
+            <!--  Темнее для нажатий  -->
+            <Color x:Key="PrimaryLight">#B2DFDB</Color>
+            <!--  Светлый для фонов  -->
+            <Color x:Key="Secondary">#0097A7</Color>
+            <!--  Акцент  -->
 
-        <!-- Статусы -->
-        <Color x:Key="Error">#D32F2F</Color>
+            <!--  Фоны и поверхности  -->
+            <Color x:Key="AppBackground">#F5F8FA</Color>
+            <!--  Нейтральный светло-серый  -->
+            <Color x:Key="Surface">#FFFFFF</Color>
+            <!--  Белый для поверхностей (используется Shell/AppShell и старыми страницами)  -->
+            <Color x:Key="CardSurface">#FFFFFF</Color>
+            <!--  Белый для карточек  -->
+            <Color x:Key="SectionBackground">#FAFBFC</Color>
+            <!--  Еле заметный серый для секций  -->
 
-        <!-- Градиент для фона страниц -->
-        <LinearGradientBrush x:Key="PageBackgroundGradient" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="#E3F2FD" Offset="0.0" /> <!-- Светло-голубой сверху -->
-            <GradientStop Color="#F5F7FA" Offset="0.5" /> <!-- Переход в серый -->
-            <GradientStop Color="#FFFFFF" Offset="1.0" /> <!-- Белый снизу -->
-        </LinearGradientBrush>
+            <!--  Текст  -->
+            <Color x:Key="TextPrimary">#263238</Color>
+            <!--  Основной темный  -->
+            <Color x:Key="TextSecondary">#78909C</Color>
+            <!--  Серый для вспомогательного  -->
+            <Color x:Key="TextPlaceholder">#B0BEC5</Color>
+            <!--  Placeholder для input  -->
+            <Color x:Key="TextOnPrimary">#FFFFFF</Color>
+            <!--  Белый на кнопках  -->
 
-        <!-- ================= СТИЛИ ================= -->
+            <!--  Границы и разделители  -->
+            <Color x:Key="BorderLight">#E0E5E9</Color>
+            <Color x:Key="BorderMedium">#CFD8DC</Color>
 
-        <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
-            <Setter Property="Background" Value="{StaticResource PageBackgroundGradient}" />
-            <Setter Property="Padding" Value="0" />
-        </Style>
+            <!--  Статусные цвета  -->
+            <Color x:Key="Success">#66BB6A</Color>
+            <Color x:Key="Error">#EF5350</Color>
+            <Color x:Key="Warning">#FFA726</Color>
+            <Color x:Key="Info">#42A5F5</Color>
 
-        <!-- Заголовок -->
-        <Style x:Key="HeaderLabel" TargetType="Label">
-            <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-            <Setter Property="FontSize" Value="28" />
-            <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="FontFamily" Value="OpenSansSemibold" />
-        </Style>
+            <!--  ==================== ГРАДИЕНТ ДЛЯ ФОНА СТРАНИЦ ====================  -->
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" x:Key="PageBackgroundGradient">
+                <GradientStop Color="#E8F5F3" Offset="0.0" />
+                <!--  Светлый бирюзовый  -->
+                <GradientStop Color="#F5F8FA" Offset="0.4" />
+                <GradientStop Color="#FFFFFF" Offset="1.0" />
+            </LinearGradientBrush>
 
-        <!-- Подзаголовок -->
-        <Style x:Key="SubHeaderLabel" TargetType="Label">
-            <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-            <Setter Property="FontSize" Value="16" />
-        </Style>
+            <!--  ==================== БАЗОВЫЕ СТИЛИ СТРАНИЦ ====================  -->
 
-        <!-- Карточка (Frame) - добавляем тень и скругления -->
-        <Style x:Key="CardFrame" TargetType="Frame">
-            <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
-            <Setter Property="CornerRadius" Value="24" />
-            <Setter Property="BorderColor" Value="Transparent" />
-            <Setter Property="Padding" Value="30" />
-            <Setter Property="MaximumWidthRequest" Value="420" />
-            <Setter Property="HorizontalOptions" Value="Center" />
-            <!-- Новая тень: более размытая и заметная -->
-            <Setter Property="Shadow">
-                <Shadow Brush="#90A4AE" Offset="0,10" Radius="30" Opacity="0.15"/>
-            </Setter>
-        </Style>
+            <Style ApplyToDerivedTypes="True" TargetType="ContentPage">
+                <Setter Property="Background" Value="{StaticResource PageBackgroundGradient}" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
 
-        <!-- Поля ввода -->
-        <!-- Поле ввода: Подсветка рамки при фокусе -->
-        <Style x:Key="InputFrame" TargetType="Border">
-            <Setter Property="Stroke" Value="#E0E0E0" />
-            <Setter Property="StrokeThickness" Value="1" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-            <Setter Property="BackgroundColor" Value="#FAFAFA" />
-            <Setter Property="Padding" Value="15,2" />
-            <Setter Property="HeightRequest" Value="52" />
-            
-            <Setter Property="VisualStateManager.VisualStateGroups">
-                <VisualStateGroupList>
-                    <VisualStateGroup x:Name="CommonStates">
-                        <VisualState x:Name="Normal" />
-                        
-                        <!-- PointerOver работает для Border в MAUI -->
-                        <VisualState x:Name="PointerOver">
-                            <VisualState.Setters>
-                                <Setter Property="Stroke" Value="#B0BEC5" />
-                                <Setter Property="BackgroundColor" Value="#FFFFFF" />
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateGroupList>
-            </Setter>
-        </Style>
+            <!--  ==================== ТИПОГРАФИКА ====================  -->
 
-        <Style TargetType="Entry">
-            <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-            <Setter Property="PlaceholderColor" Value="{StaticResource TextPlaceholder}" />
-            <Setter Property="BackgroundColor" Value="Transparent" />
-            <Setter Property="VerticalOptions" Value="Center" />
-        </Style>
+            <!--  Главный заголовок страницы  -->
+            <Style TargetType="Label" x:Key="PageTitle">
+                <Setter Property="FontSize" Value="26" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="Margin" Value="0" />
+            </Style>
 
-        <!-- Основная кнопка (Primary) -->
-        <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
-            <Setter Property="TextColor" Value="White" />
-            <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="CornerRadius" Value="16" />
-            <Setter Property="HeightRequest" Value="54" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="Shadow">
-                <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="10" Opacity="0.3"/>
-            </Setter>
-    
-            <Setter Property="VisualStateManager.VisualStateGroups">
-                <VisualStateGroupList>
-                    <VisualStateGroup x:Name="CommonStates">
-                        <VisualState x:Name="Normal" />
-                
-                        <!-- Наведение (работает на Desktop) -->
-                        <VisualState x:Name="PointerOver">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="#00897B" /> <!-- Чуть светлее -->
-                                <Setter Property="Scale" Value="1.02" /> <!-- Легкое увеличение -->
-                            </VisualState.Setters>
-                        </VisualState>
+            <!--  Заголовок секции  -->
+            <Style TargetType="Label" x:Key="SectionTitle">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+            </Style>
 
-                        <!-- Нажатие -->
-                        <VisualState x:Name="Pressed">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
-                                <Setter Property="Scale" Value="0.98" /> <!-- Эффект клика -->
-                                <Setter Property="Shadow">
-                                    <Shadow Brush="Transparent" /> <!-- Тень пропадает при нажатии -->
-                                </Setter>
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateGroupList>
-            </Setter>
-        </Style>
-        
-        <!-- Вторичная кнопка (Outline) - Исправленная версия -->
-        <Style x:Key="SecondaryButton" TargetType="Button">
-            <Setter Property="BackgroundColor" Value="Transparent" />
-            <Setter Property="TextColor" Value="{StaticResource Primary}" />
-            <Setter Property="BorderColor" Value="{StaticResource Primary}" />
-            <Setter Property="BorderWidth" Value="2" />
-            <Setter Property="CornerRadius" Value="16" />
-            <Setter Property="HeightRequest" Value="54" />
-            <Setter Property="FontSize" Value="16" />
+            <!--  Подзаголовок / описание  -->
+            <Style TargetType="Label" x:Key="Subtitle">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="LineHeight" Value="1.4" />
+            </Style>
 
-            <Setter Property="VisualStateManager.VisualStateGroups">
-                <VisualStateGroupList>
-                    <VisualStateGroup x:Name="CommonStates">
-                        <VisualState x:Name="Normal" />
-                        
-                        <!-- PointerOver убрали, чтобы не мигало -->
-                        
-                        <!-- Оставляем только эффект нажатия -->
-                        <VisualState x:Name="Pressed">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="#E0F2F1" /> <!-- Легкий фон при нажатии -->
-                                <Setter Property="Opacity" Value="0.8" />
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateGroupList>
-            </Setter>
-        </Style>
-        
-        
-        
-        <!-- Текстовая кнопка (Text) -->
-        <Style x:Key="TextButton" TargetType="Button">
-            <Setter Property="BackgroundColor" Value="Transparent" />
-            <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-            <Setter Property="HeightRequest" Value="40" />
-            <Setter Property="FontSize" Value="14" />
-        </Style>
-        
-        
-        <local:BoolToTextConverter x:Key="BoolToTextConverter" />
-        <local:BoolToColorConverter x:Key="BoolToColorConverter" />
-        
-    </ResourceDictionary>
-</Application.Resources>
+            <!--  Обычный текст  -->
+            <Style TargetType="Label" x:Key="BodyText">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            </Style>
 
+            <!--  Подпись/caption  -->
+            <Style TargetType="Label" x:Key="Caption">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            </Style>
+
+            <!--  ==================== КАРТОЧКИ ====================  -->
+
+            <!--  Основная карточка (Frame)  -->
+            <Style TargetType="Frame" x:Key="MedCard">
+                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
+                <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="CornerRadius" Value="16" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="Margin" Value="0,0,0,12" />
+                <Setter Property="HasShadow" Value="False" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#90A4AE"
+                        Offset="0,4"
+                        Opacity="0.08"
+                        Radius="12" />
+                </Setter>
+            </Style>
+
+            <!--  Карточка для форм ввода (с большими отступами)  -->
+            <Style
+                BasedOn="{StaticResource MedCard}"
+                TargetType="Frame"
+                x:Key="MedFormCard">
+                <Setter Property="Padding" Value="20" />
+                <Setter Property="MaximumWidthRequest" Value="600" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+            </Style>
+
+            <!--  Карточка в списке (меньше отступы)  -->
+            <Style
+                BasedOn="{StaticResource MedCard}"
+                TargetType="Frame"
+                x:Key="MedListCard">
+                <Setter Property="Padding" Value="14" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+            </Style>
+
+            <!--  ==================== ПОЛЯ ВВОДА ====================  -->
+
+            <!--  Контейнер поля (Border)  -->
+            <Style TargetType="Border" x:Key="MedInputContainer">
+                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+                <Setter Property="BackgroundColor" Value="#FAFAFA" />
+                <Setter Property="Padding" Value="14,0" />
+                <Setter Property="HeightRequest" Value="48" />
+                <Setter Property="Margin" Value="0,0,0,12" />
+            </Style>
+
+            <!--  Entry (само поле)  -->
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextPlaceholder}" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <!--  Editor (многострочный текст)  -->
+            <Style TargetType="Editor">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="BackgroundColor" Value="#FAFAFA" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextPlaceholder}" />
+                <Setter Property="FontSize" Value="15" />
+            </Style>
+
+            <!--  Picker  -->
+            <Style TargetType="Picker">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="TitleColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="FontSize" Value="15" />
+            </Style>
+
+            <!--  ==================== КНОПКИ ====================  -->
+
+            <!--  Основная кнопка (Primary)  -->
+            <Style TargetType="Button" x:Key="PrimaryButton">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="TextColor" Value="{StaticResource TextOnPrimary}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="Margin" Value="0,4" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="{StaticResource Primary}"
+                        Offset="0,4"
+                        Opacity="0.25"
+                        Radius="10" />
+                </Setter>
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
+                                    <Setter Property="Scale" Value="0.98" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!--  Вторичная кнопка (Outline)  -->
+            <Style TargetType="Button" x:Key="SecondaryButton">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                <Setter Property="BorderColor" Value="{StaticResource Primary}" />
+                <Setter Property="BorderWidth" Value="2" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="Margin" Value="0,4" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}" />
+                                    <Setter Property="Opacity" Value="0.9" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!--  Текстовая кнопка (без фона)  -->
+            <Style TargetType="Button" x:Key="TextButton">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Padding" Value="8,6" />
+            </Style>
+
+            <!--  Кнопка "Назад" в хедере  -->
+            <Style TargetType="Border" x:Key="BackButton">
+                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="HeightRequest" Value="42" />
+                <Setter Property="WidthRequest" Value="42" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#000000"
+                        Offset="0,2"
+                        Opacity="0.08"
+                        Radius="6" />
+                </Setter>
+            </Style>
+
+            <!--  ==================== HEADER СТРАНИЦЫ ====================  -->
+
+            <!--  Стиль для Grid-хедера с кнопкой "Назад"  -->
+            <Style TargetType="Grid" x:Key="PageHeader">
+                <Setter Property="HeightRequest" Value="60" />
+                <Setter Property="Padding" Value="16,10" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+
+            <!--  ==================== СПИСКИ ====================  -->
+
+            <Style TargetType="CollectionView">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+
+            <!--  Разделитель в списке  -->
+            <Style TargetType="BoxView" x:Key="ListSeparator">
+                <Setter Property="HeightRequest" Value="1" />
+                <Setter Property="Color" Value="{StaticResource BorderLight}" />
+                <Setter Property="Margin" Value="0,8" />
+            </Style>
+
+            <!--  ==================== БЕЙДЖИ / МЕТКИ СТАТУСА ====================  -->
+
+            <Style TargetType="Border" x:Key="StatusBadge">
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+            </Style>
+
+
+
+            <!--  ===== Modern surfaces (Admin) =====  -->
+
+            <Style TargetType="Border" x:Key="ElevatedCard">
+                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 18" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#000000"
+                        Offset="0,10"
+                        Opacity="0.06"
+                        Radius="22" />
+                </Setter>
+            </Style>
+
+            <Style TargetType="Label" x:Key="StatValue">
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            </Style>
+
+            <Style TargetType="Label" x:Key="StatCaption">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            </Style>
+
+            <Style
+                BasedOn="{StaticResource ElevatedCard}"
+                TargetType="Border"
+                x:Key="ActionTile">
+                <Setter Property="Padding" Value="14" />
+            </Style>
+
+            <Style
+                BasedOn="{StaticResource ElevatedCard}"
+                TargetType="Border"
+                x:Key="ActionRow">
+                <Setter Property="Padding" Value="14" />
+            </Style>
+
+            <Style TargetType="Label" x:Key="Chevron">
+                <Setter Property="Text" Value="›" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <Style TargetType="Border" x:Key="ActionIconCircle">
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+                <Setter Property="HeightRequest" Value="44" />
+                <Setter Property="WidthRequest" Value="44" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0" x:Key="HeaderGradient">
+                <GradientStop Color="#D9F4EE" Offset="0.0" />
+                <GradientStop Color="#E8F5F3" Offset="0.45" />
+                <GradientStop Color="#F5F8FA" Offset="1.0" />
+            </LinearGradientBrush>
+            <!--  ==================== КОНВЕРТЕРЫ ====================  -->
+
+            <local:BoolToTextConverter x:Key="BoolToTextConverter" />
+            <local:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <local:IsNullConverter x:Key="IsNullConverter" />
+            <local:RoleToColorConverter x:Key="RoleToColorConverter" />
+            <local:StringFirstCharConverter x:Key="StringFirstCharConverter" />
+
+
+
+            <!--  Modern dashboard tokens  -->
+            <Thickness x:Key="SpacePage">20</Thickness>
+            <Thickness x:Key="SpaceCard">16</Thickness>
+
+            <Style TargetType="Border" x:Key="AdminCard">
+                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+                <Setter Property="Padding" Value="{StaticResource SpaceCard}" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#000000"
+                        Offset="0,14"
+                        Opacity="0.06"
+                        Radius="26" />
+                </Setter>
+            </Style>
+
+            <Style TargetType="Label" x:Key="AdminStatNumber">
+                <Setter Property="FontSize" Value="32" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            </Style>
+
+            <Style TargetType="Label" x:Key="AdminStatLabel">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            </Style>
+
+
+            <!--  ==================== BACKWARD COMPATIBILITY (алиасы для старого XAML) ====================  -->
+
+            <!--  Старые стили заголовков  -->
+            <Style TargetType="Label" x:Key="HeaderLabel">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            </Style>
+
+            <Style TargetType="Label" x:Key="SubHeaderLabel">
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+
+            <!--  Старая карточка CardFrame (используется в LoginPage, DoctorHomePage и др.)  -->
+            <Style TargetType="Frame" x:Key="CardFrame">
+                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
+                <Setter Property="CornerRadius" Value="24" />
+                <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="Padding" Value="30" />
+                <Setter Property="MaximumWidthRequest" Value="420" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HasShadow" Value="False" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#90A4AE"
+                        Offset="0,10"
+                        Opacity="0.15"
+                        Radius="30" />
+                </Setter>
+            </Style>
+
+            <!--  Старая рамка InputFrame для полей ввода  -->
+            <Style TargetType="Border" x:Key="InputFrame">
+                <Setter Property="Stroke" Value="#E0E0E0" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+                <Setter Property="BackgroundColor" Value="#FAFAFA" />
+                <Setter Property="Padding" Value="15,2" />
+                <Setter Property="HeightRequest" Value="52" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="Stroke" Value="#B0BEC5" />
+                                    <Setter Property="BackgroundColor" Value="#FFFFFF" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>
