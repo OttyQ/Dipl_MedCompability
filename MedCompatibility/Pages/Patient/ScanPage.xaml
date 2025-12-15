@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
+             x:Class="MedCompatibility.Pages.Patient.ScanPage"
+             Title="Проверка лекарств"
+             BackgroundColor="{StaticResource AppBackground}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+            
+            <!-- Заголовок -->
+            <Label Text="Проверка совместимости" 
+                   FontSize="22" FontAttributes="Bold" TextColor="{StaticResource Primary}" 
+                   HorizontalOptions="Center"/>
+
+            <!-- Поле поиска -->
+            <Border StrokeShape="RoundRectangle 25" BackgroundColor="White" StrokeThickness="0" HeightRequest="50" Padding="15,0">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.1"/>
+                </Border.Shadow>
+                <Grid ColumnDefinitions="*, Auto">
+                    <Entry Placeholder="Введите название или штрихкод" 
+                           Text="{Binding SearchQuery}"
+                           TextColor="{StaticResource TextPrimary}"
+                           VerticalOptions="Center" ReturnCommand="{Binding SearchCommand}"/>
+                    
+                    <ImageButton Grid.Column="1" Source="search_icon.png"  HeightRequest="24" WidthRequest="24"
+                                 Command="{Binding SearchCommand}" VerticalOptions="Center">
+                        <!-- Если нет иконки, можно текст -->
+                    </ImageButton>
+                </Grid>
+            </Border>
+
+            <!-- Кнопка сканера -->
+            <Button Text="📷 Сканировать штрихкод" 
+                    BackgroundColor="{StaticResource Primary}" TextColor="White"
+                    CornerRadius="25" HeightRequest="50" FontAttributes="Bold"
+                    Command="{Binding ScanBarcodeCommand}"/>
+
+            <!-- Результат: Лекарство найдено -->
+            <Border IsVisible="{Binding IsMedicineVisible}" StrokeShape="RoundRectangle 15" BackgroundColor="White" StrokeThickness="0" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Результат:" TextColor="#999" FontSize="12"/>
+                    <Label Text="{Binding FoundMedicine.TradeName}" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                    <Label Text="{Binding FoundMedicine.INN}" FontSize="14" TextColor="{StaticResource TextSecondary}"/>
+                    
+                    <BoxView HeightRequest="1" Color="#EEE" Margin="0,5"/>
+                    
+                    <Label Text="Состав:" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                    <!-- Тут можно вывести список веществ через BindableLayout, если он подгружен -->
+                    
+                    <Label Text="✅ Лекарство распознано и добавлено в историю." TextColor="Green" FontSize="12"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Результат: Не найдено -->
+            <Label IsVisible="{Binding IsNotFoundVisible}" 
+                   Text="Лекарство не найдено в базе данных." 
+                   TextColor="#FF5252" HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

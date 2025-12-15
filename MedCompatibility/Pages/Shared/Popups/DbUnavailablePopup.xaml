@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    x:Class="MedCompatibility.Pages.Shared.Popups.DbUnavailablePopup"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="#80000000"> <!-- Полупрозрачный фон на весь экран (штатный) -->
+
+    <!-- Сама карточка по центру -->
+    <Border StrokeShape="RoundRectangle 16"
+            BackgroundColor="White"
+            WidthRequest="400"
+            Padding="24"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+        
+        <Grid RowDefinitions="Auto, Auto, Auto, Auto" RowSpacing="16">
+            
+            <!-- 1. Заголовок -->
+            <Label Grid.Row="0"
+                   Text="Ошибка подключения"
+                   TextColor="#2C3E50"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
+
+            <!-- 2. Короткое сообщение -->
+            <Label Grid.Row="1"
+                   Text="{Binding ShortMessage}"
+                   TextColor="#546E7A"
+                   FontSize="14"
+                   HorizontalTextAlignment="Center"
+                   HorizontalOptions="Center" />
+
+            <!-- 3. Лог ошибки (в сером блоке) -->
+            <Border Grid.Row="2"
+                    BackgroundColor="#F5F7FA"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12"
+                    HeightRequest="140">
+                 <ScrollView VerticalScrollBarVisibility="Default">
+                     <Label Text="{Binding Details}"
+                            FontSize="11"
+                            FontFamily="Consolas"
+                            TextColor="#455A64"
+                            LineBreakMode="CharacterWrap"/>
+                 </ScrollView>
+            </Border>
+
+            <!-- 4. Кнопки (равномерно) -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0"
+                        Text="Скопировать"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding CopyCommand}"/>
+                
+                <Button Grid.Column="1"
+                        Text="Закрыть"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding CloseCommand}"/>
+            </Grid>
+        </Grid>
+    </Border>
+</toolkit:Popup>

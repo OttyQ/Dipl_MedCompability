@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="MedCompatibility.Pages.Shared.Popups.LoadingPopup"
+               Color="Transparent"> 
+    <!-- 
+       ВАЖНО: Color="Transparent" в самом Popup. 
+       Системное затемнение (dimmed background) MAUI добавляет автоматически.
+       Если мы тут зададим Серый, он может перекрыть контент.
+    -->
+
+    <!-- Контейнер самого окошка (Плашка) -->
+    <Border StrokeShape="RoundRectangle 15"
+            StrokeThickness="0"
+            BackgroundColor="{AppThemeBinding Light=White, Dark=#333333}"
+            Padding="30"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+        
+        <VerticalStackLayout Spacing="15" 
+                             HorizontalOptions="Center" 
+                             VerticalOptions="Center">
+            
+            <!-- Крутилка -->
+            <ActivityIndicator IsRunning="True"
+                               Color="{StaticResource Primary}"
+                               HeightRequest="50"
+                               WidthRequest="50"
+                               HorizontalOptions="Center"/>
+            
+            <!-- Текст (опционально) -->
+            <Label Text="Пожалуйста, подождите..."
+                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+            
+        </VerticalStackLayout>
+    </Border>
+
+</toolkit:Popup>
