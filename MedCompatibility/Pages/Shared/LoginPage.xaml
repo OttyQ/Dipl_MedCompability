@@ -1,108 +1,199 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Shared"
-             x:Class="MedCompatibility.Pages.Shared.LoginPage"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    Shell.NavBarIsVisible="False"
+    x:Class="MedCompatibility.Pages.Shared.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- ОБЕРТКА Grid для наложения слоев -->
     <Grid>
-        <!-- Слой 1: Основной контент (твой старый ScrollView) -->
+
+        <!--  Фон (у Login своя раскладка пузырьков)  -->
+        <AbsoluteLayout InputTransparent="True">
+            <!--  Большой слева снизу  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.05,0.80,680,680"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="340"
+                HeightRequest="680"
+                WidthRequest="680" />
+
+            <!--  Средний справа снизу  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.95,0.92,460,460"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0F90A4AE"
+                CornerRadius="230"
+                HeightRequest="460"
+                WidthRequest="460" />
+
+            <!--  Маленький сверху  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.52,0.08,260,260"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="130"
+                HeightRequest="260"
+                WidthRequest="260" />
+        </AbsoluteLayout>
+
         <ScrollView VerticalScrollBarVisibility="Never">
-            <Grid RowDefinitions="*" Padding="20">
-                
-                <VerticalStackLayout Spacing="30" 
-                                     VerticalOptions="Center" 
-                                     HorizontalOptions="Center">
-                    
-                    <!-- БАННЕР ОШИБКИ (твой код) -->
-                    <Frame Style="{StaticResource CardFrame}"
-                           WidthRequest="380"
-                           Margin="0,0,0,16"
-                           IsVisible="{Binding IsDbWarningVisible}">
-                        <Grid ColumnDefinitions="40, *" RowDefinitions="Auto, Auto" ColumnSpacing="12" RowSpacing="12">
-                            <Frame Grid.Row="0" Grid.Column="0" WidthRequest="40" HeightRequest="40" CornerRadius="12" BackgroundColor="#FFE4E4" HasShadow="False" Padding="0" VerticalOptions="Start">
-                                <Label Text="!" TextColor="{StaticResource Error}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Frame>
-                            <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
-                                <Label Text="База данных недоступна" TextColor="{StaticResource TextPrimary}" FontSize="15" FontAttributes="Bold"/>
-                                <Label Text="{Binding DbWarningText}" TextColor="{StaticResource TextSecondary}" FontSize="13" LineBreakMode="WordWrap"/>
-                            </VerticalStackLayout>
-                            <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="10" HorizontalOptions="Start">
-                                <Button Text="Войти как гость" Style="{StaticResource PrimaryButton}" Command="{Binding GuestLoginCommand}" HeightRequest="36" FontSize="13"/>
-                                <Button Text="Подробнее" Style="{StaticResource SecondaryButton}" Command="{Binding ShowDbDetailsCommand}" HeightRequest="36" FontSize="13"/>
-                            </HorizontalStackLayout>
-                        </Grid>
-                    </Frame>
+            <VerticalStackLayout
+                HorizontalOptions="Center"
+                MaximumWidthRequest="440"
+                Padding="20"
+                Spacing="16"
+                VerticalOptions="Center">
 
-                    <!-- ЛОГОТИП (твой код) -->
-                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
-                        <BoxView Color="{StaticResource Primary}" CornerRadius="16" HeightRequest="60" WidthRequest="60" HorizontalOptions="Center" Opacity="0.1"/>
-                        <Label Text="MedCompatibility" Style="{StaticResource HeaderLabel}" HorizontalTextAlignment="Center"/>
-                        <Label Text="Безопасность вашего здоровья" Style="{StaticResource SubHeaderLabel}" HorizontalTextAlignment="Center"/>
-                    </VerticalStackLayout>
+                <!--  Шапка: стикер + название + слоган (как на старом)  -->
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
 
-                    <!-- КАРТОЧКА ВХОДА (твой код) -->
-                    <Frame Style="{StaticResource CardFrame}" WidthRequest="380"> 
-                        <VerticalStackLayout Spacing="20">
-                            <VerticalStackLayout Spacing="15">
-                                <VerticalStackLayout Spacing="6">
-                                    <Label Text="Логин" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" FontSize="14"/>
-                                    <Border Style="{StaticResource InputFrame}">
-                                        <Entry Text="{Binding Login}" Placeholder="Введите ваш логин" />
-                                    </Border>
-                                </VerticalStackLayout>
-                                <VerticalStackLayout Spacing="6">
-                                    <Label Text="Пароль" TextColor="{StaticResource TextPrimary}" FontAttributes="Bold" FontSize="14"/>
-    
-                                    <!-- Измененный Border для пароля -->
-                                    <Border Style="{StaticResource InputFrame}">
-                                        <Grid ColumnDefinitions="*, Auto">
-            
-                                            <!-- Поле ввода -->
-                                            <Entry Grid.Column="0"
-                                                   Text="{Binding Password}" 
-                                                   IsPassword="{Binding IsPasswordHidden}" 
-                                                   Placeholder="Введите ваш пароль"
-                                                   PlaceholderColor="{StaticResource TextPlaceholder}"
-                                                   TextColor="{StaticResource TextPrimary}"/>
+                    <Border
+                        BackgroundColor="{StaticResource Surface}"
+                        HeightRequest="54"
+                        HorizontalOptions="Center"
+                        Padding="10"
+                        Stroke="#E6EAF0"
+                        StrokeShape="RoundRectangle 999"
+                        StrokeThickness="1"
+                        WidthRequest="54">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="#90A4AE"
+                                Offset="0,8"
+                                Opacity="0.10"
+                                Radius="20" />
+                        </Border.Shadow>
 
-                                            <!-- Кнопка Глазик (текстовая) -->
-                                            <Button Grid.Column="1"
-                                                    Text="{Binding EyeIconText}"
-                                                    Command="{Binding TogglePasswordVisibilityCommand}"
-                                                    BackgroundColor="Transparent"
-                                                    TextColor="{StaticResource TextSecondary}"
-                                                    FontSize="18"
-                                                    HeightRequest="40"
-                                                    WidthRequest="50"
-                                                    Padding="0"
-                                                    Margin="0"/>
-                                        </Grid>
-                                    </Border>
-                                </VerticalStackLayout>
-                            </VerticalStackLayout>
-                            <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Error}" IsVisible="{Binding IsErrorVisible}" FontSize="13" HorizontalTextAlignment="Center"/>
-                            <Button Text="Войти" Command="{Binding LoginCommand}" Style="{StaticResource PrimaryButton}" Margin="0,10,0,0"/>
-                            <Label Text="Забыли пароль?" TextColor="{StaticResource TextSecondary}" FontSize="13" HorizontalOptions="Center" TextDecorations="Underline"/>
-                        </VerticalStackLayout>
-                    </Frame>
+                        <Label
+                            FontSize="26"
+                            HorizontalOptions="Center"
+                            Text="🩺"
+                            VerticalOptions="Center" />
+                    </Border>
 
-                    <!-- НИЖНИЕ ДЕЙСТВИЯ (твой код) -->
-                    <VerticalStackLayout Spacing="15" HorizontalOptions="Center" WidthRequest="380">
-                        <Label Text="Или" TextColor="{StaticResource TextPlaceholder}" HorizontalOptions="Center"/>
-                        <Button Text="Создать аккаунт" Command="{Binding GoToRegisterCommand}" IsEnabled="{Binding IsDbAvailable}" Style="{StaticResource SecondaryButton}">
-                            <Button.Triggers>
-                                <DataTrigger TargetType="Button" Binding="{Binding IsDbAvailable}" Value="False">
-                                    <Setter Property="Opacity" Value="0.5"/>
-                                </DataTrigger>
-                            </Button.Triggers>
-                        </Button>
-                        <Button Text="Продолжить без регистрации" Command="{Binding GuestLoginCommand}" Style="{StaticResource TextButton}"/>
-                    </VerticalStackLayout>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="26"
+                        HorizontalTextAlignment="Center"
+                        Text="MedCompatibility"
+                        TextColor="{StaticResource TextPrimary}" />
+
+                    <Label
+                        FontSize="13"
+                        HorizontalTextAlignment="Center"
+                        Text="Безопасность вашего здоровья"
+                        TextColor="{StaticResource TextSecondary}" />
 
                 </VerticalStackLayout>
-            </Grid>
+
+                <!--  Карточка логина  -->
+                <Frame
+                    Padding="22"
+                    Style="{StaticResource CardFrame}"
+                    WidthRequest="380">
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontSize="12"
+                                Text="Логин"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Border Style="{StaticResource InputFrame}">
+                                <Entry
+                                    Placeholder="Введите ваш логин"
+                                    PlaceholderColor="{StaticResource TextPlaceholder}"
+                                    Text="{Binding Login}"
+                                    TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontSize="12"
+                                Text="Пароль"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Border Style="{StaticResource InputFrame}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Entry
+                                        Grid.Column="0"
+                                        IsPassword="{Binding IsPasswordHidden}"
+                                        Placeholder="Введите ваш пароль"
+                                        PlaceholderColor="{StaticResource TextPlaceholder}"
+                                        Text="{Binding Password}"
+                                        TextColor="{StaticResource TextPrimary}" />
+                                    <Button
+                                        BackgroundColor="Transparent"
+                                        Command="{Binding TogglePasswordVisibilityCommand}"
+                                        Grid.Column="1"
+                                        HeightRequest="46"
+                                        Padding="0"
+                                        Text="{Binding EyeIconText}"
+                                        TextColor="{StaticResource TextSecondary}"
+                                        WidthRequest="46" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Label
+                            FontSize="13"
+                            HorizontalTextAlignment="Center"
+                            IsVisible="{Binding IsErrorVisible}"
+                            Text="{Binding ErrorMessage}"
+                            TextColor="{StaticResource Error}" />
+
+                        <Button
+                            Command="{Binding LoginCommand}"
+                            Style="{StaticResource PrimaryButton}"
+                            Text="Войти" />
+
+                        <Button
+                            Command="{Binding GoogleLoginCommand}"
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Продолжить с Google" />
+
+                        <!--  Разделитель как на старом ("Или")  -->
+                        <Grid
+                            ColumnDefinitions="*,Auto,*"
+                            ColumnSpacing="12"
+                            Margin="0,2,0,0">
+                            <BoxView
+                                Color="#E6EAF0"
+                                HeightRequest="1"
+                                VerticalOptions="Center" />
+                            <Label
+                                FontSize="12"
+                                Grid.Column="1"
+                                Text="Или"
+                                TextColor="{StaticResource TextSecondary}"
+                                VerticalOptions="Center" />
+                            <BoxView
+                                Color="#E6EAF0"
+                                Grid.Column="2"
+                                HeightRequest="1"
+                                VerticalOptions="Center" />
+                        </Grid>
+
+                        <!--  Регистрация (явная, как кнопка)  -->
+                        <Button
+                            Command="{Binding GoToRegisterCommand}"
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Создать аккаунт" />
+
+                        <!--  Гость (тоже кликабельная кнопка-линк)  -->
+                        <Button
+                            Command="{Binding GuestLoginCommand}"
+                            HorizontalOptions="Center"
+                            Style="{StaticResource TextButton}"
+                            Text="Продолжить без регистрации"
+                            TextColor="{StaticResource TextSecondary}" />
+
+                    </VerticalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
         </ScrollView>
+
     </Grid>
 </ContentPage>
