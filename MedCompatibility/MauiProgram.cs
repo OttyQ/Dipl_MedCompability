@@ -85,6 +85,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
         builder.Services.AddTransient<IScanService, ScanService>();
         builder.Services.AddSingleton<IPrescriptionService, PrescriptionService>();
+        builder.Services.AddSingleton<IDoctorStatsService, DoctorStatsService>();
         
 
         // 5) ViewModels

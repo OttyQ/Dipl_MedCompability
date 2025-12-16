@@ -1,196 +1,209 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Doctor"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             x:Class="MedCompatibility.Pages.Doctor.DoctorPatientsPage"
-             Title="Мои пациенты"
-             BackgroundColor="{StaticResource AppBackground}"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
+    Title="Мои пациенты"
+    x:Class="MedCompatibility.Pages.Doctor.DoctorPatientsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:converters="clr-namespace:MedCompatibility.Converters"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Grid RowDefinitions="Auto, *" Padding="10">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:StringFirstCharConverter x:Key="StringFirstCharConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-        <!-- КОНТЕЙНЕР ширины как в админке -->
-        <VerticalStackLayout Spacing="12"
-                             HorizontalOptions="Fill"
-                             WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
-            <VerticalStackLayout.HorizontalOptions>
-                <OnPlatform x:TypeArguments="LayoutOptions">
-                    <On Platform="WinUI" Value="Center" />
-                    <On Platform="Android,iOS" Value="Fill" />
-                </OnPlatform>
-            </VerticalStackLayout.HorizontalOptions>
+    <Grid>
+        <!--  Фон с пузырями  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="210"
+                HeightRequest="420"
+                WidthRequest="420" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.95,0.30,520,520"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="260"
+                HeightRequest="520"
+                WidthRequest="520" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.35,0.98,620,620"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0F90A4AE"
+                CornerRadius="310"
+                HeightRequest="620"
+                WidthRequest="620" />
+        </AbsoluteLayout>
 
-            <!-- 1) ШАПКА: Назад / Заголовок / Выход -->
-            <Grid ColumnDefinitions="48, *, 48" HeightRequest="48">
-                <!-- Назад -->
-                <Border StrokeShape="RoundRectangle 24"
-                        BackgroundColor="White"
-                        StrokeThickness="0"
-                        HeightRequest="48"
-                        WidthRequest="48"
-                        Padding="0"
-                        HorizontalOptions="Start">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
-                    </Border.Shadow>
+        <Grid RowDefinitions="Auto,*">
+            <!--  Шапка  -->
+            <Grid
+                ColumnDefinitions="48,*"
+                Grid.Row="0"
+                HeightRequest="80"
+                Padding="16,10">
+                <!--  Кнопка Назад  -->
+                <Border
+                    BackgroundColor="{StaticResource Surface}"
+                    HeightRequest="42"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    VerticalOptions="Start"
+                    WidthRequest="42">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoBackCommand}" />
                     </Border.GestureRecognizers>
-                    <Label Text="←"
-                           FontSize="28"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           TextColor="#333"
-                           Margin="0,0,0,2"/>
-                </Border>
-
-                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center" Spacing="0">
-                    <Label Text="Мои пациенты"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource TextPrimary}"
-                           HorizontalOptions="Center"/>
-                    <Label Text="Список наблюдения"
-                           FontSize="12"
-                           TextColor="{StaticResource TextSecondary}"
-                           HorizontalOptions="Center"/>
-                </VerticalStackLayout>
-
-                <!-- Выход -->
-                <Border Grid.Column="2"
-                        StrokeShape="RoundRectangle 24"
-                        BackgroundColor="White"
-                        StrokeThickness="0"
-                        HeightRequest="48"
-                        WidthRequest="48"
-                        Padding="0"
-                        HorizontalOptions="End">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                        <Shadow
+                            Brush="Black"
+                            Offset="0,2"
+                            Opacity="0.1"
+                            Radius="4" />
                     </Border.Shadow>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding LogoutCommand}" />
-                    </Border.GestureRecognizers>
-                    <Label Text="⎋"
-                           FontSize="20"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           TextColor="#D32F2F"/>
+                    <Label
+                        FontSize="26"
+                        HorizontalOptions="Center"
+                        Margin="0,0,0,4"
+                        Text="‹"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center" />
                 </Border>
-            </Grid>
 
-            <!-- 2) Кнопка добавления -->
-            <Grid ColumnDefinitions="*, Auto">
-                <BoxView Color="Transparent"/>
-
-                <Button Grid.Column="1"
-                        Text="+ Добавить"
-                        Command="{Binding AddPatientCommand}"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="White"
-                        CornerRadius="10"
-                        HeightRequest="40"
-                        FontSize="14"
+                <!--  Заголовки  -->
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    HorizontalOptions="Center"
+                    Margin="-48,0,0,0"
+                    Spacing="0"
+                    VerticalOptions="Center">
+                    <Label
                         FontAttributes="Bold"
-                        Padding="15,0"/>
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Мои пациенты"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <Label
+                        FontSize="13"
+                        HorizontalOptions="Center"
+                        Text="Список наблюдения"
+                        TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
             </Grid>
 
-        </VerticalStackLayout>
+            <!--  Контент  -->
+            <ScrollView Grid.Row="1" Padding="16,0">
+                <VerticalStackLayout
+                    HorizontalOptions="Fill"
+                    MaximumWidthRequest="800"
+                    Spacing="16">
 
-        <!-- 3) Список -->
-        <RefreshView Grid.Row="1"
-                     Command="{Binding LoadDataCommand}"
-                     IsRefreshing="{Binding IsLoading}"
-                     Margin="0,10,0,0">
+                    <!--  Кнопка добавить  -->
+                    <Button
+                        Command="{Binding AddPatientCommand}"
+                        CornerRadius="14"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        HeightRequest="54"
+                        Style="{StaticResource PrimaryButton}"
+                        Text="+ Добавить пациента">
+                        <Button.Shadow>
+                            <Shadow
+                                Brush="{StaticResource Primary}"
+                                Offset="0,4"
+                                Opacity="0.3"
+                                Radius="8" />
+                        </Button.Shadow>
+                    </Button>
 
-            <CollectionView ItemsSource="{Binding Patients}"
-                            SelectionMode="None"
-                            HorizontalOptions="Fill"
-                            WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
+                    <BoxView Color="Transparent" HeightRequest="4" />
 
-                <CollectionView.HorizontalOptions>
-                    <OnPlatform x:TypeArguments="LayoutOptions">
-                        <On Platform="WinUI" Value="Center" />
-                        <On Platform="Android,iOS" Value="Fill" />
-                    </OnPlatform>
-                </CollectionView.HorizontalOptions>
+                    <!--  Список  -->
+                    <CollectionView
+                        EmptyView="Нет пациентов"
+                        HorizontalOptions="Fill"
+                        ItemsSource="{Binding Patients}"
+                        SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:user">
+                                <Border
+                                    BackgroundColor="{StaticResource Surface}"
+                                    Margin="0,0,0,12"
+                                    Padding="16"
+                                    StrokeShape="RoundRectangle 16"
+                                    StrokeThickness="0">
+                                    <Border.Shadow>
+                                        <Shadow
+                                            Brush="Black"
+                                            Offset="0,4"
+                                            Opacity="0.05"
+                                            Radius="8" />
+                                    </Border.Shadow>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenPatientCommand}" CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
 
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
-                </CollectionView.ItemsLayout>
+                                    <Grid ColumnDefinitions="50,*,Auto" ColumnSpacing="16">
+                                        <!--  Аватарка с первой буквой  -->
+                                        <Border
+                                            BackgroundColor="#E0F2F1"
+                                            HeightRequest="50"
+                                            StrokeShape="RoundRectangle 25"
+                                            StrokeThickness="0"
+                                            WidthRequest="50">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="20"
+                                                HorizontalOptions="Center"
+                                                Text="{Binding LastName, Converter={StaticResource StringFirstCharConverter}}"
+                                                TextColor="{StaticResource Primary}"
+                                                VerticalOptions="Center" />
+                                        </Border>
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:user">
-                        <Border StrokeShape="RoundRectangle 12"
-                                BackgroundColor="White"
-                                StrokeThickness="0"
-                                Padding="12"
-                                HeightRequest="70">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
-                            </Border.Shadow>
+                                        <!--  Инфо  -->
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                LineBreakMode="TailTruncation"
+                                                Text="{Binding LastName}"
+                                                TextColor="{StaticResource TextPrimary}">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding LastName}" />
+                                                        <Span Text=" " />
+                                                        <Span Text="{Binding FirstName}" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                            <Label
+                                                FontSize="13"
+                                                LineBreakMode="TailTruncation"
+                                                Text="{Binding Login}"
+                                                TextColor="{StaticResource TextSecondary}" />
+                                        </VerticalStackLayout>
 
-                            <Grid ColumnDefinitions="40, *, Auto" ColumnSpacing="12">
+                                        <!--  Стрелка  -->
+                                        <Label
+                                            FontSize="20"
+                                            Grid.Column="2"
+                                            Text="›"
+                                            TextColor="{StaticResource TextSecondary}"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
-                                <Frame Grid.Column="0"
-                                       HeightRequest="40"
-                                       WidthRequest="40"
-                                       CornerRadius="20"
-                                       Padding="0"
-                                       BackgroundColor="#E3F2FD"
-                                       BorderColor="Transparent"
-                                       HasShadow="False">
-                                    <Label Text="👤"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"
-                                           FontSize="16"
-                                           TextColor="#1565C0"/>
-                                </Frame>
-
-                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                    <Label FontSize="14"
-                                           FontAttributes="Bold"
-                                           TextColor="{StaticResource TextPrimary}"
-                                           LineBreakMode="TailTruncation">
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="{Binding LastName}"/>
-                                                <Span Text=" "/>
-                                                <Span Text="{Binding FirstName}"/>
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-                                    <Label Text="{Binding Login}" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
-                                </VerticalStackLayout>
-
-                                <Label Grid.Column="2"
-                                       Text="❯"
-                                       TextColor="#CCCCCC"
-                                       FontSize="14"
-                                       VerticalOptions="Center"/>
-
-                                <!-- Прозрачная кнопка поверх карточки -->
-                                <Button Grid.ColumnSpan="3"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DoctorPatientsViewModel}}, Path=OpenPatientCommand}"
-                                        CommandParameter="{Binding .}"
-                                        BackgroundColor="Transparent"
-                                        BorderWidth="0"
-                                        Opacity="0.01"/>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-
-                <CollectionView.EmptyView>
-                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                        <Label Text="Нет пациентов" FontSize="18" TextColor="#999" HorizontalOptions="Center"/>
-                        <Label Text="Нажмите «+ Добавить» сверху" FontSize="12" TextColor="#BBB" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
-
-            </CollectionView>
-        </RefreshView>
-
+                    <BoxView HeightRequest="20" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
     </Grid>
 </ContentPage>
