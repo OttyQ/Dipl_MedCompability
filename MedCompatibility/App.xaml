@@ -8,6 +8,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <local:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter" />
+            <local:IsNullConverter x:Key="IsNullConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <m:StyleResource />
                 <!--  базовые стили Uranium Material  -->
@@ -366,7 +367,6 @@
 
             <local:BoolToTextConverter x:Key="BoolToTextConverter" />
             <local:BoolToColorConverter x:Key="BoolToColorConverter" />
-            <local:IsNullConverter x:Key="IsNullConverter" />
             <local:RoleToColorConverter x:Key="RoleToColorConverter" />
             <local:StringFirstCharConverter x:Key="StringFirstCharConverter" />
 

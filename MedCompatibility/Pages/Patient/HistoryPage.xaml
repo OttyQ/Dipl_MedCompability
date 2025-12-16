@@ -1,114 +1,223 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             x:Class="MedCompatibility.Pages.Patient.HistoryPage"
-             Title="История"
-             BackgroundColor="{StaticResource Surface}"
-             Shell.NavBarIsVisible="False"> <!-- Скрываем стандартный бар -->
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
+    Title="История"
+    x:Class="MedCompatibility.Pages.Patient.HistoryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Grid RowDefinitions="Auto, *">
-        
-        <!-- 1. СВОЙ КРАСИВЫЙ ЗАГОЛОВОК -->
-        <Grid Grid.Row="0" HeightRequest="60" BackgroundColor="{StaticResource Surface}" Padding="20,0">
-            <Label Text="История проверок" 
-                   TextColor="{StaticResource TextPrimary}" 
-                   FontSize="22" 
-                   FontAttributes="Bold" 
-                   VerticalOptions="Center"/>
-        </Grid>
+    <Grid>
+        <!--  Декоративный фон (Пузыри)  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.1,0.2,250,250"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="125" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.9,0.85,300,300"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="150" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.5,-0.1,200,200"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0A0097A7"
+                CornerRadius="100" />
+        </AbsoluteLayout>
 
-        <!-- ВАРИАНТ ДЛЯ ПОЛЬЗОВАТЕЛЯ -->
-        <RefreshView Grid.Row="1" IsVisible="{Binding IsUser}" 
-                     Command="{Binding LoadHistoryCommand}" 
-                     IsRefreshing="{Binding IsBusy}">
-            
-            <CollectionView ItemsSource="{Binding HistoryItems}" 
-                            SelectionMode="None">
-                
-                <!-- Заглушка, если список пуст -->
-                <CollectionView.EmptyView>
-                    <VerticalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="Center">
-                        <Label Text="📜" FontSize="50" HorizontalOptions="Center"/>
-                        <Label Text="История пуста" 
-                               FontSize="18" TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center"/>
-                        <Label Text="Здесь появятся ваши сканирования" 
-                               FontSize="14" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
-                
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
-                </CollectionView.ItemsLayout>
-                
-                <!-- Отступы списка -->
-                <CollectionView.Header>
-                    <BoxView HeightRequest="10" Color="Transparent"/>
-                </CollectionView.Header>
-                <CollectionView.Footer>
-                    <BoxView HeightRequest="20" Color="Transparent"/>
-                </CollectionView.Footer>
+        <!--  Основной контент (Твой оригинальный код)  -->
+        <Grid RowDefinitions="Auto, *">
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:scan">
-                        <!-- Карточка -->
-                        <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="15" Margin="15,0,15,0">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,4" Radius="8" Opacity="0.05"/>
-                            </Border.Shadow>
-                            
-                            <!-- ОБРАБОТЧИК НАЖАТИЯ -->
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=GoToDetailsCommand}" 
-                                                      CommandParameter="{Binding .}"/>
-                            </Border.GestureRecognizers>
-                            
-                            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" RowSpacing="5">
-                                <!-- Название лекарства -->
-                                <Label Text="{Binding Medicine.TradeName}" 
-                                       FontAttributes="Bold" FontSize="17" TextColor="{StaticResource TextPrimary}" 
-                                       LineBreakMode="TailTruncation"/>
-                                
-                                <!-- МНН (Состав) -->
-                                <Label Grid.Row="1" Text="{Binding Medicine.INN}" 
-                                       FontSize="13" TextColor="{StaticResource TextSecondary}" 
-                                       LineBreakMode="TailTruncation" MaxLines="2"/>
-                                
-                                <!-- Дата и время (справа) -->
-                                <VerticalStackLayout Grid.Column="1" Grid.RowSpan="2" VerticalOptions="Center" Spacing="2">
-                                    <Label Text="{Binding ScannedAt, StringFormat='{0:HH:mm}'}" 
-                                           HorizontalOptions="End" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
-                                    <Label Text="{Binding ScannedAt, StringFormat='{0:dd MMM}'}" 
-                                           HorizontalOptions="End" FontSize="11" TextColor="#999"/>
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </RefreshView>
+            <!--  1. ЗАГОЛОВОК  -->
+            <Grid
+                BackgroundColor="Transparent"
+                Grid.Row="0"
+                HeightRequest="60"
+                Padding="20,0">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    Text="История проверок"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Center" />
+            </Grid>
 
-        <!-- ВАРИАНТ ДЛЯ ГОСТЯ -->
-        <Grid Grid.Row="1" IsVisible="{Binding IsGuest}" RowDefinitions="*, Auto, *" RowSpacing="20" Padding="30" BackgroundColor="{StaticResource Surface}">
-            <VerticalStackLayout Grid.Row="1" Spacing="20" VerticalOptions="Center">
-                <Border StrokeShape="RoundRectangle 40" HeightRequest="80" WidthRequest="80" BackgroundColor="#E0F7FA" StrokeThickness="0" HorizontalOptions="Center">
-                    <Label Text="🔒" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center"/>
-                </Border>
-                
-                <Label Text="История недоступна" 
-                       FontSize="20" FontAttributes="Bold" HorizontalTextAlignment="Center" TextColor="{StaticResource TextPrimary}"/>
-                
-                <Label Text="Войдите в аккаунт, чтобы сохранять историю проверок и иметь доступ к ней с любого устройства." 
-                       FontSize="15" HorizontalTextAlignment="Center" TextColor="{StaticResource TextSecondary}" LineHeight="1.2"/>
-                
-                <Button Text="Войти в аккаунт" 
+            <!--  ВАРИАНТ ДЛЯ ПОЛЬЗОВАТЕЛЯ  -->
+            <RefreshView
+                Command="{Binding LoadHistoryCommand}"
+                Grid.Row="1"
+                IsRefreshing="{Binding IsBusy}"
+                IsVisible="{Binding IsUser}">
+
+                <CollectionView ItemsSource="{Binding HistoryItems}" SelectionMode="None">
+
+                    <!--  Заглушка, если список пуст  -->
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label
+                                FontSize="50"
+                                HorizontalOptions="Center"
+                                Text="📜" />
+                            <Label
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Text="История пуста"
+                                TextColor="{StaticResource TextPrimary}" />
+                            <Label
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                Text="Здесь появятся ваши сканирования"
+                                TextColor="{StaticResource TextSecondary}" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+
+                    <!--  Отступы списка  -->
+                    <CollectionView.Header>
+                        <BoxView Color="Transparent" HeightRequest="10" />
+                    </CollectionView.Header>
+                    <CollectionView.Footer>
+                        <BoxView Color="Transparent" HeightRequest="20" />
+                    </CollectionView.Footer>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:scan">
+                            <!--  Карточка  -->
+                            <Border
+                                BackgroundColor="White"
+                                Margin="15,0,15,0"
+                                Padding="15"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0">
+                                <Border.Shadow>
+                                    <Shadow
+                                        Brush="Black"
+                                        Offset="0,4"
+                                        Opacity="0.05"
+                                        Radius="8" />
+                                </Border.Shadow>
+
+                                <!--  ОБРАБОТЧИК НАЖАТИЯ  -->
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=GoToDetailsCommand}" CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid
+                                    ColumnDefinitions="*, Auto"
+                                    RowDefinitions="Auto, Auto"
+                                    RowSpacing="5">
+                                    <!--  Название лекарства  -->
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="17"
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding Medicine.TradeName}"
+                                        TextColor="{StaticResource TextPrimary}" />
+
+                                    <!--  МНН (Состав)  -->
+                                    <Label
+                                        FontSize="13"
+                                        Grid.Row="1"
+                                        LineBreakMode="TailTruncation"
+                                        MaxLines="2"
+                                        Text="{Binding Medicine.INN}"
+                                        TextColor="{StaticResource TextSecondary}" />
+
+                                    <!--  Дата и время (справа)  -->
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Grid.RowSpan="2"
+                                        Spacing="2"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            HorizontalOptions="End"
+                                            Text="{Binding ScannedAt, StringFormat='{0:HH:mm}'}"
+                                            TextColor="{StaticResource Primary}" />
+                                        <Label
+                                            FontSize="11"
+                                            HorizontalOptions="End"
+                                            Text="{Binding ScannedAt, StringFormat='{0:dd MMM}'}"
+                                            TextColor="#999" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+
+            <!--  ВАРИАНТ ДЛЯ ГОСТЯ  -->
+            <Grid
+                BackgroundColor="Transparent"
+                Grid.Row="1"
+                IsVisible="{Binding IsGuest}"
+                Padding="30"
+                RowDefinitions="*, Auto, *"
+                RowSpacing="20">
+                <VerticalStackLayout
+                    Grid.Row="1"
+                    Spacing="20"
+                    VerticalOptions="Center">
+                    <Border
+                        BackgroundColor="#E0F7FA"
+                        HeightRequest="80"
+                        HorizontalOptions="Center"
+                        StrokeShape="RoundRectangle 40"
+                        StrokeThickness="0"
+                        WidthRequest="80">
+                        <Label
+                            FontSize="36"
+                            HorizontalOptions="Center"
+                            Text="🔒"
+                            VerticalOptions="Center" />
+                    </Border>
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        Text="История недоступна"
+                        TextColor="{StaticResource TextPrimary}" />
+
+                    <Label
+                        FontSize="15"
+                        HorizontalTextAlignment="Center"
+                        LineHeight="1.2"
+                        Text="Войдите в аккаунт, чтобы сохранять историю проверок и иметь доступ к ней с любого устройства."
+                        TextColor="{StaticResource TextSecondary}" />
+
+                    <Button
+                        BackgroundColor="{StaticResource Primary}"
                         Command="{Binding GoToLoginCommand}"
-                        BackgroundColor="{StaticResource Primary}" TextColor="White"
-                        CornerRadius="25" HeightRequest="50" FontAttributes="Bold" 
-                        Shadow="{Shadow Brush={StaticResource Primary}, Offset='0,4', Radius=10, Opacity=0.4}"
-                        Margin="0,20,0,0" WidthRequest="200"/>
-            </VerticalStackLayout>
+                        CornerRadius="25"
+                        FontAttributes="Bold"
+                        HeightRequest="50"
+                        Margin="0,20,0,0"
+                        Text="Войти в аккаунт"
+                        TextColor="White"
+                        WidthRequest="200">
+                        <Button.Shadow>
+                            <Shadow
+                                Brush="{StaticResource Primary}"
+                                Offset="0,4"
+                                Opacity="0.4"
+                                Radius="10" />
+                        </Button.Shadow>
+                    </Button>
+                </VerticalStackLayout>
+            </Grid>
         </Grid>
     </Grid>
 </ContentPage>
