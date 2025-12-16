@@ -97,6 +97,10 @@ Pages/Shared/LoginPage.xaml
 Pages/Shared/LoginPage.xaml.cs
 Pages/Shared/Popups/AddManufacturerPopup.xaml
 Pages/Shared/Popups/AddManufacturerPopup.xaml.cs
+Pages/Shared/Popups/ApprovalPendingPopup.xaml
+Pages/Shared/Popups/ApprovalPendingPopup.xaml.cs
+Pages/Shared/Popups/ChooseRolePopup.xaml
+Pages/Shared/Popups/ChooseRolePopup.xaml.cs
 Pages/Shared/Popups/ConfirmPopup.xaml
 Pages/Shared/Popups/ConfirmPopup.xaml.cs
 Pages/Shared/Popups/DbUnavailablePopup.xaml
@@ -105,6 +109,8 @@ Pages/Shared/Popups/LoadingPopup.xaml
 Pages/Shared/Popups/LoadingPopup.xaml.cs
 Pages/Shared/Popups/MedicineSelectionPopup.xaml
 Pages/Shared/Popups/MedicineSelectionPopup.xaml.cs
+Pages/Shared/Popups/PatientBlockedPopup.xaml
+Pages/Shared/Popups/PatientBlockedPopup.xaml.cs
 Pages/Shared/Popups/PatientSearchPopup.xaml
 Pages/Shared/Popups/PatientSearchPopup.xaml.cs
 Pages/Shared/Popups/SelectSubstancePopup.xaml
@@ -163,6 +169,7 @@ ViewModels/Patient/HistoryViewModel.cs
 ViewModels/Patient/MedicineDetailsViewModel.cs
 ViewModels/Patient/ProfileViewModel.cs
 ViewModels/Patient/ScanPageViewModel.cs
+ViewModels/Shared/GoogleOAuthTest.cs
 ViewModels/Shared/LoginViewModel.cs
 ViewModels/Shared/RegisterViewModel.cs
 ```
@@ -5283,7 +5290,6 @@ public partial class CodeScannerPage : ContentPage
 ## File: Pages/Shared/LoginPage.xaml.cs
 ```csharp
 using MedCompatibility.ViewModels.Shared;
-using LoginViewModel = MedCompatibility.ViewModels.Shared.LoginViewModel;
 
 namespace MedCompatibility.Pages.Shared;
 
@@ -5294,11 +5300,29 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
         BindingContext = vm;
     }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
         if (BindingContext is LoginViewModel vm)
+        {
+            // ключ: если вернулись на страницу — мгновенно гасим возможный "зависший" лоадер
+            vm.CancelGoogleAuthUiFromPage();
+
             await vm.OnAppearingAsync();
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        if (BindingContext is LoginViewModel vm)
+        {
+            // на всякий случай: при уходе со страницы тоже не оставляем лоадер висеть
+            vm.CancelGoogleAuthUiFromPage();
+        }
     }
 }
 ```
@@ -5476,6 +5500,136 @@ public partial class AddManufacturerPopup : Popup
     }
 
     private void OnCancelClicked(object sender, EventArgs e) => Close(null);
+}
+```
+
+## File: Pages/Shared/Popups/ApprovalPendingPopup.xaml
+```
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.ApprovalPendingPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border
+        BackgroundColor="White"
+        HorizontalOptions="Center"
+        Padding="20"
+        StrokeShape="RoundRectangle 16"
+        VerticalOptions="Center"
+        WidthRequest="360">
+
+        <VerticalStackLayout Spacing="14">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="Заявка отправлена"
+                TextColor="{StaticResource TextPrimary}" />
+
+            <Label
+                FontSize="14"
+                Text="Аккаунт врача создан и ожидает подтверждения администратором. Попробуйте войти позже."
+                TextColor="{StaticResource TextSecondary}" />
+
+            <Button
+                Clicked="OnOkClicked"
+                Style="{StaticResource PrimaryButton}"
+                Text="Понятно" />
+        </VerticalStackLayout>
+
+    </Border>
+</toolkit:Popup>
+```
+
+## File: Pages/Shared/Popups/ApprovalPendingPopup.xaml.cs
+```csharp
+using CommunityToolkit.Maui.Views;
+
+namespace MedCompatibility.Pages.Shared.Popups;
+
+public partial class ApprovalPendingPopup : Popup
+{
+    public ApprovalPendingPopup()
+    {
+        InitializeComponent();
+    }
+
+    void OnOkClicked(object sender, EventArgs e) => Close(true);
+}
+```
+
+## File: Pages/Shared/Popups/ChooseRolePopup.xaml
+```
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.ChooseRolePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border
+        BackgroundColor="White"
+        HorizontalOptions="Center"
+        Padding="20"
+        StrokeShape="RoundRectangle 16"
+        VerticalOptions="Center"
+        WidthRequest="360">
+
+        <VerticalStackLayout Spacing="14">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="Выберите роль"
+                TextColor="{StaticResource TextPrimary}" />
+
+            <Label
+                FontSize="14"
+                Text="Это нужно один раз, чтобы открыть нужные разделы приложения."
+                TextColor="{StaticResource TextSecondary}" />
+
+            <!--  Основные действия  -->
+            <Button
+                Clicked="OnPatientClicked"
+                Style="{StaticResource PrimaryButton}"
+                Text="Пациент" />
+
+            <Button
+                Clicked="OnDoctorClicked"
+                Style="{StaticResource SecondaryButton}"
+                Text="Врач" />
+
+            <!--  Отмена  -->
+            <Button
+                Clicked="OnCancelClicked"
+                Style="{StaticResource TextButton}"
+                Text="Отмена" />
+        </VerticalStackLayout>
+
+    </Border>
+</toolkit:Popup>
+```
+
+## File: Pages/Shared/Popups/ChooseRolePopup.xaml.cs
+```csharp
+using CommunityToolkit.Maui.Views;
+
+namespace MedCompatibility.Pages.Shared.Popups;
+
+public partial class ChooseRolePopup : Popup
+{
+    public ChooseRolePopup()
+    {
+        InitializeComponent();
+    }
+
+    void OnPatientClicked(object sender, EventArgs e) => Close("patient");
+    void OnDoctorClicked(object sender, EventArgs e) => Close("doctor");
+    void OnCancelClicked(object sender, EventArgs e) => Close(null);
 }
 ```
 
@@ -5664,43 +5818,51 @@ public partial class DbUnavailablePopup : Popup
 ## File: Pages/Shared/Popups/LoadingPopup.xaml
 ```
 <?xml version="1.0" encoding="utf-8" ?>
-<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-               x:Class="MedCompatibility.Pages.Shared.Popups.LoadingPopup"
-               Color="Transparent"> 
-    <!-- 
-       ВАЖНО: Color="Transparent" в самом Popup. 
-       Системное затемнение (dimmed background) MAUI добавляет автоматически.
-       Если мы тут зададим Серый, он может перекрыть контент.
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="False"
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.LoadingPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <!--
+        ВАЖНО: Color="Transparent" в самом Popup.
+        Системное затемнение (dimmed background) MAUI добавляет автоматически.
+        Если мы тут зададим Серый, он может перекрыть контент.
     -->
 
-    <!-- Контейнер самого окошка (Плашка) -->
-    <Border StrokeShape="RoundRectangle 15"
-            StrokeThickness="0"
-            BackgroundColor="{AppThemeBinding Light=White, Dark=#333333}"
-            Padding="30"
+    <!--  Контейнер самого окошка (Плашка)  -->
+    <Border
+        BackgroundColor="{AppThemeBinding Light=White,
+                                          Dark=#333333}"
+        HorizontalOptions="Center"
+        Padding="30"
+        StrokeShape="RoundRectangle 15"
+        StrokeThickness="0"
+        VerticalOptions="Center">
+
+        <VerticalStackLayout
             HorizontalOptions="Center"
+            Spacing="15"
             VerticalOptions="Center">
-        
-        <VerticalStackLayout Spacing="15" 
-                             HorizontalOptions="Center" 
-                             VerticalOptions="Center">
-            
-            <!-- Крутилка -->
-            <ActivityIndicator IsRunning="True"
-                               Color="{StaticResource Primary}"
-                               HeightRequest="50"
-                               WidthRequest="50"
-                               HorizontalOptions="Center"/>
-            
-            <!-- Текст (опционально) -->
-            <Label Text="Пожалуйста, подождите..."
-                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                   FontSize="14"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"/>
-            
+
+            <!--  Крутилка  -->
+            <ActivityIndicator
+                Color="{StaticResource Primary}"
+                HeightRequest="50"
+                HorizontalOptions="Center"
+                IsRunning="True"
+                WidthRequest="50" />
+
+            <!--  Текст (опционально)  -->
+            <Label
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Пожалуйста, подождите..."
+                TextColor="{AppThemeBinding Light=Black,
+                                            Dark=White}" />
+
         </VerticalStackLayout>
     </Border>
 
@@ -5897,6 +6059,65 @@ public partial class MedicineSelectionPopup : Popup
         {
             Close(selected); // Возвращаем выбранное лекарство
         }
+    }
+}
+```
+
+## File: Pages/Shared/Popups/PatientBlockedPopup.xaml
+```
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.PatientBlockedPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border
+        BackgroundColor="White"
+        HorizontalOptions="Center"
+        Padding="20"
+        StrokeShape="RoundRectangle 16"
+        VerticalOptions="Center"
+        WidthRequest="360">
+
+        <VerticalStackLayout Spacing="14">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="Доступ ограничен"
+                TextColor="{StaticResource TextPrimary}" />
+
+            <Label
+                FontSize="14"
+                Text="Ваш аккаунт пациента заблокирован администратором. Обратитесь в поддержку или к администратору для разблокировки."
+                TextColor="{StaticResource TextSecondary}" />
+
+            <Button
+                Clicked="OnOkClicked"
+                Style="{StaticResource PrimaryButton}"
+                Text="OK" />
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>
+```
+
+## File: Pages/Shared/Popups/PatientBlockedPopup.xaml.cs
+```csharp
+using CommunityToolkit.Maui.Views;
+
+namespace MedCompatibility.Pages.Shared.Popups;
+
+public partial class PatientBlockedPopup : Popup
+{
+    public PatientBlockedPopup()
+    {
+        InitializeComponent();
+    }
+
+    private void OnOkClicked(object sender, EventArgs e)
+    {
+        Close(null);
     }
 }
 ```
@@ -6508,11 +6729,9 @@ namespace MedCompatibility;
 [IntentFilter(
     new[] { Intent.ActionView },
     Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-    DataScheme = "medcompat",
-    DataHost = "auth")]
-public class MedCompatAuthCallbackActivity : Microsoft.Maui.Authentication.WebAuthenticatorCallbackActivity
-{
-}
+    DataScheme = "com.googleusercontent.apps.285954249476-6ofmkkjb4m6n8qs6bdd4chht713n4hd8"
+)]
+public class MedCompatAuthCallbackActivity : WebAuthenticatorCallbackActivity { }
 ```
 
 ## File: Platforms/Android/Resources/values/colors.xml
@@ -7284,10 +7503,6 @@ public class AuthService : IAuthService
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Login == login);
         if (user == null) return null;
-        if (user.IsApproved == false) 
-        {
-            throw new Exception("Ваш аккаунт еще не подтвержден администратором.");
-        }
         bool isPasswordValid = false;
         try 
         {
@@ -7608,6 +7823,7 @@ public interface ILoadingService
 {
     void Show();
     void Hide();
+    bool IsShown { get; }
 }
 ```
 
@@ -7736,14 +7952,20 @@ public class LoadingService : ILoadingService
 
     public void Show()
     {
-        // Если уже показан — не плодим новые
-        if (_popup != null) return;
-
-        // Важно вызывать в главном потоке, т.к. работаем с UI
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            _popup = new LoadingPopup();
-            Shell.Current.ShowPopup(_popup);
+            if (_popup != null)
+                return;
+
+            try
+            {
+                _popup = new LoadingPopup();
+                Shell.Current?.ShowPopup(_popup);
+            }
+            catch
+            {
+                _popup = null;
+            }
         });
     }
 
@@ -7751,20 +7973,21 @@ public class LoadingService : ILoadingService
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
+            var p = _popup;
+            _popup = null;
+
             try
             {
-                _popup?.Close();
+                p?.Close();
             }
             catch
             {
-                // Игнорируем ошибки закрытия (если уже закрыт)
-            }
-            finally
-            {
-                _popup = null;
+                // Hide() никогда не должен ронять приложение
             }
         });
     }
+    
+    public bool IsShown => _popup != null;
 }
 ```
 
@@ -10257,60 +10480,199 @@ public partial class ScanPageViewModel : ObservableObject, IQueryAttributable
 }
 ```
 
+## File: ViewModels/Shared/GoogleOAuthTest.cs
+```csharp
+using Microsoft.Maui.Authentication;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+public static class GoogleOAuthTest
+{
+    const string ClientId = "285954249476-6ofmkkjb4m6n8qs6bdd4chht713n4hd8.apps.googleusercontent.com";
+    static readonly Uri CallbackUri =
+        new("com.googleusercontent.apps.285954249476-6ofmkkjb4m6n8qs6bdd4chht713n4hd8:/oauth2redirect");
+
+    
+    public class GoogleTokenResponse
+    {
+        [JsonPropertyName("access_token")] public string AccessToken { get; set; } = "";
+        [JsonPropertyName("expires_in")] public int ExpiresIn { get; set; }
+        [JsonPropertyName("token_type")] public string TokenType { get; set; } = "";
+        [JsonPropertyName("scope")] public string Scope { get; set; } = "";
+        [JsonPropertyName("id_token")] public string IdToken { get; set; } = "";
+        [JsonPropertyName("refresh_token")] public string? RefreshToken { get; set; }
+    }
+    
+    public sealed class GoogleIdTokenPayload
+    {
+        public string? sub { get; set; }           // стабильный Google user id
+        public string? email { get; set; }
+        public bool email_verified { get; set; }
+        public string? name { get; set; }
+        public string? given_name { get; set; }
+        public string? family_name { get; set; }
+        public string? picture { get; set; }
+        public string? aud { get; set; }
+        public string? iss { get; set; }
+        public long exp { get; set; }
+    }
+    
+    public static async Task<string?> GetAuthCodeAsync(TimeSpan? timeout = null)
+    {
+        timeout ??= TimeSpan.FromSeconds(60);
+
+        var verifier = CreateCodeVerifier();
+        var challenge = CreateCodeChallenge(verifier);
+
+        await SecureStorage.SetAsync("pkce_verifier", verifier);
+
+        var authUrl =
+            "https://accounts.google.com/o/oauth2/v2/auth" +
+            $"?client_id={Uri.EscapeDataString(ClientId)}" +
+            $"&redirect_uri={Uri.EscapeDataString(CallbackUri.ToString())}" +
+            $"&response_type=code" +
+            $"&scope={Uri.EscapeDataString("openid email profile")}" +
+            $"&code_challenge={Uri.EscapeDataString(challenge)}" +
+            $"&code_challenge_method=S256" +
+            $"&prompt=select_account";
+
+        try
+        {
+            var authTask = WebAuthenticator.Default.AuthenticateAsync(new Uri(authUrl), CallbackUri);
+
+            var completed = await Task.WhenAny(authTask, Task.Delay(timeout.Value));
+            if (completed != authTask)
+                return null;
+
+            var result = await authTask;
+            return result.Properties.TryGetValue("code", out var code) ? code : null;
+        }
+        catch (TaskCanceledException)
+        {
+            return null;
+        }
+        catch (OperationCanceledException)
+        {
+            return null;
+        }
+    }
+
+
+    static string CreateCodeVerifier()
+        => Convert.ToBase64String(RandomNumberGenerator.GetBytes(32))
+            .TrimEnd('=').Replace('+', '-').Replace('/', '_');
+
+    static string CreateCodeChallenge(string verifier)
+    {
+        var bytes = SHA256.HashData(Encoding.ASCII.GetBytes(verifier));
+        return Convert.ToBase64String(bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+    }
+    
+    public static async Task<GoogleTokenResponse> ExchangeCodeAsync(string code)
+    {
+        var verifier = await SecureStorage.GetAsync("pkce_verifier");
+        if (string.IsNullOrWhiteSpace(verifier))
+            throw new Exception("PKCE verifier not found");
+
+        using var http = new HttpClient();
+
+        var resp = await http.PostAsync(
+            "https://oauth2.googleapis.com/token",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["client_id"] = ClientId,
+                ["code"] = code,
+                ["code_verifier"] = verifier,
+                ["redirect_uri"] = CallbackUri.ToString(), // важно: exact match [web:219]
+                ["grant_type"] = "authorization_code",
+            }));
+
+        var json = await resp.Content.ReadAsStringAsync();
+        if (!resp.IsSuccessStatusCode)
+            throw new Exception(json);
+
+        return JsonSerializer.Deserialize<GoogleTokenResponse>(json)!;
+    }
+    
+    public static GoogleIdTokenPayload ParseIdToken(string idToken)
+    {
+        var parts = idToken.Split('.');
+        if (parts.Length < 2) throw new Exception("Invalid JWT");
+
+        var json = Base64UrlDecodeToString(parts[1]);
+        return JsonSerializer.Deserialize<GoogleIdTokenPayload>(json)!;
+    }
+
+    static string Base64UrlDecodeToString(string input)
+    {
+        input = input.Replace('-', '+').Replace('_', '/');
+        switch (input.Length % 4)
+        {
+            case 2: input += "=="; break;
+            case 3: input += "="; break;
+        }
+        var bytes = Convert.FromBase64String(input);
+        return Encoding.UTF8.GetString(bytes);
+    }
+}
+```
+
 ## File: ViewModels/Shared/LoginViewModel.cs
 ```csharp
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MedCompatibility.Services.Interfaces; // Убедись, что неймспейс верный
+using MedCompatibility.Pages.Shared.Popups;
+using MedCompatibility.Services.Interfaces;
 
 namespace MedCompatibility.ViewModels.Shared;
 
 public partial class LoginViewModel : ObservableObject
 {
+    
     private readonly IDatabaseHealthService _dbHealth;
     private readonly IAuthService _authService;
     private readonly ILoadingService _loading;
-    // 1. Сервис сессии уже был у тебя в конструкторе, отлично
     private readonly IUserSessionService _sessionService;
+    private int _googleAttemptId;
+    private CancellationTokenSource? _googleUiCts;
 
-    [ObservableProperty]
-    private string login;
+    [ObservableProperty] private string login = string.Empty;
+    [ObservableProperty] private string password = string.Empty;
 
-    [ObservableProperty]
-    private string password;
+    [ObservableProperty] private string errorMessage = string.Empty;
+    [ObservableProperty] private bool isErrorVisible;
 
-    [ObservableProperty]
-    private string errorMessage;
-
-    [ObservableProperty]
-    private bool isErrorVisible;
-    
     [ObservableProperty] private bool isDbWarningVisible;
     [ObservableProperty] private string? dbWarningText;
     [ObservableProperty] private bool isDbAvailable = true;
-    
-    [ObservableProperty]
-    private bool isPasswordHidden = true;
 
+    [ObservableProperty] private bool isPasswordHidden = true;
     [ObservableProperty] private string eyeIconText = "🙈";
+    [ObservableProperty] private bool isAuthInProgress;
 
-    public LoginViewModel(IAuthService authService, IDatabaseHealthService dbHealth, ILoadingService loading, IUserSessionService sessionService)
+    public LoginViewModel(
+        IAuthService authService,
+        IDatabaseHealthService dbHealth,
+        ILoadingService loading,
+        IUserSessionService sessionService)
     {
         _authService = authService;
         _dbHealth = dbHealth;
         _loading = loading;
         _sessionService = sessionService;
     }
-    
+
     public async Task OnAppearingAsync()
     {
         try
         {
             _loading.Show();
-            
+
             await _dbHealth.CheckAsync();
-            
+
             IsDbAvailable = _dbHealth.IsAvailable;
             IsDbWarningVisible = !_dbHealth.IsAvailable;
             DbWarningText = _dbHealth.LastErrorShort;
@@ -10320,17 +10682,76 @@ public partial class LoginViewModel : ObservableObject
             _loading.Hide();
         }
     }
-    
+
     [RelayCommand]
     private async Task ShowDbDetailsAsync()
     {
         var shortMsg = _dbHealth.LastErrorShort ?? "База данных сейчас недоступна.";
-        var details  = _dbHealth.LastErrorDetails ?? "Детали недоступны (ошибка не была получена).";
+        var details = _dbHealth.LastErrorDetails ?? "Детали недоступны (ошибка не была получена).";
 
-        await Shell.Current.ShowPopupAsync(
-            new MedCompatibility.Pages.Shared.Popups.DbUnavailablePopup(shortMsg, details));
+        await Shell.Current.ShowPopupAsync(new DbUnavailablePopup(shortMsg, details));
     }
-    
+
+    private void ShowInlineError(string message)
+    {
+        ErrorMessage = message;
+        IsErrorVisible = true;
+    }
+
+    /// <returns>true если вход/переход надо остановить (статус обработан)</returns>
+    private async Task<bool> HandleNotApprovedAsync(MedCompatibility.Models.user user)
+    {
+        var role = user.Role?.Name?.ToLower();
+
+        // 1) Врач: ожидает подтверждения
+        if (role == "doctor" && user.IsApproved != true)
+        {
+            // UI через popup
+            try
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Shell.Current.ShowPopupAsync(new ApprovalPendingPopup());
+                });
+            }
+            catch
+            {
+                // fallback
+                await Shell.Current.DisplayAlert(
+                    "Заявка отправлена",
+                    "Аккаунт врача создан и ожидает подтверждения администратором.",
+                    "OK");
+            }
+
+            return true;
+        }
+
+        // 2) Пациент: считаем IsApproved=false как "заблокирован"
+        if (role == "patient" && user.IsApproved != true)
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await Shell.Current.ShowPopupAsync(new PatientBlockedPopup());
+            });
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task NavigateByRoleAsync(string? roleName)
+    {
+        roleName = roleName?.ToLower();
+
+        if (roleName == "admin")
+            await Shell.Current.GoToAsync("//Admin");
+        else if (roleName == "doctor")
+            await Shell.Current.GoToAsync("//Doctor");
+        else
+            await Shell.Current.GoToAsync("//Patient");
+    }
+
     [RelayCommand]
     private async Task LoginAsync()
     {
@@ -10339,18 +10760,15 @@ public partial class LoginViewModel : ObservableObject
             _loading.Show();
             IsErrorVisible = false;
 
-            if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password)) 
+            if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
                 return;
 
-            if (!_dbHealth.IsAvailable) 
-            {
-                await _dbHealth.CheckAsync(); 
-            }
+            if (!_dbHealth.IsAvailable)
+                await _dbHealth.CheckAsync();
 
             if (!_dbHealth.IsAvailable)
             {
-                IsErrorVisible = true;
-                ErrorMessage = "База данных недоступна. Попробуйте позже или войдите как гость.";
+                ShowInlineError("База данных недоступна. Попробуйте позже или войдите как гость.");
                 return;
             }
 
@@ -10358,51 +10776,171 @@ public partial class LoginViewModel : ObservableObject
 
             if (user == null)
             {
-                ErrorMessage = "Неверный логин или пароль";
-                IsErrorVisible = true;
+                ShowInlineError("Неверный логин или пароль");
                 return;
             }
-        
-            if (user.IsApproved != true) 
-            {
-                ErrorMessage = "Аккаунт неподтвержден или заблокирован!";
-                IsErrorVisible = true;
-                return; 
-            }
 
-            // --- НОВОЕ: Сохраняем сессию ---
+            // ВАЖНО: статус проверяем ДО StartSession
+            if (await HandleNotApprovedAsync(user))
+                return;
+
             _sessionService.StartSession(user);
-            // -------------------------------
-        
-            if (user.Role?.Name.ToLower() == "admin")
-                await Shell.Current.GoToAsync("//Admin"); 
-            else if (user.Role?.Name.ToLower() == "doctor")
-                await Shell.Current.GoToAsync("//Doctor");
-            else
-                await Shell.Current.GoToAsync("//Patient");
 
-            // --- НОВОЕ: Очищаем поля ПОСЛЕ успешного перехода ---
-            // Делаем это, чтобы при нажатии "Выход" форма была пустой
+            await NavigateByRoleAsync(user.Role?.Name);
+
+            // очистка после успешного входа
             Login = string.Empty;
             Password = string.Empty;
             IsErrorVisible = false;
         }
         catch (Exception ex)
         {
-            ErrorMessage = "Ошибка входа: " + ex.Message;
-            IsErrorVisible = true;
+            ShowInlineError("Ошибка входа: " + ex.Message);
         }
         finally
         {
             _loading.Hide();
         }
     }
+    
+
+[RelayCommand]
+private async Task GoogleLoginAsync()
+{
+    if (IsAuthInProgress)
+        return;
+
+    IsAuthInProgress = true;
+
+    // id попытки (чтобы игнорировать "долетающие" результаты)
+    var attemptId = Interlocked.Increment(ref _googleAttemptId);
+
+    // отменяем предыдущую попытку на уровне UI
+    _googleUiCts?.Cancel();
+    _googleUiCts?.Dispose();
+    _googleUiCts = new CancellationTokenSource();
+
+    var uiCt = _googleUiCts.Token;
+
+    try
+    {
+        _loading.Show();
+        IsErrorVisible = false;
+
+        var authTask = GoogleOAuthTest.GetAuthCodeAsync();
+        var timeoutTask = Task.Delay(TimeSpan.FromSeconds(60), uiCt);
+
+        var completed = await Task.WhenAny(authTask, timeoutTask);
+
+        // если пришла новая попытка — просто выходим
+        if (attemptId != _googleAttemptId)
+            return;
+
+        // таймаут или явная отмена UI
+        if (completed != authTask || uiCt.IsCancellationRequested)
+        {
+            if (_loading.IsShown)
+                _loading.Hide();
+
+            await Task.Delay(50);
+            await Shell.Current.DisplayAlert("Google", "Авторизация отменена или не завершена.", "OK");
+            return;
+        }
+
+        // authTask завершился
+        var code = await authTask;
+
+        if (attemptId != _googleAttemptId)
+            return;
+
+        if (string.IsNullOrWhiteSpace(code))
+            return;
+
+        var tokens = await GoogleOAuthTest.ExchangeCodeAsync(code);
+        var payload = GoogleOAuthTest.ParseIdToken(tokens.IdToken);
+
+        var email = payload.email;
+        var sub = payload.sub;
+
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(sub))
+            throw new Exception("Google token has no email/sub");
+
+        var user = await _authService.LoginAsync(email, sub);
+
+        if (attemptId != _googleAttemptId)
+            return;
+
+        if (user == null)
+        {
+            if (_loading.IsShown)
+                _loading.Hide();
+
+            await Task.Delay(50);
+
+            var popupResult = await Shell.Current.ShowPopupAsync(new ChooseRolePopup());
+            var role = popupResult as string;
+            if (role is null)
+                return;
+
+            _loading.Show();
+
+            var regError = await _authService.RegisterUserAsync(
+                login: email,
+                password: sub,
+                firstName: payload.given_name ?? "Google",
+                lastName: payload.family_name ?? "User",
+                middleName: "",
+                roleName: role);
+
+            if (regError != null)
+                throw new Exception(regError);
+
+            user = await _authService.LoginAsync(email, sub);
+        }
+
+        if (attemptId != _googleAttemptId)
+            return;
+
+        if (user == null)
+            throw new Exception("Не удалось войти после регистрации.");
+
+        if (await HandleNotApprovedAsync(user))
+        {
+            _sessionService.EndSession();
+            return;
+        }
+
+        _sessionService.StartSession(user);
+        await NavigateByRoleAsync(user.Role?.Name);
+    }
+    catch (OperationCanceledException)
+    {
+        // нормально: отменили UI/таймаут
+    }
+    catch (Exception ex)
+    {
+        if (attemptId != _googleAttemptId)
+            return;
+
+        await Shell.Current.DisplayAlert("Google login error", ex.Message, "OK");
+    }
+    finally
+    {
+        // закрываем лоадер только для актуальной попытки
+        if (attemptId == _googleAttemptId && _loading.IsShown)
+            _loading.Hide();
+
+        IsAuthInProgress = false;
+    }
+}
+
+
 
 
     [RelayCommand]
     private async Task GoToRegisterAsync()
     {
-        await Shell.Current.GoToAsync(nameof(Pages.Shared.RegisterPage)); 
+        await Shell.Current.GoToAsync(nameof(Pages.Shared.RegisterPage));
     }
 
     [RelayCommand]
@@ -10411,20 +10949,34 @@ public partial class LoginViewModel : ObservableObject
         _sessionService.EndSession();
         await Shell.Current.GoToAsync("//Patient");
     }
-    
+
     [RelayCommand]
     private void TogglePasswordVisibility()
     {
         IsPasswordHidden = !IsPasswordHidden;
-        EyeIconText = IsPasswordHidden ? "🙈" : "🙉"; 
+        EyeIconText = IsPasswordHidden ? "🙈" : "🙉";
     }
+    
+    public void CancelGoogleAuthUiFromPage()
+    {
+        // отменяем "ожидание" в GoogleLoginAsync (если ты завязал Delay на этот токен)
+        _googleUiCts?.Cancel();
+
+        // и гарантированно закрываем popup-лоадер
+        _loading.Hide();
+
+        IsAuthInProgress = false;
+    }
+    
 }
 ```
 
 ## File: ViewModels/Shared/RegisterViewModel.cs
 ```csharp
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MedCompatibility.Pages.Shared.Popups;
 using MedCompatibility.Services.Interfaces;
 
 namespace MedCompatibility.ViewModels.Shared;
@@ -10502,8 +11054,9 @@ public partial class RegisterViewModel : ObservableObject
             // Успех
             if (dbRoleName == "Doctor")
             {
-                await Shell.Current.DisplayAlert("Регистрация успешна", 
-                    "Ваш аккаунт врача создан. Ожидайте подтверждения администратором.", "OK");
+                await Shell.Current.ShowPopupAsync(new ApprovalPendingPopup());
+                await Shell.Current.GoToAsync(".."); // обратно на логин как и было
+                return;
             }
             else
             {

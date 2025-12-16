@@ -1,171 +1,310 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
-             xmlns:converters="clr-namespace:MedCompatibility.Converters"
-             x:Class="MedCompatibility.Pages.Admin.UsersListPage"
-             Title="Пользователи"
-             BackgroundColor="{StaticResource AppBackground}"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    Shell.NavBarIsVisible="False"
+    Title="Пользователи"
+    x:Class="MedCompatibility.Pages.Admin.UsersListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:converters="clr-namespace:MedCompatibility.Converters"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <converters:BoolToColorConverter x:Key="StatusColorConverter"/>
-            <converters:BoolToTextConverter x:Key="StatusTextConverter"/>
-            <converters:RoleToColorConverter x:Key="RoleColorConverter"/>
+            <converters:BoolToColorConverter x:Key="StatusColorConverter" />
+            <converters:BoolToTextConverter x:Key="StatusTextConverter" />
+            <converters:RoleToColorConverter x:Key="RoleColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *" Padding="10">
-        
-        <!-- ГЛАВНЫЙ КОНТЕЙНЕР -->
-        <VerticalStackLayout Spacing="15" 
-                             HorizontalOptions="Fill" 
-                             WidthRequest="{OnPlatform WinUI='800', Default='-1'}"> <!-- На WinUI 800px, на телефоне - во всю ширину -->
-            
-            <VerticalStackLayout.HorizontalOptions>
-                 <OnPlatform x:TypeArguments="LayoutOptions">
-                     <On Platform="WinUI" Value="Center" />
-                     <On Platform="Android,iOS" Value="Fill" />
-                 </OnPlatform>
-            </VerticalStackLayout.HorizontalOptions>
+    <Grid>
 
-            <!-- 1. ШАПКА (ИСПРАВЛЕНО: Честный Grid, ничего не наезжает) -->
-            <Grid ColumnDefinitions="48, *, 48" HeightRequest="48" Margin="0,0,0,5">
-                <!-- Кнопка Назад -->
-                <Border StrokeShape="RoundRectangle 24" BackgroundColor="White" StrokeThickness="0" 
-                        HeightRequest="48" WidthRequest="48" Padding="0" HorizontalOptions="Start">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
-                    </Border.Shadow>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBackClicked"/>
-                    </Border.GestureRecognizers>
-                    <Label Text="←" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#333" Margin="0,0,0,2"/>
-                </Border>
-                
-                <!-- Заголовок (Строго по центру) -->
-                <Label Grid.Column="1" Text="Пользователи" 
-                       FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
-                       VerticalOptions="Center" HorizontalOptions="Center"/>
-            </Grid>
+        <!--  Фон-пузырьки (как на Login)  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.10,0.10,520,520"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="260"
+                HeightRequest="520"
+                WidthRequest="520" />
 
-            <!-- 2. ПАНЕЛЬ ФИЛЬТРОВ (Растянута на Fill) -->
-            <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="16" HorizontalOptions="Fill">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.05"/>
-                </Border.Shadow>
-                
-                <VerticalStackLayout Spacing="12">
-                    <VerticalStackLayout Spacing="4">
-                        <Label Text="Поиск" FontSize="12" TextColor="{StaticResource TextSecondary}" FontAttributes="Bold"/>
-                        <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F5F7FA" StrokeThickness="0" HeightRequest="44" Padding="10,0">
-                            <Entry Placeholder="ФИО или логин" Text="{Binding SearchText}"
-                                   TextColor="{StaticResource TextPrimary}" PlaceholderColor="#A0A0A0"
-                                   FontSize="14" VerticalOptions="Center" BackgroundColor="Transparent"/>
-                        </Border>
-                    </VerticalStackLayout>
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.95,0.35,620,620"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="310"
+                HeightRequest="620"
+                WidthRequest="620" />
 
-                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.25,0.98,760,760"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0F90A4AE"
+                CornerRadius="380"
+                HeightRequest="760"
+                WidthRequest="760" />
+        </AbsoluteLayout>
+
+        <!--  Контент  -->
+        <Grid Padding="10" RowDefinitions="Auto, *">
+
+            <!--  Верх (шапка + фильтры)  -->
+            <VerticalStackLayout
+                Grid.Row="0"
+                HorizontalOptions="Fill"
+                Spacing="15"
+                WidthRequest="{OnPlatform WinUI='800',
+                                          Default='-1'}">
+
+                <VerticalStackLayout.HorizontalOptions>
+                    <OnPlatform x:TypeArguments="LayoutOptions">
+                        <On Platform="WinUI" Value="Center" />
+                        <On Platform="Android,iOS" Value="Fill" />
+                    </OnPlatform>
+                </VerticalStackLayout.HorizontalOptions>
+
+                <!--  1) Шапка  -->
+                <Grid
+                    ColumnDefinitions="48,*,48"
+                    HeightRequest="48"
+                    Margin="0,0,0,5">
+
+                    <Border
+                        HeightRequest="48"
+                        Style="{StaticResource BackButton}"
+                        WidthRequest="48">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnBackClicked" />
+                        </Border.GestureRecognizers>
+
+                        <Label
+                            FontSize="26"
+                            HorizontalOptions="Center"
+                            Margin="0,0,0,2"
+                            Text="←"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalOptions="Center" />
+                    </Border>
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Grid.Column="1"
+                        HorizontalOptions="Center"
+                        Text="Пользователи"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center" />
+                </Grid>
+
+                <!--  2) Фильтры (карточка как в новом стиле)  -->
+                <Frame
+                    Margin="0"
+                    Padding="16"
+                    Style="{StaticResource MedCard}">
+
+                    <VerticalStackLayout Spacing="12">
+
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Роль" FontSize="12" TextColor="{StaticResource TextSecondary}" FontAttributes="Bold"/>
-                            <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F5F7FA" StrokeThickness="0" HeightRequest="44" Padding="5,0">
-                                <Picker ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}"
-                                        TextColor="{StaticResource TextPrimary}" TitleColor="#A0A0A0"
-                                        FontSize="14" VerticalOptions="Center" BackgroundColor="Transparent"/>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="Поиск"
+                                TextColor="{StaticResource TextSecondary}" />
+
+                            <Border
+                                HeightRequest="44"
+                                Margin="0"
+                                Padding="10,0"
+                                Style="{StaticResource MedInputContainer}">
+                                <Entry
+                                    FontSize="14"
+                                    Placeholder="ФИО или логин"
+                                    Text="{Binding SearchText}" />
                             </Border>
                         </VerticalStackLayout>
 
-                        <VerticalStackLayout Grid.Column="1" Spacing="4">
-                            <Label Text="Статус" FontSize="12" TextColor="{StaticResource TextSecondary}" FontAttributes="Bold"/>
-                            <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F5F7FA" StrokeThickness="0" HeightRequest="44" Padding="5,0">
-                                <Picker ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}"
-                                        TextColor="{StaticResource TextPrimary}" TitleColor="#A0A0A0"
-                                        FontSize="14" VerticalOptions="Center" BackgroundColor="Transparent"/>
-                            </Border>
-                        </VerticalStackLayout>
-                    </Grid>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
 
-                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10" Margin="0,5,0,0">
-                        <Button Text="Сброс" TextColor="#FF5252" BackgroundColor="Transparent"
-                                FontSize="13" FontAttributes="Bold" Command="{Binding ResetFiltersCommand}"
-                                HeightRequest="44" HorizontalOptions="Start" Padding="0"/>
+                            <VerticalStackLayout Spacing="4">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="Роль"
+                                    TextColor="{StaticResource TextSecondary}" />
 
-                        <Button Grid.Column="1" Text="Применить" 
-                                BackgroundColor="{StaticResource Primary}" TextColor="White"
-                                CornerRadius="10" HeightRequest="44" FontSize="14" FontAttributes="Bold"
-                                Command="{Binding LoadDataCommand}"/>
-                    </Grid>
-                </VerticalStackLayout>
-            </Border>
-        </VerticalStackLayout>
+                                <Border
+                                    HeightRequest="44"
+                                    Margin="0"
+                                    Padding="5,0"
+                                    Style="{StaticResource MedInputContainer}">
+                                    <Picker
+                                        FontSize="14"
+                                        ItemsSource="{Binding Roles}"
+                                        SelectedItem="{Binding SelectedRole}" />
+                                </Border>
+                            </VerticalStackLayout>
 
-        <!-- 3. СПИСОК -->
-        <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}" Margin="0,15,0,0">
-            <CollectionView ItemsSource="{Binding Users}" 
-                            HorizontalOptions="Fill" 
-                            WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
-                 <CollectionView.HorizontalOptions>
-                     <OnPlatform x:TypeArguments="LayoutOptions">
-                         <On Platform="WinUI" Value="Center" />
-                         <On Platform="Android,iOS" Value="Fill" />
-                     </OnPlatform>
-                </CollectionView.HorizontalOptions>
-                
-                <CollectionView.EmptyView>
-                    <Label Text="Пользователи не найдены" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#999"/>
-                </CollectionView.EmptyView>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="Статус"
+                                    TextColor="{StaticResource TextSecondary}" />
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:user">
-                        <Border StrokeShape="RoundRectangle 12" BackgroundColor="White" StrokeThickness="0" Margin="0,0,0,10" Padding="12">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
-                            </Border.Shadow>
-                            
-                            <!-- Grid для карточки -->
-                            <Grid ColumnDefinitions="40, *, Auto, Auto" ColumnSpacing="10">
-                                
-                                <!-- Аватар (Уменьшен шрифт до 12, чтобы влезало 'MobU') -->
-                                <Grid WidthRequest="40" HeightRequest="40">
-                                    <Ellipse Fill="{Binding Role.Name, Converter={StaticResource RoleColorConverter}}" Aspect="Fill"/>
-                                    <Label Text="{Binding Login, StringFormat='{0:F1}'}" 
-                                           TextColor="White" FontSize="14" FontAttributes="Bold"
-                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Border
+                                    HeightRequest="44"
+                                    Margin="0"
+                                    Padding="5,0"
+                                    Style="{StaticResource MedInputContainer}">
+                                    <Picker
+                                        FontSize="14"
+                                        ItemsSource="{Binding Statuses}"
+                                        SelectedItem="{Binding SelectedStatus}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                        <Grid
+                            ColumnDefinitions="Auto,*"
+                            ColumnSpacing="10"
+                            Margin="0,5,0,0">
+
+                            <Button
+                                Command="{Binding ResetFiltersCommand}"
+                                FontAttributes="Bold"
+                                FontSize="13"
+                                HeightRequest="44"
+                                HorizontalOptions="Start"
+                                Padding="0"
+                                Style="{StaticResource TextButton}"
+                                Text="Сброс"
+                                TextColor="{StaticResource Error}" />
+
+                            <Button
+                                Command="{Binding LoadDataCommand}"
+                                CornerRadius="10"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Grid.Column="1"
+                                HeightRequest="44"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="Применить" />
+                        </Grid>
+
+                    </VerticalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
+
+            <!--  3) Список (оставляем в Grid.Row=1, чтобы не ломать измерение)  -->
+            <RefreshView
+                Command="{Binding LoadDataCommand}"
+                Grid.Row="1"
+                IsRefreshing="{Binding IsBusy}"
+                Margin="0,15,0,0">
+
+                <CollectionView
+                    HorizontalOptions="Fill"
+                    ItemsSource="{Binding Users}"
+                    WidthRequest="{OnPlatform WinUI='800',
+                                              Default='-1'}">
+
+                    <CollectionView.HorizontalOptions>
+                        <OnPlatform x:TypeArguments="LayoutOptions">
+                            <On Platform="WinUI" Value="Center" />
+                            <On Platform="Android,iOS" Value="Fill" />
+                        </OnPlatform>
+                    </CollectionView.HorizontalOptions>
+
+                    <CollectionView.EmptyView>
+                        <Label
+                            HorizontalOptions="Center"
+                            Text="Пользователи не найдены"
+                            TextColor="{StaticResource TextSecondary}"
+                            VerticalOptions="Center" />
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:user">
+                            <Frame
+                                Margin="0,0,0,10"
+                                Padding="12"
+                                Style="{StaticResource MedListCard}">
+
+                                <Grid ColumnDefinitions="40,*,Auto,Auto" ColumnSpacing="10">
+
+                                    <Grid HeightRequest="40" WidthRequest="40">
+                                        <Ellipse Fill="{Binding Role.Name, Converter={StaticResource RoleColorConverter}}" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            HorizontalOptions="Center"
+                                            Text="{Binding Login, StringFormat='{0:F1}'}"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Spacing="2"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            LineBreakMode="TailTruncation"
+                                            TextColor="{StaticResource TextPrimary}">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding LastName}" />
+                                                    <Span Text=" " />
+                                                    <Span Text="{Binding FirstName}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                        <Label
+                                            FontSize="11"
+                                            Text="{Binding Role.Name}"
+                                            TextColor="{StaticResource TextSecondary}" />
+                                    </VerticalStackLayout>
+
+                                    <Button
+                                        BackgroundColor="{Binding IsApproved, Converter={StaticResource StatusColorConverter}}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsersListViewModel}}, Path=ToggleStatusCommand}"
+                                        CommandParameter="{Binding .}"
+                                        CornerRadius="14"
+                                        FontAttributes="Bold"
+                                        FontSize="10"
+                                        Grid.Column="2"
+                                        HeightRequest="28"
+                                        Padding="10,0"
+                                        Text="{Binding IsApproved, Converter={StaticResource StatusTextConverter}}"
+                                        TextColor="White"
+                                        VerticalOptions="Center" />
+
+                                    <Button
+                                        BackgroundColor="Transparent"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsersListViewModel}}, Path=DeleteUserCommand}"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="18"
+                                        Grid.Column="3"
+                                        HeightRequest="36"
+                                        Padding="0"
+                                        Text="🗑"
+                                        TextColor="{StaticResource Error}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="36" />
                                 </Grid>
 
-                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                                    <Label FontAttributes="Bold" FontSize="14" TextColor="{StaticResource TextPrimary}" LineBreakMode="TailTruncation">
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="{Binding LastName}"/>
-                                                <Span Text=" "/>
-                                                <Span Text="{Binding FirstName}"/>
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-                                    <Label Text="{Binding Role.Name}" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
-                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
 
-                                <Button Grid.Column="2"
-                                        Text="{Binding IsApproved, Converter={StaticResource StatusTextConverter}}"
-                                        FontSize="10" HeightRequest="28" Padding="10,0" CornerRadius="14"
-                                        BackgroundColor="{Binding IsApproved, Converter={StaticResource StatusColorConverter}}"
-                                        TextColor="White" FontAttributes="Bold" VerticalOptions="Center"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsersListViewModel}}, Path=ToggleStatusCommand}"
-                                        CommandParameter="{Binding .}"/>
+                </CollectionView>
+            </RefreshView>
 
-                                <Button Grid.Column="3" Text="🗑" 
-                                        TextColor="#FF5252" BackgroundColor="Transparent"
-                                        FontSize="18" HeightRequest="36" WidthRequest="36" Padding="0" VerticalOptions="Center"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsersListViewModel}}, Path=DeleteUserCommand}"
-                                        CommandParameter="{Binding .}"/>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </RefreshView>
+        </Grid>
     </Grid>
 </ContentPage>

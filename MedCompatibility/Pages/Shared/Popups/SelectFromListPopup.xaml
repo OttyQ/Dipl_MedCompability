@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.SelectFromListPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--  Внешний контейнер: центр + отступы от краёв  -->
+    <Grid
+        HorizontalOptions="Fill"
+        Padding="16"
+        VerticalOptions="Fill">
+
+        <Border
+            BackgroundColor="{StaticResource Surface}"
+            HorizontalOptions="Center"
+            MaximumHeightRequest="{OnIdiom Phone=520,
+                                           Tablet=700,
+                                           Desktop=700}"
+            MaximumWidthRequest="420"
+            Padding="20"
+            Stroke="{StaticResource Primary}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="1"
+            VerticalOptions="Center"
+            WidthRequest="{OnIdiom Phone=320,
+                                   Tablet=380,
+                                   Desktop=340}">
+
+            <!--  Важно: Grid, чтобы список мог FillAndExpand  -->
+            <Grid RowDefinitions="Auto,Auto,Auto,* ,Auto" RowSpacing="10">
+
+                <!--  Заголовок  -->
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Grid.Row="0"
+                    HorizontalOptions="Center"
+                    Text="{Binding Title}"
+                    TextColor="{StaticResource TextPrimary}" />
+
+                <!--  Поиск  -->
+                <Border
+                    BackgroundColor="{StaticResource AppBackground}"
+                    Grid.Row="1"
+                    HeightRequest="44"
+                    Padding="10,0"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                        <Entry
+                            Placeholder="Начните вводить..."
+                            PlaceholderColor="{StaticResource TextSecondary}"
+                            Text="{Binding SearchText}"
+                            TextChanged="OnSearchTextChanged"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalOptions="Center"
+                            x:Name="SearchEntry" />
+
+                        <Button
+                            BackgroundColor="Transparent"
+                            Clicked="OnClearSearchClicked"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            Padding="0"
+                            Text="✕"
+                            TextColor="{StaticResource TextSecondary}"
+                            WidthRequest="40" />
+                    </Grid>
+                </Border>
+
+                <!--  Лоадер  -->
+                <ActivityIndicator
+                    Color="{StaticResource Primary}"
+                    Grid.Row="2"
+                    HeightRequest="20"
+                    IsRunning="True"
+                    IsVisible="False"
+                    x:Name="LoadingIndicator" />
+
+                <!--  Список: занимает всё оставшееся  -->
+                <CollectionView
+                    Grid.Row="3"
+                    SelectionChanged="OnSelectionChanged"
+                    SelectionMode="Single"
+                    VerticalOptions="FillAndExpand"
+                    x:Name="ResultsList">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                BackgroundColor="Transparent"
+                                Padding="10"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="0">
+                                <Label
+                                    FontSize="14"
+                                    Text="{Binding Display}"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#E0F7FA" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!--  Отмена  -->
+                <Button
+                    BackgroundColor="Transparent"
+                    Clicked="OnCancelClicked"
+                    FontSize="14"
+                    Grid.Row="4"
+                    HeightRequest="36"
+                    HorizontalOptions="Center"
+                    Text="Отмена"
+                    TextColor="{StaticResource TextSecondary}" />
+            </Grid>
+        </Border>
+    </Grid>
+</toolkit:Popup>

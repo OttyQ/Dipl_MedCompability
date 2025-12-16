@@ -1,153 +1,259 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             xmlns:converters="clr-namespace:MedCompatibility.Converters"
-             x:Class="MedCompatibility.Pages.Admin.InteractionsListPage"
-             Title="Конфликты лекарств"
-             BackgroundColor="{StaticResource AppBackground}"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    Shell.NavBarIsVisible="False"
+    Title="Конфликты лекарств"
+    x:Class="MedCompatibility.Pages.Admin.InteractionsListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:converters="clr-namespace:MedCompatibility.Converters"
+    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <converters:IsNullConverter x:Key="IsNullConverter"/>
+            <converters:IsNullConverter x:Key="IsNullConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *">
-        
-        <!-- 1. ШАПКА -->
-        <Grid Grid.Row="0" ColumnDefinitions="48, *, 48" HeightRequest="48" Margin="10,10,10,5">
-            <!-- Кнопка Назад (ИСПРАВЛЕНО: возвращаем Tapped="OnBackClicked") -->
-            <Border StrokeShape="RoundRectangle 24" BackgroundColor="White" StrokeThickness="0" 
-                    HeightRequest="48" WidthRequest="48" Padding="0" HorizontalOptions="Start">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
-                </Border.Shadow>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnBackClicked"/>
-                </Border.GestureRecognizers>
-                <Label Text="←" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#333" Margin="0,0,0,2"/>
-            </Border>
-            
-            <Label Grid.Column="1" Text="Взаимодействия" 
-                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
-                   VerticalOptions="Center" HorizontalOptions="Center"/>
-        </Grid>
+    <Grid>
 
-        <!-- 2. СПИСОК -->
-        <RefreshView Grid.Row="1" Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
-            
-            <CollectionView ItemsSource="{Binding Interactions}"
+        <!--  Пузырьки: новый пресет  -->
+        <AbsoluteLayout InputTransparent="True">
+            <!--  Большой слева снизу  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.08,0.98,760,760"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="380"
+                HeightRequest="760"
+                WidthRequest="760" />
+
+            <!--  Средний справа  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.95,0.45,520,520"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0F90A4AE"
+                CornerRadius="260"
+                HeightRequest="520"
+                WidthRequest="520" />
+
+            <!--  Маленький сверху по центру  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.52,0.08,280,280"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="140"
+                HeightRequest="280"
+                WidthRequest="280" />
+        </AbsoluteLayout>
+
+        <Grid RowDefinitions="Auto,*">
+
+            <!--  1) Шапка  -->
+            <Grid
+                ColumnDefinitions="48,*,48"
+                Grid.Row="0"
+                HeightRequest="48"
+                Margin="10,10,10,5">
+
+                <Border
+                    HeightRequest="48"
+                    Style="{StaticResource BackButton}"
+                    WidthRequest="48">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackClicked" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontSize="26"
+                        HorizontalOptions="Center"
+                        Margin="0,0,0,2"
+                        Text="←"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center" />
+                </Border>
+
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Grid.Column="1"
+                    HorizontalOptions="Center"
+                    Text="Взаимодействия"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <!--  2) Список  -->
+            <RefreshView
+                Command="{Binding LoadDataCommand}"
+                Grid.Row="1"
+                IsRefreshing="{Binding IsBusy}">
+
+                <CollectionView
+                    HorizontalOptions="Center"
+                    ItemsSource="{Binding Interactions}"
+                    MaximumWidthRequest="800"
+                    SelectionMode="None"
+                    WidthRequest="{OnPlatform Android='-1',
+                                              WinUI='800'}">
+
+                    <CollectionView.Margin>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="WinUI" Value="0,20" />
+                            <On Platform="Android,iOS" Value="10,10" />
+                        </OnPlatform>
+                    </CollectionView.Margin>
+
+                    <CollectionView.EmptyView>
+                        <Label
                             HorizontalOptions="Center"
-                            MaximumWidthRequest="800"
-                            WidthRequest="{OnPlatform Android='-1', WinUI='800'}" 
-                            SelectionMode="None">
-                
-                <CollectionView.Margin>
-                    <OnPlatform x:TypeArguments="Thickness">
-                        <On Platform="WinUI" Value="0,20" /> 
-                        <On Platform="Android,iOS" Value="10,10" />
-                    </OnPlatform>
-                </CollectionView.Margin>
+                            Text="Список взаимодействий пуст"
+                            TextColor="{StaticResource TextSecondary}"
+                            VerticalOptions="Center" />
+                    </CollectionView.EmptyView>
 
-                <CollectionView.EmptyView>
-                    <Label Text="Список взаимодействий пуст" TextColor="#999" HorizontalOptions="Center" VerticalOptions="Center"/>
-                </CollectionView.EmptyView>
-                
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:interaction">
-                        <!-- Карточка -->
-                        <Border StrokeShape="RoundRectangle 12" BackgroundColor="White" StrokeThickness="0" Margin="0,0,0,12" Padding="15">
-                            
-                            <!-- ИСПРАВЛЕНО: Добавляем жест редактирования СЮДА, на саму карточку -->
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InteractionsListViewModel}}, Path=EditInteractionCommand}"
-                                    CommandParameter="{Binding .}"/>
-                            </Border.GestureRecognizers>
-                            
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
-                            </Border.Shadow>
-                            
-                            <Grid RowDefinitions="Auto, Auto, Auto" RowSpacing="8">
-                                <!-- Заголовок -->
-                                <Label FontSize="16" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" LineBreakMode="WordWrap">
-                                    <Label.FormattedText>
-                                        <FormattedString>
-                                            <Span Text="{Binding SubstanceId1Navigation.Name}"/>
-                                            <Span Text=" + " TextColor="#CCC"/>
-                                            <Span Text="{Binding SubstanceId2Navigation.Name}"/>
-                                        </FormattedString>
-                                    </Label.FormattedText>
-                                </Label>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:interaction">
+                            <Frame
+                                Margin="0,0,0,12"
+                                Padding="15"
+                                Style="{StaticResource MedListCard}">
 
-                                <!-- Риск и Тип -->
-                                <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto">
-                                    <!-- Бэйдж уровня риска -->
-                                    <Border StrokeShape="RoundRectangle 6" StrokeThickness="0" Padding="8,4" VerticalOptions="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="BackgroundColor" Value="#E0F7FA"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger TargetType="Border" Binding="{Binding RiskLevelId}" Value="3">
-                                                        <Setter Property="BackgroundColor" Value="#FFEBEE"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Border" Binding="{Binding RiskLevelId}" Value="2">
-                                                        <Setter Property="BackgroundColor" Value="#FFF3E0"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        
-                                        <Label Text="{Binding RiskLevel.Name}" FontSize="11" FontAttributes="Bold">
-                                            <Label.Style>
-                                                <Style TargetType="Label">
-                                                    <Setter Property="TextColor" Value="#006064"/>
+                                <!--  Редактирование по тапу на карточку  -->
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InteractionsListViewModel}}, Path=EditInteractionCommand}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+
+                                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+
+                                    <!--  Заголовок  -->
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        LineBreakMode="WordWrap"
+                                        TextColor="{StaticResource TextPrimary}">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding SubstanceId1Navigation.Name}" />
+                                                <Span Text=" + " TextColor="#CCC" />
+                                                <Span Text="{Binding SubstanceId2Navigation.Name}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <!--  Риск + тип + удалить  -->
+                                    <Grid
+                                        ColumnDefinitions="Auto,*,Auto"
+                                        ColumnSpacing="10"
+                                        Grid.Row="1">
+
+                                        <!--  Бэйдж риска (оставил твою логику цветов)  -->
+                                        <Border
+                                            Padding="10,5"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            VerticalOptions="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="BackgroundColor" Value="#E0F7FA" />
                                                     <Style.Triggers>
-                                                        <DataTrigger TargetType="Label" Binding="{Binding RiskLevelId}" Value="3">
-                                                            <Setter Property="TextColor" Value="#C62828"/>
+                                                        <DataTrigger
+                                                            Binding="{Binding RiskLevelId}"
+                                                            TargetType="Border"
+                                                            Value="3">
+                                                            <Setter Property="BackgroundColor" Value="#FFEBEE" />
                                                         </DataTrigger>
-                                                        <DataTrigger TargetType="Label" Binding="{Binding RiskLevelId}" Value="2">
-                                                            <Setter Property="TextColor" Value="#EF6C00"/>
+                                                        <DataTrigger
+                                                            Binding="{Binding RiskLevelId}"
+                                                            TargetType="Border"
+                                                            Value="2">
+                                                            <Setter Property="BackgroundColor" Value="#FFF3E0" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </Label.Style>
-                                        </Label>
-                                    </Border>
+                                            </Border.Style>
 
-                                    <!-- Тип -->
-                                    <Label Grid.Column="1" Text="{Binding InteractionType.Name}" 
-                                           FontSize="12" TextColor="{StaticResource TextSecondary}" 
-                                           VerticalOptions="Center" Margin="10,0,0,0"/>
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="11"
+                                                Text="{Binding RiskLevel.Name}">
+                                                <Label.Style>
+                                                    <Style TargetType="Label">
+                                                        <Setter Property="TextColor" Value="#006064" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger
+                                                                Binding="{Binding RiskLevelId}"
+                                                                TargetType="Label"
+                                                                Value="3">
+                                                                <Setter Property="TextColor" Value="#C62828" />
+                                                            </DataTrigger>
+                                                            <DataTrigger
+                                                                Binding="{Binding RiskLevelId}"
+                                                                TargetType="Label"
+                                                                Value="2">
+                                                                <Setter Property="TextColor" Value="#EF6C00" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Label.Style>
+                                            </Label>
+                                        </Border>
 
-                                    <!-- Удалить (кнопка перехватывает нажатие, чтобы не сработал Edit) -->
-                                    <Button Grid.Column="2" Text="🗑" 
-                                            TextColor="#FF5252" BackgroundColor="Transparent"
-                                            FontSize="18" Padding="0" HeightRequest="30" WidthRequest="30"
+                                        <Label
+                                            FontSize="12"
+                                            Grid.Column="1"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding InteractionType.Name}"
+                                            TextColor="{StaticResource TextSecondary}"
+                                            VerticalOptions="Center" />
+
+                                        <Button
+                                            BackgroundColor="Transparent"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:InteractionsListViewModel}}, Path=DeleteInteractionCommand}"
-                                            CommandParameter="{Binding .}"/>
-                                </Grid>
-                                
-                                <!-- Описание -->
-                                <Label Grid.Row="2" Text="{Binding Description}" 
-                                       FontSize="13" TextColor="{StaticResource TextPrimary}" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </RefreshView>
+                                            CommandParameter="{Binding .}"
+                                            FontSize="18"
+                                            Grid.Column="2"
+                                            HeightRequest="30"
+                                            Padding="0"
+                                            Text="🗑"
+                                            TextColor="{StaticResource Error}"
+                                            WidthRequest="30" />
+                                    </Grid>
 
-        <!-- Кнопка Добавить (FAB) -->
-        <Button Grid.Row="1" Text="+" 
-                FontSize="30" TextColor="White" BackgroundColor="{StaticResource Primary}"
-                CornerRadius="28" WidthRequest="56" HeightRequest="56"
-                HorizontalOptions="End" VerticalOptions="End" Margin="20"
-                Shadow="{Shadow Brush={StaticResource Primary}, Offset='0,4', Radius=10, Opacity=0.4}"
-                Command="{Binding GoToAddInteractionCommand}"/>
+                                    <!--  Описание  -->
+                                    <Label
+                                        FontSize="13"
+                                        Grid.Row="2"
+                                        Text="{Binding Description}"
+                                        TextColor="{StaticResource TextPrimary}" />
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+            </RefreshView>
+
+            <!--  FAB через UraniumUI (без CornerRadius-свойства)  -->
+            <material:ButtonView
+                BackgroundColor="{StaticResource Primary}"
+                Grid.Row="1"
+                HeightRequest="56"
+                HorizontalOptions="End"
+                Margin="20"
+                StrokeShape="{RoundRectangle CornerRadius=28}"
+                StrokeThickness="0"
+                TappedCommand="{Binding GoToAddInteractionCommand}"
+                VerticalOptions="End"
+                WidthRequest="56">
+                <Label
+                    FontSize="30"
+                    HorizontalOptions="Center"
+                    Text="+"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+            </material:ButtonView>
+
+        </Grid>
     </Grid>
 </ContentPage>
