@@ -1,137 +1,249 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
-             x:Class="MedCompatibility.Pages.Admin.MedicinesListPage"
-             Title="Справочник лекарств"
-             BackgroundColor="{StaticResource AppBackground}"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    Shell.NavBarIsVisible="False"
+    Title="Справочник лекарств"
+    x:Class="MedCompatibility.Pages.Admin.MedicinesListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!-- Основной контент -->
-        <Grid RowDefinitions="Auto, *" Padding="10">
-            
-            <!-- ГЛАВНЫЙ КОНТЕЙНЕР (Адаптивный) -->
-            <VerticalStackLayout Spacing="15" 
-                                 HorizontalOptions="Fill" 
-                                 WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
-                
+
+        <!--  Пузырьки: новый пресет (чтобы не повторяться)  -->
+        <AbsoluteLayout InputTransparent="True">
+            <!--  Большой сверху справа  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.92,0.12,700,700"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0F90A4AE"
+                CornerRadius="350"
+                HeightRequest="700"
+                WidthRequest="700" />
+
+            <!--  Средний слева  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.06,0.45,460,460"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="230"
+                HeightRequest="460"
+                WidthRequest="460" />
+
+            <!--  Маленький снизу по центру  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.55,0.98,320,320"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="160"
+                HeightRequest="320"
+                WidthRequest="320" />
+        </AbsoluteLayout>
+
+        <!--  Основной контент  -->
+        <Grid Padding="10" RowDefinitions="Auto, *">
+
+            <!--  Верх  -->
+            <VerticalStackLayout
+                Grid.Row="0"
+                HorizontalOptions="Fill"
+                Spacing="15"
+                WidthRequest="{OnPlatform WinUI='800',
+                                          Default='-1'}">
+
                 <VerticalStackLayout.HorizontalOptions>
-                     <OnPlatform x:TypeArguments="LayoutOptions">
-                         <On Platform="WinUI" Value="Center" />
-                         <On Platform="Android,iOS" Value="Fill" />
-                     </OnPlatform>
+                    <OnPlatform x:TypeArguments="LayoutOptions">
+                        <On Platform="WinUI" Value="Center" />
+                        <On Platform="Android,iOS" Value="Fill" />
+                    </OnPlatform>
                 </VerticalStackLayout.HorizontalOptions>
 
-                <!-- 1. ШАПКА -->
-                <Grid ColumnDefinitions="48, *, 48" HeightRequest="48" Margin="0,0,0,5">
-                    <!-- Кнопка Назад -->
-                    <Border StrokeShape="RoundRectangle 24" BackgroundColor="White" StrokeThickness="0" 
-                            HeightRequest="48" WidthRequest="48" Padding="0" HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
-                        </Border.Shadow>
+                <!--  1) Шапка  -->
+                <Grid
+                    ColumnDefinitions="48,*,48"
+                    HeightRequest="48"
+                    Margin="0,0,0,5">
+
+                    <Border
+                        HeightRequest="48"
+                        Style="{StaticResource BackButton}"
+                        WidthRequest="48">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnBackClicked"/>
+                            <TapGestureRecognizer Tapped="OnBackClicked" />
                         </Border.GestureRecognizers>
-                        <Label Text="←" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#333" Margin="0,0,0,2"/>
+                        <Label
+                            FontSize="26"
+                            HorizontalOptions="Center"
+                            Margin="0,0,0,2"
+                            Text="←"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalOptions="Center" />
                     </Border>
-                    
-                    <!-- Заголовок -->
-                    <Label Grid.Column="1" Text="Лекарства" 
-                           FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
-                           VerticalOptions="Center" HorizontalOptions="Center"/>
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Grid.Column="1"
+                        HorizontalOptions="Center"
+                        Text="Лекарства"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center" />
                 </Grid>
 
-                <!-- 2. ПАНЕЛЬ ФИЛЬТРОВ -->
-                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="16" HorizontalOptions="Fill">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.05"/>
-                    </Border.Shadow>
-                    
+                <!--  2) Фильтры  -->
+                <Frame
+                    Margin="0"
+                    Padding="16"
+                    Style="{StaticResource MedCard}">
+
                     <VerticalStackLayout Spacing="12">
-                        <!-- Поиск -->
+
+                        <!--  Поиск  -->
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Поиск" FontSize="12" TextColor="{StaticResource TextSecondary}" FontAttributes="Bold"/>
-                            <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F5F7FA" StrokeThickness="0" HeightRequest="44" Padding="10,0">
-                                <Entry Placeholder="Название, МНН или GTIN" Text="{Binding SearchText}"
-                                       TextColor="{StaticResource TextPrimary}" PlaceholderColor="#A0A0A0"
-                                       FontSize="14" VerticalOptions="Center" BackgroundColor="Transparent"
-                                       ReturnCommand="{Binding LoadDataCommand}"/>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="Поиск"
+                                TextColor="{StaticResource TextSecondary}" />
+
+                            <Border
+                                HeightRequest="44"
+                                Margin="0"
+                                Padding="10,0"
+                                Style="{StaticResource MedInputContainer}">
+                                <Entry
+                                    FontSize="14"
+                                    Placeholder="Название, МНН или GTIN"
+                                    ReturnCommand="{Binding LoadDataCommand}"
+                                    Text="{Binding SearchText}" />
                             </Border>
                         </VerticalStackLayout>
 
-                        <!-- Фильтр Производителя -->
+                        <!--  Производитель  -->
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Производитель" FontSize="12" TextColor="{StaticResource TextSecondary}" FontAttributes="Bold"/>
-                            <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F5F7FA" StrokeThickness="0" HeightRequest="44" Padding="5,0">
-                                <Picker ItemsSource="{Binding Manufacturers}" SelectedItem="{Binding SelectedManufacturer}"
-                                        TextColor="{StaticResource TextPrimary}" TitleColor="#A0A0A0"
-                                        FontSize="14" VerticalOptions="Center" BackgroundColor="Transparent"/>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="Производитель"
+                                TextColor="{StaticResource TextSecondary}" />
+
+                            <Border
+                                HeightRequest="44"
+                                Margin="0"
+                                Padding="5,0"
+                                Style="{StaticResource MedInputContainer}">
+                                <Picker
+                                    FontSize="14"
+                                    ItemsSource="{Binding Manufacturers}"
+                                    SelectedItem="{Binding SelectedManufacturer}" />
                             </Border>
                         </VerticalStackLayout>
 
-                        <!-- Кнопки -->
-                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10" Margin="0,5,0,0">
-                            <Button Text="Сброс" TextColor="#FF5252" BackgroundColor="Transparent"
-                                    FontSize="13" FontAttributes="Bold" Command="{Binding ResetFiltersCommand}"
-                                    HeightRequest="44" HorizontalOptions="Start" Padding="0"/>
+                        <!--  Кнопки  -->
+                        <Grid
+                            ColumnDefinitions="Auto,*"
+                            ColumnSpacing="10"
+                            Margin="0,5,0,0">
 
-                            <Button Grid.Column="1" Text="Найти" 
-                                    BackgroundColor="{StaticResource Primary}" TextColor="White"
-                                    CornerRadius="10" HeightRequest="44" FontSize="14" FontAttributes="Bold"
-                                    Command="{Binding LoadDataCommand}"/>
+                            <Button
+                                Command="{Binding ResetFiltersCommand}"
+                                FontAttributes="Bold"
+                                FontSize="13"
+                                HeightRequest="44"
+                                HorizontalOptions="Start"
+                                Padding="0"
+                                Style="{StaticResource TextButton}"
+                                Text="Сброс"
+                                TextColor="{StaticResource Error}" />
+
+                            <Button
+                                Command="{Binding LoadDataCommand}"
+                                CornerRadius="10"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Grid.Column="1"
+                                HeightRequest="44"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="Найти" />
                         </Grid>
+
                     </VerticalStackLayout>
-                </Border>
+                </Frame>
+
             </VerticalStackLayout>
 
-            <!-- 3. СПИСОК -->
-            <RefreshView Grid.Row="1" Command="{Binding RefreshDataCommand}" IsRefreshing="{Binding IsBusy}" Margin="0,15,0,0">
-                <CollectionView ItemsSource="{Binding Medicines}" 
-                                HorizontalOptions="Fill" 
-                                WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
-                     <CollectionView.HorizontalOptions>
-                         <OnPlatform x:TypeArguments="LayoutOptions">
-                             <On Platform="WinUI" Value="Center" />
-                             <On Platform="Android,iOS" Value="Fill" />
-                         </OnPlatform>
+            <!--  3) Список  -->
+            <RefreshView
+                Command="{Binding RefreshDataCommand}"
+                Grid.Row="1"
+                IsRefreshing="{Binding IsBusy}"
+                Margin="0,15,0,0">
+
+                <CollectionView
+                    HorizontalOptions="Fill"
+                    ItemsSource="{Binding Medicines}"
+                    WidthRequest="{OnPlatform WinUI='800',
+                                              Default='-1'}">
+
+                    <CollectionView.HorizontalOptions>
+                        <OnPlatform x:TypeArguments="LayoutOptions">
+                            <On Platform="WinUI" Value="Center" />
+                            <On Platform="Android,iOS" Value="Fill" />
+                        </OnPlatform>
                     </CollectionView.HorizontalOptions>
-                    
+
                     <CollectionView.EmptyView>
-                        <Label Text="Лекарства не найдены" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#999"/>
+                        <Label
+                            HorizontalOptions="Center"
+                            Text="Лекарства не найдены"
+                            TextColor="{StaticResource TextSecondary}"
+                            VerticalOptions="Center" />
                     </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:medicine">
-                            <Border StrokeShape="RoundRectangle 12" BackgroundColor="White" StrokeThickness="0" Margin="0,0,0,10" Padding="12">
-                                <Border.Shadow>
-                                    <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
-                                </Border.Shadow>
-                                <!-- ДОБАВИТЬ ЭТОТ БЛОК -->
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer 
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MedicinesListViewModel}}, Path=EditMedicineCommand}"
-                                        CommandParameter="{Binding .}"/>
-                                </Border.GestureRecognizers>
-                                <!-- КОНЕЦ БЛОКА -->
-                                <Grid ColumnDefinitions="40, *, Auto" ColumnSpacing="12">
-                                    
-                                    <!-- Иконка -->
-                                    <Frame HeightRequest="40" WidthRequest="40" CornerRadius="10"
-                                           BackgroundColor="#E8F5E9" Padding="0" BorderColor="Transparent" 
-                                           HorizontalOptions="Start" VerticalOptions="Start">
-                                        <Label Text="💊" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                    </Frame>
+                            <Frame
+                                Margin="0,0,0,10"
+                                Padding="12"
+                                Style="{StaticResource MedListCard}">
 
-                                    <!-- Инфо -->
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MedicinesListViewModel}}, Path=EditMedicineCommand}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="40,*,Auto" ColumnSpacing="12">
+
+                                    <!--  Иконка  -->
+                                    <Border
+                                        BackgroundColor="#E8F5E9"
+                                        HeightRequest="40"
+                                        HorizontalOptions="Start"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Start"
+                                        WidthRequest="40">
+                                        <Label
+                                            FontSize="18"
+                                            HorizontalOptions="Center"
+                                            Text="💊"
+                                            VerticalOptions="Center" />
+                                    </Border>
+
+                                    <!--  Инфо  -->
                                     <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                        <Label Text="{Binding TradeName}" FontAttributes="Bold" FontSize="15" 
-                                               TextColor="{StaticResource TextPrimary}" LineBreakMode="TailTruncation"/>
-                                        
-                                        <!-- МНН + Форма -->
-                                        <Label FontSize="12" TextColor="{StaticResource TextSecondary}" LineBreakMode="TailTruncation">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="15"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding TradeName}"
+                                            TextColor="{StaticResource TextPrimary}" />
+
+                                        <Label
+                                            FontSize="12"
+                                            LineBreakMode="TailTruncation"
+                                            TextColor="{StaticResource TextSecondary}">
                                             <Label.FormattedText>
                                                 <FormattedString>
                                                     <Span Text="{Binding INN}" />
@@ -141,45 +253,63 @@
                                             </Label.FormattedText>
                                         </Label>
 
-                                        <!-- GTIN + Производитель (мелким серым) -->
-                                        <Label FontSize="11" TextColor="#9E9E9E" Margin="0,2,0,0" LineBreakMode="TailTruncation">
+                                        <Label
+                                            FontSize="11"
+                                            LineBreakMode="TailTruncation"
+                                            Margin="0,2,0,0"
+                                            Opacity="0.85"
+                                            TextColor="{StaticResource TextSecondary}">
                                             <Label.FormattedText>
                                                 <FormattedString>
-                                                    <Span Text="GTIN: "/>
-                                                    <Span Text="{Binding GTIN}"/>
-                                                    <Span Text=" • "/>
-                                                    <Span Text="{Binding Manufacturer.Name}"/>
+                                                    <Span Text="GTIN: " />
+                                                    <Span Text="{Binding GTIN}" />
+                                                    <Span Text=" • " />
+                                                    <Span Text="{Binding Manufacturer.Name}" />
                                                 </FormattedString>
                                             </Label.FormattedText>
                                         </Label>
                                     </VerticalStackLayout>
 
-                                    <!-- Кнопка Удалить -->
-                                    <Button Grid.Column="2" Text="🗑" 
-                                            TextColor="#FF5252" BackgroundColor="Transparent"
-                                            FontSize="18" HeightRequest="40" WidthRequest="40" Padding="0" VerticalOptions="Center"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MedicinesListViewModel}}, Path=DeleteMedicineCommand}"
-                                            CommandParameter="{Binding .}"/>
+                                    <!--  Удалить  -->
+                                    <Button
+                                        BackgroundColor="Transparent"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MedicinesListViewModel}}, Path=DeleteMedicineCommand}"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="18"
+                                        Grid.Column="2"
+                                        HeightRequest="40"
+                                        Padding="0"
+                                        Text="🗑"
+                                        TextColor="{StaticResource Error}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="40" />
                                 </Grid>
-                            </Border>
+                            </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
+
                 </CollectionView>
             </RefreshView>
         </Grid>
-        
-        <!-- КНОПКА ДОБАВИТЬ (FAB) - Справа внизу -->
-        <Button Text="+" 
-                FontSize="30" 
+
+        <!--  FAB через UraniumUI (чтобы реально использовать библиотеку)  -->
+        <material:ButtonView
+            BackgroundColor="{StaticResource Primary}"
+            HeightRequest="56"
+            HorizontalOptions="End"
+            Margin="20"
+            StrokeShape="{RoundRectangle CornerRadius=28}"
+            StrokeThickness="0"
+            TappedCommand="{Binding GoToAddMedicineCommand}"
+            VerticalOptions="End"
+            WidthRequest="56">
+            <Label
+                FontSize="30"
+                HorizontalOptions="Center"
+                Text="+"
                 TextColor="White"
-                BackgroundColor="{StaticResource Primary}"
-                CornerRadius="28"
-                WidthRequest="56" HeightRequest="56"
-                HorizontalOptions="End" VerticalOptions="End"
-                Margin="20"
-                Padding="0"
-                Shadow="{Shadow Brush={StaticResource Primary}, Offset='0,4', Radius=10, Opacity=0.4}"
-                Command="{Binding GoToAddMedicineCommand}" /> 
-                <!-- Команду GoToAddMedicineCommand добавим позже -->
+                VerticalOptions="Center" />
+        </material:ButtonView>
+
     </Grid>
 </ContentPage>

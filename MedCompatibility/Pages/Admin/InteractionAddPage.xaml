@@ -1,166 +1,310 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
-             xmlns:converters="clr-namespace:MedCompatibility.Converters"
-             x:Class="MedCompatibility.Pages.Admin.InteractionAddPage"
-             Title="{Binding PageTitle}"
-             BackgroundColor="{StaticResource AppBackground}"
-             Shell.NavBarIsVisible="False"
-             Shell.TabBarIsVisible="False">
+<ContentPage
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    Title="{Binding PageTitle}"
+    x:Class="MedCompatibility.Pages.Admin.InteractionAddPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:converters="clr-namespace:MedCompatibility.Converters"
+    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <converters:IsNullConverter x:Key="IsNullConverter"/>
+            <converters:IsNullConverter x:Key="IsNullConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *">
-        <!-- ШАПКА -->
-        <Grid Grid.Row="0" ColumnDefinitions="48, *, 48" HeightRequest="48" Margin="10,5">
-            <Border StrokeShape="RoundRectangle 24" BackgroundColor="White" StrokeThickness="0" 
-                    HeightRequest="48" WidthRequest="48" Padding="0" HorizontalOptions="Start">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
-                </Border.Shadow>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnBackClicked"/>
-                </Border.GestureRecognizers>
-                <Label Text="←" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#333" Margin="0,0,0,2"/>
-            </Border>
-            
-            <Label Grid.Column="1" Text="{Binding PageTitle}" 
-                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
-                   VerticalOptions="Center" HorizontalOptions="Center"/>
+    <Grid>
+
+        <!--  Пузырьки: новый пресет  -->
+        <AbsoluteLayout InputTransparent="True">
+            <!--  Средний сверху справа  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.92,0.10,520,520"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="260"
+                HeightRequest="520"
+                WidthRequest="520" />
+
+            <!--  Большой снизу по центру  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.50,0.98,820,820"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0F90A4AE"
+                CornerRadius="410"
+                HeightRequest="820"
+                WidthRequest="820" />
+
+            <!--  Маленький слева  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.06,0.42,300,300"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="150"
+                HeightRequest="300"
+                WidthRequest="300" />
+        </AbsoluteLayout>
+
+        <Grid RowDefinitions="Auto,*">
+
+            <!--  Шапка  -->
+            <Grid
+                ColumnDefinitions="48,*,48"
+                Grid.Row="0"
+                HeightRequest="48"
+                Margin="10,5">
+
+                <Border
+                    HeightRequest="48"
+                    Style="{StaticResource BackButton}"
+                    WidthRequest="48">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackClicked" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontSize="26"
+                        HorizontalOptions="Center"
+                        Margin="0,0,0,2"
+                        Text="←"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center" />
+                </Border>
+
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Grid.Column="1"
+                    HorizontalOptions="Center"
+                    Text="{Binding PageTitle}"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <!--  Форма  -->
+            <ScrollView Grid.Row="1" Padding="15">
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    Spacing="20"
+                    WidthRequest="{OnPlatform WinUI='800',
+                                              Default='-1'}">
+
+                    <VerticalStackLayout.HorizontalOptions>
+                        <OnPlatform x:TypeArguments="LayoutOptions">
+                            <On Platform="WinUI" Value="Center" />
+                            <On Platform="Android,iOS" Value="Fill" />
+                        </OnPlatform>
+                    </VerticalStackLayout.HorizontalOptions>
+
+                    <!--  Блок 1  -->
+                    <Frame Padding="20" Style="{StaticResource MedCard}">
+                        <VerticalStackLayout Spacing="15">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Text="Конфликтующие вещества"
+                                TextColor="{StaticResource Primary}" />
+
+                            <!--  Вещество 1  -->
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="12"
+                                    Text="Вещество 1 *"
+                                    TextColor="{StaticResource TextSecondary}" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                    <Border
+                                        HeightRequest="44"
+                                        Margin="0"
+                                        Padding="10,0"
+                                        Style="{StaticResource MedInputContainer}">
+                                        <Label
+                                            Text="{Binding Substance1.Name, TargetNullValue='Не выбрано'}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            VerticalOptions="Center" />
+                                    </Border>
+
+                                    <material:ButtonView
+                                        BackgroundColor="{StaticResource Primary}"
+                                        Grid.Column="1"
+                                        HeightRequest="44"
+                                        StrokeShape="{RoundRectangle CornerRadius=12}"
+                                        StrokeThickness="0"
+                                        TappedCommand="{Binding SelectSubstance1Command}"
+                                        WidthRequest="44">
+                                        <Label
+                                            FontSize="18"
+                                            HorizontalOptions="Center"
+                                            Text="🔍"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                    </material:ButtonView>
+                                </Grid>
+                            </VerticalStackLayout>
+
+                            <!--  Вещество 2  -->
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="12"
+                                    Text="Вещество 2 *"
+                                    TextColor="{StaticResource TextSecondary}" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                    <Border
+                                        HeightRequest="44"
+                                        Margin="0"
+                                        Padding="10,0"
+                                        Style="{StaticResource MedInputContainer}">
+                                        <Label
+                                            Text="{Binding Substance2.Name, TargetNullValue='Не выбрано'}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            VerticalOptions="Center" />
+                                    </Border>
+
+                                    <material:ButtonView
+                                        BackgroundColor="{StaticResource Primary}"
+                                        Grid.Column="1"
+                                        HeightRequest="44"
+                                        StrokeShape="{RoundRectangle CornerRadius=12}"
+                                        StrokeThickness="0"
+                                        TappedCommand="{Binding SelectSubstance2Command}"
+                                        WidthRequest="44">
+                                        <Label
+                                            FontSize="18"
+                                            HorizontalOptions="Center"
+                                            Text="🔍"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                    </material:ButtonView>
+                                </Grid>
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!--  Блок 2  -->
+                    <Frame Padding="20" Style="{StaticResource MedCard}">
+                        <VerticalStackLayout Spacing="15">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Text="Параметры риска"
+                                TextColor="{StaticResource Primary}" />
+
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="12"
+                                    Text="Уровень риска *"
+                                    TextColor="{StaticResource TextSecondary}" />
+
+                                <Border
+                                    Margin="0"
+                                    MinimumHeightRequest="50"
+                                    Padding="12,0"
+                                    Style="{StaticResource MedInputContainer}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenRiskPickerCommand}" />
+                                    </Border.GestureRecognizers>
+
+                                    <Label
+                                        Text="{Binding SelectedRisk.Name, TargetNullValue='Выберите риск'}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        VerticalOptions="Center" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="12"
+                                    Text="Тип взаимодействия *"
+                                    TextColor="{StaticResource TextSecondary}" />
+
+                                <Border
+                                    Margin="0"
+                                    MinimumHeightRequest="50"
+                                    Padding="12,0"
+                                    Style="{StaticResource MedInputContainer}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenTypePickerCommand}" />
+                                    </Border.GestureRecognizers>
+
+                                    <Label
+                                        Text="{Binding SelectedType.Name, TargetNullValue='Выберите тип'}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        VerticalOptions="Center" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!--  Блок 3  -->
+                    <Frame Padding="20" Style="{StaticResource MedCard}">
+                        <VerticalStackLayout Spacing="15">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Text="Описание"
+                                TextColor="{StaticResource Primary}" />
+
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="12"
+                                    Text="Описание эффекта *"
+                                    TextColor="{StaticResource TextSecondary}" />
+
+                                <Border
+                                    BackgroundColor="#FAFAFA"
+                                    HeightRequest="110"
+                                    Padding="12"
+                                    Stroke="{StaticResource BorderLight}"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="1">
+                                    <Editor
+                                        AutoSize="TextChanges"
+                                        BackgroundColor="Transparent"
+                                        Placeholder="Что произойдет при смешивании?"
+                                        Text="{Binding CurrentInteraction.Description}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="12"
+                                    Text="Рекомендация врача"
+                                    TextColor="{StaticResource TextSecondary}" />
+
+                                <Border
+                                    BackgroundColor="#FAFAFA"
+                                    HeightRequest="90"
+                                    Padding="12"
+                                    Stroke="{StaticResource BorderLight}"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="1">
+                                    <Editor
+                                        AutoSize="TextChanges"
+                                        BackgroundColor="Transparent"
+                                        Placeholder="Что делать пациенту?"
+                                        Text="{Binding CurrentInteraction.Recommendation}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!--  Save  -->
+                    <Button
+                        Command="{Binding SaveCommand}"
+                        HeightRequest="50"
+                        Margin="0,10,0,30"
+                        Style="{StaticResource PrimaryButton}"
+                        Text="{Binding ButtonText}" />
+
+                </VerticalStackLayout>
+            </ScrollView>
+
         </Grid>
-
-        <!-- ФОРМА -->
-        <ScrollView Grid.Row="1" Padding="15">
-            <VerticalStackLayout Spacing="20">
-                
-                <!-- Блок 1: Участники конфликта -->
-                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.05"/>
-                    </Border.Shadow>
-                    <VerticalStackLayout Spacing="15">
-                        <Label Text="Конфликтующие вещества" FontAttributes="Bold" TextColor="{StaticResource Primary}" FontSize="16"/>
-
-                        <!-- Вещество 1 -->
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Вещество 1 *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
-                            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
-                                <Border StrokeShape="RoundRectangle 8" BackgroundColor="#F5F7FA" StrokeThickness="1" Stroke="Transparent" HeightRequest="44" Padding="10,0">
-                                    <Label Text="{Binding Substance1.Name, TargetNullValue='Не выбрано'}" 
-                                           TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"/>
-                                </Border>
-                                <Button Grid.Column="1" Text="🔍" Command="{Binding SelectSubstance1Command}" 
-                                        BackgroundColor="{StaticResource Primary}" TextColor="White" HeightRequest="44" WidthRequest="44" CornerRadius="10" Padding="0"/>
-                            </Grid>
-                        </VerticalStackLayout>
-
-                        <!-- Вещество 2 -->
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Вещество 2 *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
-                            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
-                                <Border StrokeShape="RoundRectangle 8" BackgroundColor="#F5F7FA" StrokeThickness="1" Stroke="Transparent" HeightRequest="44" Padding="10,0">
-                                    <Label Text="{Binding Substance2.Name, TargetNullValue='Не выбрано'}" 
-                                           TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"/>
-                                </Border>
-                                <Button Grid.Column="1" Text="🔍" Command="{Binding SelectSubstance2Command}" 
-                                        BackgroundColor="{StaticResource Primary}" TextColor="White" HeightRequest="44" WidthRequest="44" CornerRadius="10" Padding="0"/>
-                            </Grid>
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
-                </Border>
-
-                <!-- Блок 2: Детали (ИСПРАВЛЕННЫЙ) -->
-                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.05"/>
-                    </Border.Shadow>
-                    <VerticalStackLayout Spacing="15">
-                        <Label Text="Параметры риска" FontAttributes="Bold" TextColor="{StaticResource Primary}" FontSize="16"/>
-
-                        <!-- Риск -->
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Уровень риска *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
-                            <Border StrokeShape="RoundRectangle 8" BackgroundColor="#F5F7FA" StrokeThickness="1" Stroke="Transparent" 
-                                    MinimumHeightRequest="50" Padding="0" VerticalOptions="Fill">
-                                <Grid>
-                                    <Picker ItemsSource="{Binding Risks}" 
-                                            SelectedItem="{Binding SelectedRisk}" 
-                                            ItemDisplayBinding="{Binding Name}"
-                                            Title="Выберите риск" 
-                                            TextColor="{StaticResource TextPrimary}" 
-                                            TitleColor="#A0A0A0"
-                                            VerticalOptions="Center" 
-                                            HorizontalOptions="Fill" 
-                                            Margin="10,0"/>
-                                </Grid>
-                            </Border>
-                        </VerticalStackLayout>
-
-                        <!-- Тип -->
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Тип взаимодействия *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
-                            <Border StrokeShape="RoundRectangle 8" BackgroundColor="#F5F7FA" StrokeThickness="1" Stroke="Transparent" 
-                                    MinimumHeightRequest="50" Padding="0" VerticalOptions="Fill">
-                                <Grid>
-                                    <Picker ItemsSource="{Binding Types}" 
-                                            SelectedItem="{Binding SelectedType}" 
-                                            ItemDisplayBinding="{Binding Name}"
-                                            Title="Выберите тип" 
-                                            TextColor="{StaticResource TextPrimary}" 
-                                            TitleColor="#A0A0A0"
-                                            VerticalOptions="Center" 
-                                            HorizontalOptions="Fill" 
-                                            Margin="10,0"/>
-                                </Grid>
-                            </Border>
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
-                </Border>
-
-                <!-- Блок 3: Тексты -->
-                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.05"/>
-                    </Border.Shadow>
-                    <VerticalStackLayout Spacing="15">
-                        <Label Text="Описание" FontAttributes="Bold" TextColor="{StaticResource Primary}" FontSize="16"/>
-
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Описание эффекта *" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
-                            <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F5F7FA" StrokeThickness="0" HeightRequest="100" Padding="10">
-                                <Editor Text="{Binding CurrentInteraction.Description}" 
-                                        Placeholder="Что произойдет при смешивании?" 
-                                        TextColor="{StaticResource TextPrimary}" 
-                                        PlaceholderColor="#A0A0A0"
-                                        AutoSize="TextChanges" 
-                                        BackgroundColor="Transparent"/>
-                            </Border>
-                        </VerticalStackLayout>
-
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Рекомендация врача" FontSize="12" TextColor="{StaticResource TextSecondary}"/>
-                            <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F5F7FA" StrokeThickness="0" HeightRequest="80" Padding="10">
-                                <Editor Text="{Binding CurrentInteraction.Recommendation}" 
-                                        Placeholder="Что делать пациенту?" 
-                                        TextColor="{StaticResource TextPrimary}" 
-                                        PlaceholderColor="#A0A0A0"
-                                        AutoSize="TextChanges" 
-                                        BackgroundColor="Transparent"/>
-                            </Border>
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
-                </Border>
-
-                <Button Text="{Binding ButtonText}" Command="{Binding SaveCommand}"
-                        BackgroundColor="{StaticResource Primary}" TextColor="White"
-                        CornerRadius="25" HeightRequest="50" FontAttributes="Bold" Margin="0,10,0,30"/>
-
-            </VerticalStackLayout>
-        </ScrollView>
     </Grid>
 </ContentPage>
