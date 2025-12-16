@@ -26,5 +26,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(MedCompatibility.Pages.Doctor.DoctorPatientCardPage),
             typeof(MedCompatibility.Pages.Doctor.DoctorPatientCardPage));
         Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
+        Routing.RegisterRoute(nameof(PrescriptionEditPage), typeof(PrescriptionEditPage));
     }
 }

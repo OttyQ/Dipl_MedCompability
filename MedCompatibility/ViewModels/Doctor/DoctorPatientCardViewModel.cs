@@ -6,6 +6,7 @@ using MedCompatibility.Models;
 using MedCompatibility.Pages.Shared;
 using MedCompatibility.Pages.Shared.Popups;
 using MedCompatibility.Services.Interfaces;
+using MedCompatibility.Pages.Doctor;
 
 namespace MedCompatibility.ViewModels.Doctor;
 
@@ -73,7 +74,7 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
             IsBusy = false;
         }
     }
-
+    
     [RelayCommand]
     private async Task AddMedicineAsync()
     {
@@ -82,58 +83,10 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
         var doctor = _session.CurrentUser;
         if (doctor == null) return;
 
-        // 1) Выбор препарата
-        var popup = new MedicineSelectionPopup(_medicineService, _scanService);
-        var result = await Shell.Current.ShowPopupAsync(popup);
-
-        if (result is string action && action == "SCAN")
+        await Shell.Current.GoToAsync(nameof(PrescriptionEditPage), new Dictionary<string, object>
         {
-            await Shell.Current.GoToAsync(nameof(CodeScannerPage));
-            return;
-        }
-
-        if (result is not medicine selectedMed) return;
-
-        // 2) Текущие назначения
-        var current = await _prescriptionService.GetPatientPrescriptionsAsync(Patient.UserId);
-
-        // 3) Проверка взаимодействий
-        var allConflicts = new List<interaction>();
-        foreach (var p in current)
-        {
-            if (p.MedicineId == selectedMed.MedicineId) continue;
-
-            var conflicts = await _interactionService.CheckInteractionAsync(p.MedicineId, selectedMed.MedicineId);
-            if (conflicts != null && conflicts.Count > 0)
-                allConflicts.AddRange(conflicts);
-        }
-
-        // 4) Popup с деталями
-        var critical = allConflicts.Any(c => (c.RiskLevel?.Severity ?? 0) >= 3);
-        if (allConflicts.Any())
-        {
-            var detailsPopup = new InteractionsDetailsPopup(allConflicts, critical);
-            var confirm = await Shell.Current.ShowPopupAsync(detailsPopup);
-
-            if (confirm is not bool ok || !ok)
-                return;
-        }
-
-        // 5) Добавляем назначение
-        var notes = critical
-            ? "⚠️ Назначено несмотря на критические взаимодействия"
-            : allConflicts.Any()
-                ? $"⚠ Назначено с учетом {allConflicts.Count} взаимодействий"
-                : null;
-
-        await _prescriptionService.AddPrescriptionAsync(
-            Patient.UserId,
-            doctor.UserId,
-            selectedMed.MedicineId,
-            notes);
-
-        // 6) Обновляем список
-        await LoadDataAsync();
+            ["PatientId"] = Patient.UserId
+        });
     }
 
     [RelayCommand]
@@ -148,5 +101,17 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
 
         _session.EndSession();
         await Shell.Current.GoToAsync("Login");
+    }
+    
+    [RelayCommand]
+    private async Task EditPrescriptionAsync(prescription p)
+    {
+        if (Patient == null || p == null) return;
+
+        await Shell.Current.GoToAsync(nameof(PrescriptionEditPage), new Dictionary<string, object>
+        {
+            ["PatientId"] = Patient.UserId,
+            ["PrescriptionId"] = p.PrescriptionId
+        });
     }
 }
