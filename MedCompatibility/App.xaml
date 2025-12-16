@@ -7,7 +7,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Application.Resources>
         <ResourceDictionary>
-
+            <local:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <m:StyleResource />
                 <!--  базовые стили Uranium Material  -->

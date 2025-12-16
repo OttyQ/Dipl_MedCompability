@@ -9,13 +9,18 @@
     <ContentPage.Resources>
         <ResourceDictionary>
 
-            <!--  Плитки действий: 1-в-1 как AdminHomePage  -->
+            <!--  Плитки действий  -->
             <Style TargetType="material:ButtonView" x:Key="ActionTile">
                 <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
                 <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius=16}" />
                 <Setter Property="Stroke" Value="#E6EAF0" />
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="Padding" Value="16" />
+
+                <!--  Убираем Fill — чтобы плитки не "уезжали" влево  -->
+                <!--<Setter Property="HorizontalOptions" Value="Fill" />-->
+                <!--<Setter Property="VerticalOptions" Value="Fill" />-->
+
                 <Setter Property="Shadow">
                     <Shadow
                         Brush="#90A4AE"
@@ -36,8 +41,11 @@
 
     <Grid>
 
-        <!--  Декоративный фон (как на админке)  -->
-        <AbsoluteLayout InputTransparent="True">
+        <!--  Декоративный фон  -->
+        <AbsoluteLayout
+            HorizontalOptions="FillAndExpand"
+            InputTransparent="True"
+            VerticalOptions="FillAndExpand">
 
             <BoxView
                 AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"
@@ -62,7 +70,6 @@
                 CornerRadius="310"
                 HeightRequest="620"
                 WidthRequest="620" />
-
         </AbsoluteLayout>
 
         <!--  Контент  -->
@@ -76,7 +83,7 @@
                 <!--  Шапка  -->
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
                     <VerticalStackLayout Spacing="4">
-                        <Label Style="{StaticResource HeaderLabel}" Text="Кабинет врача" />
+                        <Label Style="{StaticResource HeaderLabel}" Text="Здравствуйте!" />
                         <Label Style="{StaticResource SubHeaderLabel}" Text="{Binding WelcomeText}" />
                     </VerticalStackLayout>
 
@@ -88,9 +95,8 @@
                         VerticalOptions="Center" />
                 </Grid>
 
-                <!--  Статистика (как на админке)  -->
+                <!--  Статистика  -->
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-
                     <Frame
                         BackgroundColor="{StaticResource Primary}"
                         CornerRadius="18"
@@ -99,8 +105,10 @@
                         <VerticalStackLayout Spacing="6">
                             <Label
                                 FontSize="13"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
                                 Opacity="0.85"
-                                Text="Пациенты"
+                                Text="Мои пациенты"
                                 TextColor="White" />
                             <Label
                                 FontAttributes="Bold"
@@ -119,8 +127,10 @@
                         <VerticalStackLayout Spacing="6">
                             <Label
                                 FontSize="13"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
                                 Opacity="0.85"
-                                Text="Рецепты"
+                                Text="Выписано рецептов"
                                 TextColor="White" />
                             <Label
                                 FontAttributes="Bold"
@@ -129,7 +139,6 @@
                                 TextColor="White" />
                         </VerticalStackLayout>
                     </Frame>
-
                 </Grid>
 
                 <Label
@@ -139,10 +148,11 @@
                     Text="Быстрые действия"
                     TextColor="{StaticResource TextPrimary}" />
 
-                <!--  НИЖНИЕ КАРТОЧКИ: 1-в-1 как у админа  -->
+                <!--  Действия (сетка)  -->
                 <Grid
                     ColumnDefinitions="*,*"
                     ColumnSpacing="12"
+                    HorizontalOptions="FillAndExpand"
                     RowDefinitions="Auto,Auto"
                     RowSpacing="12">
 
@@ -150,10 +160,10 @@
                     <material:ButtonView
                         Grid.Column="0"
                         Grid.Row="0"
+                        HorizontalOptions="FillAndExpand"
                         Style="{StaticResource ActionTile}"
                         TappedCommand="{Binding GoToPatientsCommand}">
                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-
                             <Border
                                 BackgroundColor="{StaticResource IconBgPrimary}"
                                 HeightRequest="48"
@@ -172,26 +182,30 @@
                                 FontAttributes="Bold"
                                 FontSize="16"
                                 Grid.Row="1"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
                                 Text="Пациенты"
                                 TextColor="{StaticResource TextPrimary}" />
 
                             <Label
                                 FontSize="13"
                                 Grid.Row="2"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="2"
                                 Opacity="0.9"
-                                Text="Список и карточки"
+                                Text="Просмотр и ведение"
                                 TextColor="{StaticResource TextSecondary}" />
                         </Grid>
                     </material:ButtonView>
 
-                    <!--  Препараты  -->
+                    <!--  Лекарства  -->
                     <material:ButtonView
                         Grid.Column="1"
                         Grid.Row="0"
+                        HorizontalOptions="FillAndExpand"
                         Style="{StaticResource ActionTile}"
                         TappedCommand="{Binding GoToMedicinesCommand}">
                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-
                             <Border
                                 BackgroundColor="{StaticResource IconBgSecondary}"
                                 HeightRequest="48"
@@ -210,12 +224,16 @@
                                 FontAttributes="Bold"
                                 FontSize="16"
                                 Grid.Row="1"
-                                Text="Препараты"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
+                                Text="Лекарства"
                                 TextColor="{StaticResource TextPrimary}" />
 
                             <Label
                                 FontSize="13"
                                 Grid.Row="2"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="2"
                                 Opacity="0.9"
                                 Text="Справочник лекарств"
                                 TextColor="{StaticResource TextSecondary}" />
@@ -226,10 +244,10 @@
                     <material:ButtonView
                         Grid.Column="0"
                         Grid.Row="1"
+                        HorizontalOptions="FillAndExpand"
                         Style="{StaticResource ActionTile}"
                         TappedCommand="{Binding GoToInteractionsCommand}">
                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-
                             <Border
                                 BackgroundColor="{StaticResource IconBgWarning}"
                                 HeightRequest="48"
@@ -248,14 +266,18 @@
                                 FontAttributes="Bold"
                                 FontSize="16"
                                 Grid.Row="1"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
                                 Text="Взаимодействия"
                                 TextColor="{StaticResource TextPrimary}" />
 
                             <Label
                                 FontSize="13"
                                 Grid.Row="2"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="2"
                                 Opacity="0.9"
-                                Text="Проверка и справочник"
+                                Text="Проверка конфликтов"
                                 TextColor="{StaticResource TextSecondary}" />
                         </Grid>
                     </material:ButtonView>
@@ -264,10 +286,10 @@
                     <material:ButtonView
                         Grid.Column="1"
                         Grid.Row="1"
+                        HorizontalOptions="FillAndExpand"
                         Style="{StaticResource ActionTile}"
                         TappedCommand="{Binding GoToProfileCommand}">
                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-
                             <Border
                                 BackgroundColor="{StaticResource IconBgNeutral}"
                                 HeightRequest="48"
@@ -286,14 +308,18 @@
                                 FontAttributes="Bold"
                                 FontSize="16"
                                 Grid.Row="1"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
                                 Text="Профиль"
                                 TextColor="{StaticResource TextPrimary}" />
 
                             <Label
                                 FontSize="13"
                                 Grid.Row="2"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="2"
                                 Opacity="0.9"
-                                Text="Данные аккаунта"
+                                Text="Личные данные"
                                 TextColor="{StaticResource TextSecondary}" />
                         </Grid>
                     </material:ButtonView>
