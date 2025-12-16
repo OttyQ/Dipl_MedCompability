@@ -87,6 +87,8 @@ MedCompatibility/Pages/Doctor/DoctorPatientCardPage.xaml
 MedCompatibility/Pages/Doctor/DoctorPatientCardPage.xaml.cs
 MedCompatibility/Pages/Doctor/DoctorPatientsPage.xaml
 MedCompatibility/Pages/Doctor/DoctorPatientsPage.xaml.cs
+MedCompatibility/Pages/Doctor/PrescriptionEditPage.xaml
+MedCompatibility/Pages/Doctor/PrescriptionEditPage.xaml.cs
 MedCompatibility/Pages/Patient/CompatibilityPage.xaml
 MedCompatibility/Pages/Patient/CompatibilityPage.xaml.cs
 MedCompatibility/Pages/Patient/HistoryPage.xaml
@@ -176,6 +178,7 @@ MedCompatibility/ViewModels/Admin/UsersListViewModel.cs
 MedCompatibility/ViewModels/Doctor/DoctorHomeViewModel.cs
 MedCompatibility/ViewModels/Doctor/DoctorPatientCardViewModel.cs
 MedCompatibility/ViewModels/Doctor/DoctorPatientsViewModel.cs
+MedCompatibility/ViewModels/Doctor/PrescriptionEditViewModel.cs
 MedCompatibility/ViewModels/Patient/CompatibilityViewModel.cs
 MedCompatibility/ViewModels/Patient/HistoryViewModel.cs
 MedCompatibility/ViewModels/Patient/MedicineDetailsViewModel.cs
@@ -762,86 +765,6 @@ public partial class App : Application
     }
   }
 }
-````
-
-## File: MedCompatibility/AppShell.xaml
-````
-<?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="MedCompatibility.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:shared="clr-namespace:MedCompatibility.Pages.Shared"
-    xmlns:patient="clr-namespace:MedCompatibility.Pages.Patient" 
-    xmlns:admin="clr-namespace:MedCompatibility.Pages.Admin"
-    xmlns:doctor="clr-namespace:MedCompatibility.Pages.Doctor"
-    Shell.FlyoutBehavior="Disabled"
-    Title="MedCompatibility"
-    
-    Shell.BackgroundColor="{StaticResource Surface}"
-    Shell.ForegroundColor="{StaticResource TextPrimary}"
-    Shell.TitleColor="{StaticResource TextPrimary}"
-    Shell.DisabledColor="#B4FFFFFF"
-    Shell.UnselectedColor="{StaticResource TextSecondary}"
-    Shell.TabBarBackgroundColor="{StaticResource Surface}"
-    Shell.TabBarForegroundColor="{StaticResource Primary}"
-    Shell.TabBarUnselectedColor="{StaticResource TextSecondary}"
-    Shell.TabBarTitleColor="{StaticResource Primary}">
-
-    <Shell.Resources>
-        <Style x:Key="BaseStyle" TargetType="Element">
-            <Setter Property="Shell.BackgroundColor" Value="{StaticResource Surface}" /> 
-            <Setter Property="Shell.ForegroundColor" Value="{StaticResource TextPrimary}" />
-            <Setter Property="Shell.TitleColor" Value="{StaticResource TextPrimary}" />
-            <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
-            <Setter Property="Shell.UnselectedColor" Value="{StaticResource TextSecondary}" />
-            <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Surface}" />
-            <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}"/>
-            <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TextSecondary}"/>
-            <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}"/>
-        </Style>
-    </Shell.Resources>
-
-    <!-- 1. Экран входа -->
-    <ShellContent
-        Route="Login"
-        ContentTemplate="{DataTemplate shared:LoginPage}" 
-        Shell.NavBarIsVisible="False"
-        Shell.TabBarIsVisible="False" />
-
-    <!-- 2. Зона Пациента -->
-    <TabBar Route="Patient" Shell.NavBarIsVisible="False">
-        
-        <!-- Используем patient:HistoryPage -->
-        <ShellContent Title="История" Icon="icon_history.png"
-                      ContentTemplate="{DataTemplate patient:HistoryPage}" />
-        <!-- НОВАЯ ВКЛАДКА -->
-        <ShellContent Title="Проверка" Icon="icon_check.png" 
-                      ContentTemplate="{DataTemplate patient:CompatibilityPage}" />
-        <!-- Используем patient:ScanPage -->
-        <ShellContent Title="СКАНЕР" Icon="icon_qr.png"
-                      ContentTemplate="{DataTemplate patient:ScanPage}" />
-
-        <!-- Используем patient:ProfilePage -->
-        <ShellContent Title="Профиль" Icon="icon_profile.png"
-                      ContentTemplate="{DataTemplate patient:ProfilePage}" />
-                      
-    </TabBar>
-    
-    <!-- 3. Зона Админа -->
-    <ShellContent
-        Route="Admin"
-        ContentTemplate="{DataTemplate admin:AdminHomePage}"
-        Shell.NavBarIsVisible="False" 
-        Shell.TabBarIsVisible="False"/> 
-    
-    <ShellContent
-        Route="Doctor"
-        ContentTemplate="{DataTemplate doctor:DoctorHomePage}"
-        Shell.NavBarIsVisible="False" 
-        Shell.TabBarIsVisible="False"/> 
-
-</Shell>
 ````
 
 ## File: MedCompatibility/Configuration/ConnectionStringFactory.cs
@@ -2049,168 +1972,209 @@ public partial class DoctorPatientsPage : ContentPage
 }
 ````
 
-## File: MedCompatibility/Pages/Patient/CompatibilityPage.xaml
+## File: MedCompatibility/Pages/Doctor/PrescriptionEditPage.xaml
 ````
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             x:Class="MedCompatibility.Pages.Patient.CompatibilityPage"
-             Title="Совместимость"
-             BackgroundColor="{StaticResource Surface}">
+<ContentPage
+    Shell.NavBarIsVisible="False"
+    x:Class="MedCompatibility.Pages.Doctor.PrescriptionEditPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Doctor"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Grid RowDefinitions="Auto, *">
-        <!-- Шапка -->
-        <Grid Grid.Row="0" HeightRequest="60" BackgroundColor="{StaticResource Surface}">
-            <Label Text="Проверка совместимости" 
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource TextPrimary}"
-                   VerticalOptions="Center" 
-                   HorizontalOptions="Center"/>
+    <Grid
+        Padding="10"
+        RowDefinitions="Auto,*"
+        RowSpacing="12">
+
+        <!--  HEADER (как в других doctor/admin страницах)  -->
+        <Grid
+            ColumnDefinitions="48,*,48"
+            Grid.Row="0"
+            HeightRequest="48">
+
+            <Border
+                HeightRequest="48"
+                HorizontalOptions="Start"
+                Style="{StaticResource BackButton}"
+                WidthRequest="48">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Border.GestureRecognizers>
+
+                <Label
+                    FontSize="28"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,2"
+                    Text="←"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Center" />
+            </Border>
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                HorizontalOptions="Center"
+                Spacing="0"
+                VerticalOptions="Center">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="{Binding PageTitle}"
+                    TextColor="{StaticResource TextPrimary}" />
+            </VerticalStackLayout>
+
+            <!--  spacer  -->
+            <Border
+                Grid.Column="2"
+                HeightRequest="48"
+                Opacity="0"
+                WidthRequest="48" />
         </Grid>
 
-        <ScrollView Grid.Row="1" Padding="20">
-            <VerticalStackLayout Spacing="20">
+        <!--  CONTENT  -->
+        <ScrollView Grid.Row="1">
+            <!--  Контейнер задаёт ширину “как в списках”: на WinUI центр и 800, на Android/iOS во всю ширину  -->
+            <VerticalStackLayout Spacing="16">
 
-                <!-- Блок выбора лекарств -->
-                <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
-                    
-                    <!-- Лекарство А -->
-                    <Border Grid.Column="0" StrokeShape="RoundRectangle 10" 
-                            Stroke="{StaticResource Primary}" StrokeThickness="2"
-                            HeightRequest="120" BackgroundColor="White">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding SelectMedicineACommand}"/>
-                        </Border.GestureRecognizers>
-                        
-                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
-                            <Label Text="💊" FontSize="30" HorizontalOptions="Center"/>
-                            <Label Text="{Binding MedicineA.TradeName, TargetNullValue='Нажмите для выбора'}" 
-                                   TextColor="{StaticResource TextPrimary}" 
-                                   FontAttributes="Bold"
-                                   HorizontalTextAlignment="Center"
-                                   LineBreakMode="TailTruncation"/>
-                            <Label Text="Лекарство 1" FontSize="10" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </Border>
+                <VerticalStackLayout WidthRequest="{OnPlatform WinUI=800, Default=-1}">
+                    <VerticalStackLayout.HorizontalOptions>
+                        <OnPlatform x:TypeArguments="LayoutOptions">
+                            <On Platform="WinUI" Value="Center" />
+                            <On Platform="Android,iOS" Value="Fill" />
+                        </OnPlatform>
+                    </VerticalStackLayout.HorizontalOptions>
 
-                    <!-- Иконка плюса -->
-                    <Label Grid.Column="1" Text="+" FontSize="30" VerticalOptions="Center" HorizontalOptions="Center" TextColor="{StaticResource Primary}"/>
+                    <!--  Карточка формы (широкая на Android, ограниченная контейнером на WinUI)  -->
+                    <Frame Padding="20" Style="{StaticResource MedCard}">
+                        <VerticalStackLayout Spacing="14">
 
-                    <!-- Лекарство Б -->
-                    <Border Grid.Column="2" StrokeShape="RoundRectangle 10" 
-                            Stroke="{StaticResource Primary}" StrokeThickness="2"
-                            HeightRequest="120" BackgroundColor="White">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding SelectMedicineBCommand}"/>
-                        </Border.GestureRecognizers>
-                        
-                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
-                            <Label Text="💊" FontSize="30" HorizontalOptions="Center"/>
-                            <Label Text="{Binding MedicineB.TradeName, TargetNullValue='Нажмите для выбора'}" 
-                                   TextColor="{StaticResource TextPrimary}" 
-                                   FontAttributes="Bold"
-                                   HorizontalTextAlignment="Center"
-                                   LineBreakMode="TailTruncation"/>
-                            <Label Text="Лекарство 2" FontSize="10" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </Border>
-                </Grid>
+                            <!--  Препарат  -->
+                            <Label Style="{StaticResource Caption}" Text="Препарат" />
 
-                <!-- Кнопки действия -->
-                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
-                    <Button Grid.Column="0" Text="Проверить" 
-                            Command="{Binding CheckCommand}" 
-                            BackgroundColor="{StaticResource Primary}"
-                            TextColor="White"
-                            CornerRadius="10"
-                            FontAttributes="Bold"
-                            HeightRequest="50"/>
-                    
-                    <Button Grid.Column="1" Text="🗑️" 
-                            Command="{Binding ClearCommand}" 
-                            BackgroundColor="{StaticResource Surface}" 
-                            TextColor="Red"
-                            BorderColor="Red"
-                            BorderWidth="1"
-                            CornerRadius="10"
-                            WidthRequest="50"
-                            HeightRequest="50"/>
-                </Grid>
-
-                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
-
-                <!-- Статус -->
-                <Label Text="{Binding StatusMessage}" 
-                       TextColor="{StaticResource TextSecondary}" 
-                       HorizontalTextAlignment="Center"
-                       FontAttributes="Italic"/>
-
-                <!-- Результаты -->
-                <VerticalStackLayout IsVisible="{Binding HasConflicts}" Spacing="10">
-                    <Label Text="Найденные взаимодействия:" 
-                           FontSize="18" 
-                           FontAttributes="Bold" 
-                           TextColor="{StaticResource TextPrimary}"/>
-                    
-                    <CollectionView ItemsSource="{Binding FoundConflicts}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:interaction">
-                                <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" 
-                                        BackgroundColor="White" Margin="0,0,0,10" Padding="15">
-                                    <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
-                                    </Border.Shadow>
-
-                                    <VerticalStackLayout Spacing="8">
-                                        <!-- Заголовок с уровнем риска -->
-                                        <Grid ColumnDefinitions="*, Auto">
-                                            <Label Text="{Binding RiskLevel.Name}" 
-                                                   TextColor="Red" FontAttributes="Bold" FontSize="16"/>
-                                        </Grid>
-                                        
-                                        <!-- Вещества -->
-                                         <Label>
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="Вещества: " TextColor="{StaticResource TextSecondary}"/>
-                                                    <Span Text="{Binding SubstanceId1Navigation.Name}" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
-                                                    <Span Text=" ↔ " TextColor="{StaticResource TextSecondary}"/>
-                                                    <Span Text="{Binding SubstanceId2Navigation.Name}" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
-
-                                        <BoxView HeightRequest="1" Color="{StaticResource Secondary}" Opacity="0.3"/>
-
-                                        <!-- Описание -->
-                                        <Label Text="{Binding Description}" TextColor="{StaticResource TextPrimary}"/>
-                                        
-                                        <!-- Рекомендация -->
-                                        <Label Text="{Binding Recommendation, StringFormat='Рекомендация: {0}'}" 
-                                               TextColor="{StaticResource Primary}">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding Recommendation}" Value="{x:Null}">
-                                                    <Setter Property="IsVisible" Value="False"/>
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding Recommendation}" Value="">
-                                                    <Setter Property="IsVisible" Value="False"/>
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                    </VerticalStackLayout>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Border
+                                    Grid.Column="0"
+                                    HeightRequest="44"
+                                    Margin="0"
+                                    Padding="10,0"
+                                    Style="{StaticResource MedInputContainer}">
+                                    <Label
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding SelectedMedicine.TradeName, TargetNullValue='Не выбран'}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        VerticalOptions="Center" />
                                 </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+
+                                <Button
+                                    Command="{Binding PickMedicineCommand}"
+                                    Grid.Column="1"
+                                    HeightRequest="44"
+                                    Padding="18,0"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Text="Выбрать" />
+                            </Grid>
+
+                            <!--  Период  -->
+                            <Label Style="{StaticResource Caption}" Text="Период" />
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Style="{StaticResource Caption}" Text="Начало" />
+                                    <Border
+                                        HeightRequest="44"
+                                        Margin="0"
+                                        Padding="10,0"
+                                        Style="{StaticResource MedInputContainer}">
+                                        <DatePicker Date="{Binding StartDate}" Format="dd.MM.yyyy" />
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                    <Label Style="{StaticResource Caption}" Text="Окончание" />
+                                    <Border
+                                        HeightRequest="44"
+                                        Margin="0"
+                                        Padding="10,0"
+                                        Style="{StaticResource MedInputContainer}">
+                                        <DatePicker Date="{Binding EndDate}" Format="dd.MM.yyyy" />
+                                    </Border>
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <!--  Дозировка  -->
+                            <Label Style="{StaticResource Caption}" Text="Дозировка" />
+                            <Border
+                                HeightRequest="44"
+                                Padding="10,0"
+                                Style="{StaticResource MedInputContainer}">
+                                <Entry
+                                    Placeholder="Напр. 1 таб. 2 раза/день"
+                                    ReturnType="Done"
+                                    Text="{Binding Dosage}" />
+                            </Border>
+
+                            <!--  Заметки  -->
+                            <Label Style="{StaticResource Caption}" Text="Заметки (необязательно)" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                HeightRequest="140"
+                                Padding="12"
+                                Stroke="{StaticResource BorderLight}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1">
+                                <Editor
+                                    AutoSize="TextChanges"
+                                    BackgroundColor="Transparent"
+                                    Placeholder="Комментарий врача..."
+                                    Text="{Binding Notes}" />
+                            </Border>
+
+                            <!--  Ошибка  -->
+                            <Label
+                                FontSize="13"
+                                IsVisible="{Binding HasError}"
+                                Text="{Binding ErrorText}"
+                                TextColor="{StaticResource Error}" />
+
+                            <!--  Кнопки  -->
+                            <Button
+                                Command="{Binding SaveCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="Сохранить" />
+
+                            <Button
+                                BorderColor="{StaticResource Error}"
+                                Command="{Binding DeleteCommand}"
+                                IsVisible="{Binding IsEditMode}"
+                                Style="{StaticResource SecondaryButton}"
+                                Text="Удалить"
+                                TextColor="{StaticResource Error}" />
+
+                        </VerticalStackLayout>
+                    </Frame>
                 </VerticalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>
     </Grid>
 </ContentPage>
+````
+
+## File: MedCompatibility/Pages/Doctor/PrescriptionEditPage.xaml.cs
+````csharp
+using MedCompatibility.ViewModels.Doctor;
+
+namespace MedCompatibility.Pages.Doctor;
+
+public partial class PrescriptionEditPage : ContentPage
+{
+    public PrescriptionEditPage(PrescriptionEditViewModel vm)
+    {
+        InitializeComponent();
+        BindingContext = vm;
+    }
+}
 ````
 
 ## File: MedCompatibility/Pages/Patient/CompatibilityPage.xaml.cs
@@ -2227,124 +2191,6 @@ public partial class CompatibilityPage : ContentPage
         BindingContext = vm;
     }
 }
-````
-
-## File: MedCompatibility/Pages/Patient/HistoryPage.xaml
-````
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             x:Class="MedCompatibility.Pages.Patient.HistoryPage"
-             Title="История"
-             BackgroundColor="{StaticResource Surface}"
-             Shell.NavBarIsVisible="False"> <!-- Скрываем стандартный бар -->
-
-    <Grid RowDefinitions="Auto, *">
-        
-        <!-- 1. СВОЙ КРАСИВЫЙ ЗАГОЛОВОК -->
-        <Grid Grid.Row="0" HeightRequest="60" BackgroundColor="{StaticResource Surface}" Padding="20,0">
-            <Label Text="История проверок" 
-                   TextColor="{StaticResource TextPrimary}" 
-                   FontSize="22" 
-                   FontAttributes="Bold" 
-                   VerticalOptions="Center"/>
-        </Grid>
-
-        <!-- ВАРИАНТ ДЛЯ ПОЛЬЗОВАТЕЛЯ -->
-        <RefreshView Grid.Row="1" IsVisible="{Binding IsUser}" 
-                     Command="{Binding LoadHistoryCommand}" 
-                     IsRefreshing="{Binding IsBusy}">
-            
-            <CollectionView ItemsSource="{Binding HistoryItems}" 
-                            SelectionMode="None">
-                
-                <!-- Заглушка, если список пуст -->
-                <CollectionView.EmptyView>
-                    <VerticalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="Center">
-                        <Label Text="📜" FontSize="50" HorizontalOptions="Center"/>
-                        <Label Text="История пуста" 
-                               FontSize="18" TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center"/>
-                        <Label Text="Здесь появятся ваши сканирования" 
-                               FontSize="14" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
-                
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
-                </CollectionView.ItemsLayout>
-                
-                <!-- Отступы списка -->
-                <CollectionView.Header>
-                    <BoxView HeightRequest="10" Color="Transparent"/>
-                </CollectionView.Header>
-                <CollectionView.Footer>
-                    <BoxView HeightRequest="20" Color="Transparent"/>
-                </CollectionView.Footer>
-
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:scan">
-                        <!-- Карточка -->
-                        <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="15" Margin="15,0,15,0">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,4" Radius="8" Opacity="0.05"/>
-                            </Border.Shadow>
-                            
-                            <!-- ОБРАБОТЧИК НАЖАТИЯ -->
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=GoToDetailsCommand}" 
-                                                      CommandParameter="{Binding .}"/>
-                            </Border.GestureRecognizers>
-                            
-                            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" RowSpacing="5">
-                                <!-- Название лекарства -->
-                                <Label Text="{Binding Medicine.TradeName}" 
-                                       FontAttributes="Bold" FontSize="17" TextColor="{StaticResource TextPrimary}" 
-                                       LineBreakMode="TailTruncation"/>
-                                
-                                <!-- МНН (Состав) -->
-                                <Label Grid.Row="1" Text="{Binding Medicine.INN}" 
-                                       FontSize="13" TextColor="{StaticResource TextSecondary}" 
-                                       LineBreakMode="TailTruncation" MaxLines="2"/>
-                                
-                                <!-- Дата и время (справа) -->
-                                <VerticalStackLayout Grid.Column="1" Grid.RowSpan="2" VerticalOptions="Center" Spacing="2">
-                                    <Label Text="{Binding ScannedAt, StringFormat='{0:HH:mm}'}" 
-                                           HorizontalOptions="End" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
-                                    <Label Text="{Binding ScannedAt, StringFormat='{0:dd MMM}'}" 
-                                           HorizontalOptions="End" FontSize="11" TextColor="#999"/>
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </RefreshView>
-
-        <!-- ВАРИАНТ ДЛЯ ГОСТЯ -->
-        <Grid Grid.Row="1" IsVisible="{Binding IsGuest}" RowDefinitions="*, Auto, *" RowSpacing="20" Padding="30" BackgroundColor="{StaticResource Surface}">
-            <VerticalStackLayout Grid.Row="1" Spacing="20" VerticalOptions="Center">
-                <Border StrokeShape="RoundRectangle 40" HeightRequest="80" WidthRequest="80" BackgroundColor="#E0F7FA" StrokeThickness="0" HorizontalOptions="Center">
-                    <Label Text="🔒" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center"/>
-                </Border>
-                
-                <Label Text="История недоступна" 
-                       FontSize="20" FontAttributes="Bold" HorizontalTextAlignment="Center" TextColor="{StaticResource TextPrimary}"/>
-                
-                <Label Text="Войдите в аккаунт, чтобы сохранять историю проверок и иметь доступ к ней с любого устройства." 
-                       FontSize="15" HorizontalTextAlignment="Center" TextColor="{StaticResource TextSecondary}" LineHeight="1.2"/>
-                
-                <Button Text="Войти в аккаунт" 
-                        Command="{Binding GoToLoginCommand}"
-                        BackgroundColor="{StaticResource Primary}" TextColor="White"
-                        CornerRadius="25" HeightRequest="50" FontAttributes="Bold" 
-                        Shadow="{Shadow Brush={StaticResource Primary}, Offset='0,4', Radius=10, Opacity=0.4}"
-                        Margin="0,20,0,0" WidthRequest="200"/>
-            </VerticalStackLayout>
-        </Grid>
-    </Grid>
-</ContentPage>
 ````
 
 ## File: MedCompatibility/Pages/Patient/HistoryPage.xaml.cs
@@ -4313,154 +4159,6 @@ public partial class SelectSubstancePopup : Popup
 }
 ````
 
-## File: MedCompatibility/Pages/Shared/RegisterPage.xaml
-````
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Shared"
-             x:Class="MedCompatibility.Pages.Shared.RegisterPage"
-             Shell.NavBarIsVisible="False">
-
-    <ScrollView VerticalScrollBarVisibility="Never">
-        <Grid RowDefinitions="*" Padding="20">
-            
-            <VerticalStackLayout Spacing="25" 
-                                 VerticalOptions="Center" 
-                                 HorizontalOptions="Center">
-
-                <!-- Заголовок -->
-                <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
-                    <Label Text="Новый аккаунт" 
-                           Style="{StaticResource HeaderLabel}" 
-                           HorizontalTextAlignment="Center"/>
-                    <Label Text="Заполните данные пациента" 
-                           Style="{StaticResource SubHeaderLabel}" 
-                           HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
-
-                <!-- Карточка регистрации -->
-                <Frame Style="{StaticResource CardFrame}" WidthRequest="380">
-                    <VerticalStackLayout Spacing="15">
-
-                        <!-- Блок ФИО -->
-                        <VerticalStackLayout Spacing="10">
-                            
-                            <!-- Фамилия (на всю ширину) -->
-                            <VerticalStackLayout Spacing="6">
-                                <Label Text="Фамилия" TextColor="{StaticResource TextPrimary}" FontSize="13" FontAttributes="Bold"/>
-                                <Border Style="{StaticResource InputFrame}">
-                                    <Entry Text="{Binding LastName}" Placeholder="Иванов"/>
-                                </Border>
-                            </VerticalStackLayout>
-
-                            <!-- Имя и Отчество (в один ряд) -->
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                <VerticalStackLayout Spacing="6" Grid.Column="0">
-                                    <Label Text="Имя" TextColor="{StaticResource TextPrimary}" FontSize="13" FontAttributes="Bold"/>
-                                    <Border Style="{StaticResource InputFrame}">
-                                        <Entry Text="{Binding FirstName}" Placeholder="Иван"/>
-                                    </Border>
-                                </VerticalStackLayout>
-
-                                <VerticalStackLayout Spacing="6" Grid.Column="1">
-                                    <Label Text="Отчество" TextColor="{StaticResource TextPrimary}" FontSize="13" FontAttributes="Bold"/>
-                                    <Border Style="{StaticResource InputFrame}">
-                                        <Entry Text="{Binding MiddleName}" Placeholder="Иванович"/>
-                                    </Border>
-                                </VerticalStackLayout>
-                            </Grid>
-                            
-                        </VerticalStackLayout>
-
-                        <!-- Логин -->
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="Логин" TextColor="{StaticResource TextPrimary}" FontSize="13" FontAttributes="Bold"/>
-                            <Border Style="{StaticResource InputFrame}">
-                                <Entry Text="{Binding Login}" Placeholder="Придумайте логин"/>
-                            </Border>
-                        </VerticalStackLayout>
-
-                        <!-- Пароль -->
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="Пароль" TextColor="{StaticResource TextPrimary}" FontSize="13" FontAttributes="Bold"/>
-                            <Border Style="{StaticResource InputFrame}">
-                                <Entry Text="{Binding Password}" IsPassword="True" Placeholder="Минимум 6 символов"/>
-                            </Border>
-                        </VerticalStackLayout>
-                        
-                        <!-- Подтверждение пароля -->
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="Повторите пароль" TextColor="{StaticResource TextPrimary}" FontSize="13" FontAttributes="Bold"/>
-                            <Border Style="{StaticResource InputFrame}">
-                                <Entry Text="{Binding ConfirmPassword}" IsPassword="True" Placeholder="Пароль ещё раз"/>
-                            </Border>
-                        </VerticalStackLayout>
-                        <!-- Выбор роли -->
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="Тип аккаунта" TextColor="{StaticResource TextPrimary}" FontSize="13" FontAttributes="Bold"/>
-                            
-                            <!-- Рамка, идентичная Entry -->
-                            <Border Style="{StaticResource InputFrame}">
-                                <Picker  
-                                        ItemsSource="{Binding AvailableRoles}" 
-                                        SelectedItem="{Binding SelectedRole}"
-                                        TextColor="{StaticResource TextPrimary}"
-                                        TitleColor="{StaticResource TextSecondary}"
-                                        BackgroundColor="Transparent"
-                                        Margin="0"
-                                        HorizontalOptions="FillAndExpand"/>
-                            </Border>
-                            
-                            <!-- Инфо-сообщение (появляется при выборе Врача) -->
-                            <Border BackgroundColor="#E3F2FD" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10" Margin="0,5,0,0">
-                                <Border.Triggers>
-                                    <DataTrigger TargetType="Border" Binding="{Binding SelectedRole}" Value="Врач">
-                                        <Setter Property="IsVisible" Value="True"/>
-                                    </DataTrigger>
-                                    <!-- Скрыто для Пациента и когда ничего не выбрано -->
-                                    <DataTrigger TargetType="Border" Binding="{Binding SelectedRole}" Value="Пациент">
-                                        <Setter Property="IsVisible" Value="False"/>
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Border" Binding="{Binding SelectedRole}" Value="{x:Null}">
-                                        <Setter Property="IsVisible" Value="False"/>
-                                    </DataTrigger>
-                                </Border.Triggers>
-
-                                <Label Text="⚠️ Аккаунт врача требует подтверждения администратора" 
-                                       TextColor="{StaticResource Primary}" 
-                                       FontSize="11"/>
-                            </Border>
-                        </VerticalStackLayout>
-
-                        <!-- Ошибка -->
-                        <Label Text="{Binding ErrorMessage}" 
-                               TextColor="{StaticResource Error}" 
-                               IsVisible="{Binding IsErrorVisible}" 
-                               FontSize="13"
-                               HorizontalTextAlignment="Center"/>
-
-                        <!-- Кнопка Регистрации -->
-                        <Button Text="Зарегистрироваться" 
-                                Command="{Binding RegisterCommand}" 
-                                Style="{StaticResource PrimaryButton}" 
-                                Margin="0,10,0,0"/>
-
-                    </VerticalStackLayout>
-                </Frame>
-
-                <!-- Кнопка Назад -->
-                <Button Text="У меня уже есть аккаунт" 
-                        Command="{Binding GoBackCommand}" 
-                        Style="{StaticResource TextButton}"
-                        HorizontalOptions="Center"/>
-
-            </VerticalStackLayout>
-        </Grid>
-    </ScrollView>
-</ContentPage>
-````
-
 ## File: MedCompatibility/Pages/Shared/RegisterPage.xaml.cs
 ````csharp
 using MedCompatibility.ViewModels.Shared;
@@ -5110,19 +4808,6 @@ public interface IMedicineService
 }
 ````
 
-## File: MedCompatibility/Services/Interfaces/IPrescriptionService.cs
-````csharp
-using MedCompatibility.Models;
-
-namespace MedCompatibility.Services.Interfaces;
-
-public interface IPrescriptionService
-{
-    Task<List<prescription>> GetPatientPrescriptionsAsync(int patientId);
-    Task<prescription> AddPrescriptionAsync(int patientId, int doctorId, int medicineId, string? notes);
-}
-````
-
 ## File: MedCompatibility/Services/Interfaces/IScanService.cs
 ````csharp
 using MedCompatibility.Models;
@@ -5418,54 +5103,6 @@ public class MedicineService : IMedicineService
             .ToListAsync();
     }
 
-}
-````
-
-## File: MedCompatibility/Services/PrescriptionService.cs
-````csharp
-using MedCompatibility.Models;
-using MedCompatibility.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-
-namespace MedCompatibility.Services;
-
-public class PrescriptionService : IPrescriptionService
-{
-    private readonly IDbContextFactory<DrugContext> _contextFactory;
-
-    public PrescriptionService(IDbContextFactory<DrugContext> contextFactory)
-        => _contextFactory = contextFactory;
-
-    public async Task<List<prescription>> GetPatientPrescriptionsAsync(int patientId)
-    {
-        await using var ctx = await _contextFactory.CreateDbContextAsync();
-
-        return await ctx.prescriptions
-            .AsNoTracking()
-            .Where(p => p.PatientId == patientId)
-            .Include(p => p.Medicine)
-            .Include(p => p.Doctor)
-            .OrderByDescending(p => p.PrescribedAt)
-            .ToListAsync();
-    }
-
-    public async Task<prescription> AddPrescriptionAsync(int patientId, int doctorId, int medicineId, string? notes)
-    {
-        await using var ctx = await _contextFactory.CreateDbContextAsync();
-
-        var p = new prescription
-        {
-            PatientId = patientId,
-            DoctorId = doctorId,
-            MedicineId = medicineId,
-            Notes = notes,
-            PrescribedAt = DateTime.Now
-        };
-
-        ctx.prescriptions.Add(p);
-        await ctx.SaveChangesAsync();
-        return p;
-    }
 }
 ````
 
@@ -6409,6 +6046,262 @@ public partial class DoctorPatientsViewModel : ObservableObject
 }
 ````
 
+## File: MedCompatibility/ViewModels/Doctor/PrescriptionEditViewModel.cs
+````csharp
+using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MedCompatibility.Models;
+using MedCompatibility.Pages.Shared;
+using MedCompatibility.Pages.Shared.Popups;
+using MedCompatibility.Services.Interfaces;
+
+namespace MedCompatibility.ViewModels.Doctor;
+
+public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttributable
+{
+    private readonly IPrescriptionService _prescriptionService;
+    private readonly IInteractionService _interactionService;
+    private readonly IMedicineService _medicineService;
+    private readonly IScanService _scanService;
+    private readonly IUserSessionService _session;
+
+    private int _patientId;
+    private int? _prescriptionId;
+
+    [ObservableProperty] private medicine? selectedMedicine;
+    [ObservableProperty] private DateTime startDate = DateTime.Today;
+    [ObservableProperty] private DateTime endDate = DateTime.Today;
+    [ObservableProperty] private string dosage = "";
+    [ObservableProperty] private string? notes;
+
+    [ObservableProperty] private bool hasError;
+    [ObservableProperty] private string errorText = "";
+
+    public bool IsEditMode => _prescriptionId.HasValue;
+    public string PageTitle => IsEditMode ? "Редактирование" : "Новое назначение";
+
+    public PrescriptionEditViewModel(
+        IPrescriptionService prescriptionService,
+        IInteractionService interactionService,
+        IMedicineService medicineService,
+        IScanService scanService,
+        IUserSessionService session)
+    {
+        _prescriptionService = prescriptionService;
+        _interactionService = interactionService;
+        _medicineService = medicineService;
+        _scanService = scanService;
+        _session = session;
+    }
+
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("PatientId", out var pObj) && pObj is int pid)
+            _patientId = pid;
+
+        if (query.TryGetValue("PrescriptionId", out var prObj) && prObj is int prid)
+            _prescriptionId = prid;
+
+        // Возврат из CodeScannerPage: { "ScannedCode" : "..." } [file:58]
+        if (query.TryGetValue("ScannedCode", out var scObj))
+        {
+            var code = scObj?.ToString();
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                var med = await _medicineService.GetMedicineByGtinAsync(code);
+                if (med != null)
+                    SelectedMedicine = med;
+                else
+                    await Shell.Current.DisplayAlert("Не найдено", $"Препарат по коду {code} не найден.", "OK");
+            }
+        }
+
+        query.Clear();
+
+        if (IsEditMode)
+            await LoadForEditAsync();
+
+        OnPropertyChanged(nameof(IsEditMode));
+        OnPropertyChanged(nameof(PageTitle));
+    }
+
+    private async Task LoadForEditAsync()
+    {
+        var doctor = _session.CurrentUser;
+        if (doctor == null) return;
+
+        var p = await _prescriptionService.GetByIdAsync(_prescriptionId!.Value);
+        if (p == null)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", "Назначение не найдено.", "OK");
+            await Shell.Current.GoToAsync("..");
+            return;
+        }
+
+        if (p.DoctorId != doctor.UserId)
+        {
+            await Shell.Current.DisplayAlert("Доступ запрещён", "Редактировать может только автор назначения.", "OK");
+            await Shell.Current.GoToAsync("..");
+            return;
+        }
+
+        SelectedMedicine = p.Medicine;
+        StartDate = p.StartDate;
+        EndDate = p.EndDate;
+        Dosage = p.Dosage ?? "";
+        Notes = p.Notes;
+    }
+
+    [RelayCommand]
+    private async Task PickMedicineAsync()
+    {
+        var popup = new MedicineSelectionPopup(_medicineService, _scanService);
+        var result = await Shell.Current.ShowPopupAsync(popup);
+
+        // В попапе Scan = Close("SCAN") [file:58]
+        if (result is string action && action == "SCAN")
+        {
+            await Shell.Current.GoToAsync(nameof(CodeScannerPage));
+            return;
+        }
+
+        if (result is medicine med)
+            SelectedMedicine = med;
+    }
+
+    private bool Validate()
+    {
+        HasError = false;
+        ErrorText = "";
+
+        if (SelectedMedicine == null)
+            return Fail("Выберите препарат.");
+
+        if (string.IsNullOrWhiteSpace(Dosage))
+            return Fail("Укажите дозировку.");
+
+        if (StartDate.Date > EndDate.Date)
+            return Fail("Дата начала не может быть позже даты окончания.");
+
+        return true;
+
+        bool Fail(string text)
+        {
+            HasError = true;
+            ErrorText = text;
+            return false;
+        }
+    }
+
+    private async Task<bool> ConfirmIfConflictsAsync(int selectedMedicineId)
+    {
+        var current = await _prescriptionService.GetPatientPrescriptionsAsync(_patientId); // [file:58]
+
+        // Если редактируем — исключаем текущее назначение из сравнения
+        if (IsEditMode)
+            current = current.Where(p => p.PrescriptionId != _prescriptionId!.Value).ToList();
+
+        var allConflicts = new List<interaction>();
+
+        foreach (var p in current)
+        {
+            if (p.MedicineId == selectedMedicineId) continue;
+
+            var conflicts = await _interactionService.CheckInteractionAsync(p.MedicineId, selectedMedicineId); // [file:58]
+            if (conflicts != null && conflicts.Count > 0)
+                allConflicts.AddRange(conflicts);
+        }
+
+        // Чтобы не дублировать одинаковые interaction, если прилетели повторно
+        allConflicts = allConflicts
+            .GroupBy(x => x.InteractionId)
+            .Select(g => g.First())
+            .ToList();
+
+        if (!allConflicts.Any())
+            return true;
+
+        var isCritical = allConflicts.Any(c => (c.RiskLevel?.Severity ?? 0) >= 3); // [file:58]
+
+        var result = await Shell.Current.ShowPopupAsync(
+            new InteractionsDetailsPopup(allConflicts, isCritical));
+
+        return result is bool ok && ok;
+    }
+
+    [RelayCommand]
+    private async Task SaveAsync()
+    {
+        if (!Validate()) return;
+
+        var doctor = _session.CurrentUser;
+        if (doctor == null) return;
+
+        // ВОССТАНОВЛЕНО: проверяем взаимодействия перед сохранением [file:58]
+        if (!await ConfirmIfConflictsAsync(SelectedMedicine!.MedicineId))
+            return;
+
+        try
+        {
+            if (!IsEditMode)
+            {
+                await _prescriptionService.CreateAsync(
+                    _patientId,
+                    doctor.UserId,
+                    SelectedMedicine!.MedicineId,
+                    StartDate,
+                    EndDate,
+                    Dosage.Trim(),
+                    string.IsNullOrWhiteSpace(Notes) ? null : Notes.Trim());
+            }
+            else
+            {
+                await _prescriptionService.UpdateAsync(
+                    _prescriptionId!.Value,
+                    doctor.UserId,
+                    SelectedMedicine!.MedicineId,
+                    StartDate,
+                    EndDate,
+                    Dosage.Trim(),
+                    string.IsNullOrWhiteSpace(Notes) ? null : Notes.Trim());
+            }
+
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteAsync()
+    {
+        if (!IsEditMode) return;
+
+        var doctor = _session.CurrentUser;
+        if (doctor == null) return;
+
+        var confirm = await Shell.Current.DisplayAlert("Удаление", "Удалить назначение?", "Да", "Нет");
+        if (!confirm) return;
+
+        try
+        {
+            await _prescriptionService.DeleteAsync(_prescriptionId!.Value, doctor.UserId);
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+    }
+
+    [RelayCommand]
+    private async Task GoBackAsync() => await Shell.Current.GoToAsync("..");
+}
+````
+
 ## File: MedCompatibility/ViewModels/Patient/CompatibilityViewModel.cs
 ````csharp
 using System.Collections.ObjectModel;
@@ -6998,38 +6891,94 @@ public static class GoogleOAuthTest
 }
 ````
 
-## File: MedCompatibility/AppShell.xaml.cs
-````csharp
-using MedCompatibility.Pages.Admin;
-using MedCompatibility.Pages.Doctor;
-using MedCompatibility.Pages.Patient;
+## File: MedCompatibility/AppShell.xaml
+````
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    Shell.BackgroundColor="{StaticResource Surface}"
+    Shell.DisabledColor="#B4FFFFFF"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.ForegroundColor="{StaticResource TextPrimary}"
+    Shell.TabBarBackgroundColor="{StaticResource Surface}"
+    Shell.TabBarForegroundColor="{StaticResource Primary}"
+    Shell.TabBarTitleColor="{StaticResource Primary}"
+    Shell.TabBarUnselectedColor="{StaticResource TextSecondary}"
+    Shell.TitleColor="{StaticResource TextPrimary}"
+    Shell.UnselectedColor="{StaticResource TextSecondary}"
+    Title="MedCompatibility"
+    x:Class="MedCompatibility.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:admin="clr-namespace:MedCompatibility.Pages.Admin"
+    xmlns:doctor="clr-namespace:MedCompatibility.Pages.Doctor"
+    xmlns:patient="clr-namespace:MedCompatibility.Pages.Patient"
+    xmlns:shared="clr-namespace:MedCompatibility.Pages.Shared"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-namespace MedCompatibility;
-using MedCompatibility.Pages.Shared;
-public partial class AppShell : Shell
-{
-    public AppShell()
-    {
-        InitializeComponent();
-        Routing.RegisterRoute(nameof(RegisterPage), typeof(RegisterPage));
-        Routing.RegisterRoute("UsersList", typeof(Pages.Admin.UsersListPage));
-        Routing.RegisterRoute(nameof(Pages.Admin.MedicinesListPage), typeof(Pages.Admin.MedicinesListPage));
-        Routing.RegisterRoute(nameof(Pages.Admin.MedicineAddPage), typeof(Pages.Admin.MedicineAddPage));
-        Routing.RegisterRoute(nameof(CodeScannerPage), typeof(CodeScannerPage));
-        Routing.RegisterRoute(nameof(InteractionsListPage), typeof(InteractionsListPage));
-        Routing.RegisterRoute(nameof(InteractionAddPage), typeof(InteractionAddPage));
-        Routing.RegisterRoute(nameof(SystemLogsPage), typeof(SystemLogsPage));
-        Routing.RegisterRoute(nameof(CompatibilityPage), typeof(CompatibilityPage));
-        Routing.RegisterRoute(nameof(MedicineDetailsPage), typeof(MedicineDetailsPage));
-        Routing.RegisterRoute(nameof(DoctorHomePage), typeof(DoctorHomePage));
-        Routing.RegisterRoute(nameof(DoctorPatientsPage), typeof(DoctorPatientsPage));
-        Routing.RegisterRoute(nameof(Pages.Doctor.DoctorPatientCardPage),
-            typeof(Pages.Doctor.DoctorPatientCardPage));
-        Routing.RegisterRoute(nameof(MedCompatibility.Pages.Doctor.DoctorPatientCardPage),
-            typeof(MedCompatibility.Pages.Doctor.DoctorPatientCardPage));
-        Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
-    }
-}
+    <Shell.Resources>
+        <Style TargetType="Element" x:Key="BaseStyle">
+            <Setter Property="Shell.BackgroundColor" Value="{StaticResource Surface}" />
+            <Setter Property="Shell.ForegroundColor" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Shell.TitleColor" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+            <Setter Property="Shell.UnselectedColor" Value="{StaticResource TextSecondary}" />
+            <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Surface}" />
+            <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TextSecondary}" />
+            <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}" />
+        </Style>
+    </Shell.Resources>
+
+    <!--  1. Экран входа  -->
+    <ShellContent
+        ContentTemplate="{DataTemplate shared:LoginPage}"
+        Route="Login"
+        Shell.NavBarIsVisible="False"
+        Shell.TabBarIsVisible="False" />
+
+    <!--  2. Зона Пациента  -->
+    <TabBar Route="Patient" Shell.NavBarIsVisible="False">
+
+        <!--  Используем patient:HistoryPage  -->
+        <ShellContent
+            ContentTemplate="{DataTemplate patient:HistoryPage}"
+            Icon="icon_history.png"
+            Title="История" />
+        <!--  НОВАЯ ВКЛАДКА  -->
+        <ShellContent
+            ContentTemplate="{DataTemplate patient:CompatibilityPage}"
+            Icon="icon_check.png"
+            Title="Проверка" />
+        <!--  Используем patient:ScanPage  -->
+        <ShellContent
+            ContentTemplate="{DataTemplate patient:ScanPage}"
+            Icon="icon_qr.png"
+            Title="СКАНЕР" />
+
+        <!--  Используем patient:ProfilePage  -->
+        <ShellContent
+            ContentTemplate="{DataTemplate patient:ProfilePage}"
+            Icon="icon_profile.png"
+            Title="Профиль" />
+
+    </TabBar>
+
+    <!--  3. Зона Админа  -->
+    <ShellContent
+        ContentTemplate="{DataTemplate admin:AdminHomePage}"
+        Route="Admin"
+        Shell.NavBarIsVisible="False"
+        Shell.TabBarIsVisible="False" />
+
+    <ShellContent
+        ContentTemplate="{DataTemplate doctor:DoctorHomePage}"
+        Route="Doctor"
+        Shell.NavBarIsVisible="False"
+        Shell.TabBarIsVisible="False" />
+    
+    <ShellContent ContentTemplate="{DataTemplate doctor:PrescriptionEditPage}" Route="PrescriptionEditPage" Shell.NavBarIsVisible="False"
+                  Shell.TabBarIsVisible="False" />
+
+</Shell>
 ````
 
 ## File: MedCompatibility/MedCompatibility.csproj
@@ -9374,235 +9323,6 @@ public partial class DoctorHomePage : ContentPage
 }
 ````
 
-## File: MedCompatibility/Pages/Doctor/DoctorPatientCardPage.xaml
-````
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    BackgroundColor="{StaticResource AppBackground}"
-    Shell.NavBarIsVisible="False"
-    Title="Карта пациента"
-    x:Class="MedCompatibility.Pages.Doctor.DoctorPatientCardPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:models="clr-namespace:MedCompatibility.Models"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-
-    <Grid>
-        <!--  Фон  -->
-        <AbsoluteLayout InputTransparent="True">
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="210"
-                HeightRequest="420"
-                WidthRequest="420" />
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.95,0.30,520,520"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#140097A7"
-                CornerRadius="260"
-                HeightRequest="520"
-                WidthRequest="520" />
-        </AbsoluteLayout>
-
-        <Grid RowDefinitions="Auto,*">
-            <!--  Шапка  -->
-            <Grid
-                ColumnDefinitions="48,*"
-                Grid.Row="0"
-                HeightRequest="80"
-                Padding="16,10">
-                <Border
-                    BackgroundColor="{StaticResource Surface}"
-                    HeightRequest="42"
-                    StrokeShape="RoundRectangle 12"
-                    StrokeThickness="0"
-                    VerticalOptions="Start"
-                    WidthRequest="42">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
-                    </Border.GestureRecognizers>
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Offset="0,2"
-                            Opacity="0.1"
-                            Radius="4" />
-                    </Border.Shadow>
-                    <Label
-                        FontSize="26"
-                        HorizontalOptions="Center"
-                        Margin="0,0,0,4"
-                        Text="‹"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
-                </Border>
-
-                <VerticalStackLayout
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Margin="-48,0,0,0"
-                    Spacing="0"
-                    VerticalOptions="Center">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="20"
-                        HorizontalOptions="Center"
-                        Text="Карта пациента"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <Label
-                        FontSize="13"
-                        HorizontalOptions="Center"
-                        Text="Назначения и совместимость"
-                        TextColor="{StaticResource TextSecondary}" />
-                </VerticalStackLayout>
-            </Grid>
-
-            <!--  Контент  -->
-            <ScrollView Grid.Row="1" Padding="16,0">
-                <VerticalStackLayout
-                    HorizontalOptions="Fill"
-                    MaximumWidthRequest="800"
-                    Spacing="16">
-
-                    <!--  Инфо о пациенте  -->
-                    <Border
-                        BackgroundColor="{StaticResource Surface}"
-                        Padding="16"
-                        StrokeShape="RoundRectangle 20"
-                        StrokeThickness="0">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Offset="0,4"
-                                Opacity="0.05"
-                                Radius="8" />
-                        </Border.Shadow>
-                        <Grid ColumnDefinitions="60,*" ColumnSpacing="16">
-                            <!--  Иконка профиля  -->
-                            <Border
-                                BackgroundColor="#E3F2FD"
-                                HeightRequest="60"
-                                StrokeShape="RoundRectangle 30"
-                                StrokeThickness="0"
-                                WidthRequest="60">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="30"
-                                    HorizontalOptions="Center"
-                                    Text="👤"
-                                    TextColor="{StaticResource Primary}"
-                                    VerticalOptions="Center" />
-                            </Border>
-
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="18"
-                                    Text="{Binding PatientFullName}"
-                                    TextColor="{StaticResource TextPrimary}" />
-                                <Label
-                                    FontSize="14"
-                                    Text="{Binding PatientLogin, StringFormat='@{0}'}"
-                                    TextColor="{StaticResource TextSecondary}" />
-                            </VerticalStackLayout>
-                        </Grid>
-                    </Border>
-
-                    <!--  Кнопка добавить  -->
-                    <Button
-                        Command="{Binding AddMedicineCommand}"
-                        CornerRadius="14"
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        HeightRequest="54"
-                        Style="{StaticResource PrimaryButton}"
-                        Text="+ Добавить препарат">
-                        <Button.Shadow>
-                            <Shadow
-                                Brush="{StaticResource Primary}"
-                                Offset="0,4"
-                                Opacity="0.3"
-                                Radius="8" />
-                        </Button.Shadow>
-                    </Button>
-
-                    <BoxView Color="Transparent" HeightRequest="4" />
-
-                    <!--  Список назначений  -->
-                    <CollectionView
-                        EmptyView="Нет назначений"
-                        HorizontalOptions="Fill"
-                        ItemsSource="{Binding Prescriptions}"
-                        SelectionMode="None">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:prescription">
-                                <Border
-                                    BackgroundColor="{StaticResource Surface}"
-                                    Margin="0,0,0,12"
-                                    Padding="16"
-                                    StrokeShape="RoundRectangle 16"
-                                    StrokeThickness="0">
-                                    <Border.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Offset="0,4"
-                                            Opacity="0.05"
-                                            Radius="8" />
-                                    </Border.Shadow>
-
-                                    <Grid RowDefinitions="Auto,Auto" RowSpacing="6">
-                                        <!--  Верхняя строка: Название + Дата  -->
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <Label
-                                                FontAttributes="Bold"
-                                                FontSize="16"
-                                                Text="{Binding Medicine.TradeName}"
-                                                TextColor="{StaticResource TextPrimary}" />
-
-                                            <!--  Дата Badge  -->
-                                            <Border
-                                                BackgroundColor="#E8F5E9"
-                                                Grid.Column="1"
-                                                Padding="8,4"
-                                                StrokeShape="RoundRectangle 6"
-                                                StrokeThickness="0">
-                                                <Label
-                                                    FontAttributes="Bold"
-                                                    FontSize="11"
-                                                    Text="{Binding PrescribedAt, StringFormat='{0:dd.MM.yy}'}"
-                                                    TextColor="#2E7D32" />
-                                            </Border>
-                                        </Grid>
-
-                                        <!--  Нижняя строка: Врач  -->
-                                        <Label
-                                            FontSize="13"
-                                            Grid.Row="1"
-                                            TextColor="{StaticResource TextSecondary}">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span FontAttributes="Bold" Text="Врач: " />
-                                                    <Span Text="{Binding Doctor.LastName}" />
-                                                    <Span Text=" " />
-                                                    <Span Text="{Binding Doctor.FirstName}" />
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-
-                    <BoxView HeightRequest="40" />
-                </VerticalStackLayout>
-            </ScrollView>
-        </Grid>
-    </Grid>
-</ContentPage>
-````
-
 ## File: MedCompatibility/Pages/Doctor/DoctorPatientCardPage.xaml.cs
 ````csharp
 using MedCompatibility.ViewModels.Doctor;
@@ -9827,6 +9547,484 @@ public partial class DoctorPatientCardPage : ContentPage
                     <BoxView HeightRequest="20" />
                 </VerticalStackLayout>
             </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>
+````
+
+## File: MedCompatibility/Pages/Patient/CompatibilityPage.xaml
+````
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Title="Совместимость"
+    x:Class="MedCompatibility.Pages.Patient.CompatibilityPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid>
+        <!--  Декоративный фон (Пузыри)  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="1.0,-0.1,300,300"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="150" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="-0.1,0.9,400,400"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0590A4AE"
+                CornerRadius="200" />
+        </AbsoluteLayout>
+
+        <!--  Основной контент (Твой оригинальный код)  -->
+        <Grid RowDefinitions="Auto, *">
+
+            <!--  Шапка  -->
+            <Grid Grid.Row="0" HeightRequest="60">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Проверка совместимости"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <ScrollView Grid.Row="1" Padding="20">
+                <VerticalStackLayout Spacing="20">
+
+                    <!--  Блок выбора лекарств  -->
+                    <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
+
+                        <!--  Лекарство А  -->
+                        <Border
+                            BackgroundColor="White"
+                            Grid.Column="0"
+                            HeightRequest="120"
+                            Stroke="{StaticResource Primary}"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="2">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectMedicineACommand}" />
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout
+                                HorizontalOptions="Center"
+                                Spacing="5"
+                                VerticalOptions="Center">
+                                <Label
+                                    FontSize="30"
+                                    HorizontalOptions="Center"
+                                    Text="💊" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    HorizontalTextAlignment="Center"
+                                    LineBreakMode="TailTruncation"
+                                    Text="{Binding MedicineA.TradeName, TargetNullValue='Нажмите для выбора'}"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Label
+                                    FontSize="10"
+                                    HorizontalOptions="Center"
+                                    Text="Лекарство 1"
+                                    TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!--  Иконка плюса  -->
+                        <Label
+                            FontSize="30"
+                            Grid.Column="1"
+                            HorizontalOptions="Center"
+                            Text="+"
+                            TextColor="{StaticResource Primary}"
+                            VerticalOptions="Center" />
+
+                        <!--  Лекарство Б  -->
+                        <Border
+                            BackgroundColor="White"
+                            Grid.Column="2"
+                            HeightRequest="120"
+                            Stroke="{StaticResource Primary}"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="2">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectMedicineBCommand}" />
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout
+                                HorizontalOptions="Center"
+                                Spacing="5"
+                                VerticalOptions="Center">
+                                <Label
+                                    FontSize="30"
+                                    HorizontalOptions="Center"
+                                    Text="💊" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    HorizontalTextAlignment="Center"
+                                    LineBreakMode="TailTruncation"
+                                    Text="{Binding MedicineB.TradeName, TargetNullValue='Нажмите для выбора'}"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Label
+                                    FontSize="10"
+                                    HorizontalOptions="Center"
+                                    Text="Лекарство 2"
+                                    TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!--  Кнопки действия  -->
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                        <Button
+                            BackgroundColor="{StaticResource Primary}"
+                            Command="{Binding CheckCommand}"
+                            CornerRadius="10"
+                            FontAttributes="Bold"
+                            Grid.Column="0"
+                            HeightRequest="50"
+                            Text="Проверить"
+                            TextColor="White" />
+
+                        <Button
+                            BackgroundColor="{StaticResource Surface}"
+                            BorderColor="Red"
+                            BorderWidth="1"
+                            Command="{Binding ClearCommand}"
+                            CornerRadius="10"
+                            Grid.Column="1"
+                            HeightRequest="50"
+                            Text="🗑️"
+                            TextColor="Red"
+                            WidthRequest="50" />
+                    </Grid>
+
+                    <ActivityIndicator Color="{StaticResource Primary}" IsRunning="{Binding IsBusy}" />
+
+                    <!--  Статус  -->
+                    <Label
+                        FontAttributes="Italic"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding StatusMessage}"
+                        TextColor="{StaticResource TextSecondary}" />
+
+                    <!--  Результаты  -->
+                    <VerticalStackLayout IsVisible="{Binding HasConflicts}" Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Найденные взаимодействия:"
+                            TextColor="{StaticResource TextPrimary}" />
+
+                        <CollectionView ItemsSource="{Binding FoundConflicts}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:interaction">
+                                    <Border
+                                        BackgroundColor="White"
+                                        Margin="0,0,0,10"
+                                        Padding="15"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0">
+                                        <Border.Shadow>
+                                            <Shadow
+                                                Brush="Black"
+                                                Offset="0,2"
+                                                Opacity="0.1"
+                                                Radius="5" />
+                                        </Border.Shadow>
+
+                                        <VerticalStackLayout Spacing="8">
+                                            <!--  Заголовок с уровнем риска  -->
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding RiskLevel.Name}"
+                                                    TextColor="Red" />
+                                            </Grid>
+
+                                            <!--  Вещества  -->
+                                            <Label>
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Вещества: " TextColor="{StaticResource TextSecondary}" />
+                                                        <Span
+                                                            FontAttributes="Bold"
+                                                            Text="{Binding SubstanceId1Navigation.Name}"
+                                                            TextColor="{StaticResource TextPrimary}" />
+                                                        <Span Text=" ↔ " TextColor="{StaticResource TextSecondary}" />
+                                                        <Span
+                                                            FontAttributes="Bold"
+                                                            Text="{Binding SubstanceId2Navigation.Name}"
+                                                            TextColor="{StaticResource TextPrimary}" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+
+                                            <BoxView
+                                                Color="{StaticResource Secondary}"
+                                                HeightRequest="1"
+                                                Opacity="0.3" />
+
+                                            <!--  Описание  -->
+                                            <Label Text="{Binding Description}" TextColor="{StaticResource TextPrimary}" />
+
+                                            <!--  Рекомендация  -->
+                                            <Label Text="{Binding Recommendation, StringFormat='Рекомендация: {0}'}" TextColor="{StaticResource Primary}">
+                                                <Label.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding Recommendation}"
+                                                        TargetType="Label"
+                                                        Value="{x:Null}">
+                                                        <Setter Property="IsVisible" Value="False" />
+                                                    </DataTrigger>
+                                                    <DataTrigger
+                                                        Binding="{Binding Recommendation}"
+                                                        TargetType="Label"
+                                                        Value="">
+                                                        <Setter Property="IsVisible" Value="False" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>
+````
+
+## File: MedCompatibility/Pages/Patient/HistoryPage.xaml
+````
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
+    Title="История"
+    x:Class="MedCompatibility.Pages.Patient.HistoryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid>
+        <!--  Декоративный фон (Пузыри)  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.1,0.2,250,250"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="125" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.9,0.85,300,300"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="150" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.5,-0.1,200,200"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0A0097A7"
+                CornerRadius="100" />
+        </AbsoluteLayout>
+
+        <!--  Основной контент (Твой оригинальный код)  -->
+        <Grid RowDefinitions="Auto, *">
+
+            <!--  1. ЗАГОЛОВОК  -->
+            <Grid
+                BackgroundColor="Transparent"
+                Grid.Row="0"
+                HeightRequest="60"
+                Padding="20,0">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    Text="История проверок"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <!--  ВАРИАНТ ДЛЯ ПОЛЬЗОВАТЕЛЯ  -->
+            <RefreshView
+                Command="{Binding LoadHistoryCommand}"
+                Grid.Row="1"
+                IsRefreshing="{Binding IsBusy}"
+                IsVisible="{Binding IsUser}">
+
+                <CollectionView ItemsSource="{Binding HistoryItems}" SelectionMode="None">
+
+                    <!--  Заглушка, если список пуст  -->
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label
+                                FontSize="50"
+                                HorizontalOptions="Center"
+                                Text="📜" />
+                            <Label
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Text="История пуста"
+                                TextColor="{StaticResource TextPrimary}" />
+                            <Label
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                Text="Здесь появятся ваши сканирования"
+                                TextColor="{StaticResource TextSecondary}" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+
+                    <!--  Отступы списка  -->
+                    <CollectionView.Header>
+                        <BoxView Color="Transparent" HeightRequest="10" />
+                    </CollectionView.Header>
+                    <CollectionView.Footer>
+                        <BoxView Color="Transparent" HeightRequest="20" />
+                    </CollectionView.Footer>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:scan">
+                            <!--  Карточка  -->
+                            <Border
+                                BackgroundColor="White"
+                                Margin="15,0,15,0"
+                                Padding="15"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0">
+                                <Border.Shadow>
+                                    <Shadow
+                                        Brush="Black"
+                                        Offset="0,4"
+                                        Opacity="0.05"
+                                        Radius="8" />
+                                </Border.Shadow>
+
+                                <!--  ОБРАБОТЧИК НАЖАТИЯ  -->
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=GoToDetailsCommand}" CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid
+                                    ColumnDefinitions="*, Auto"
+                                    RowDefinitions="Auto, Auto"
+                                    RowSpacing="5">
+                                    <!--  Название лекарства  -->
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="17"
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding Medicine.TradeName}"
+                                        TextColor="{StaticResource TextPrimary}" />
+
+                                    <!--  МНН (Состав)  -->
+                                    <Label
+                                        FontSize="13"
+                                        Grid.Row="1"
+                                        LineBreakMode="TailTruncation"
+                                        MaxLines="2"
+                                        Text="{Binding Medicine.INN}"
+                                        TextColor="{StaticResource TextSecondary}" />
+
+                                    <!--  Дата и время (справа)  -->
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Grid.RowSpan="2"
+                                        Spacing="2"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            HorizontalOptions="End"
+                                            Text="{Binding ScannedAt, StringFormat='{0:HH:mm}'}"
+                                            TextColor="{StaticResource Primary}" />
+                                        <Label
+                                            FontSize="11"
+                                            HorizontalOptions="End"
+                                            Text="{Binding ScannedAt, StringFormat='{0:dd MMM}'}"
+                                            TextColor="#999" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+
+            <!--  ВАРИАНТ ДЛЯ ГОСТЯ  -->
+            <Grid
+                BackgroundColor="Transparent"
+                Grid.Row="1"
+                IsVisible="{Binding IsGuest}"
+                Padding="30"
+                RowDefinitions="*, Auto, *"
+                RowSpacing="20">
+                <VerticalStackLayout
+                    Grid.Row="1"
+                    Spacing="20"
+                    VerticalOptions="Center">
+                    <Border
+                        BackgroundColor="#E0F7FA"
+                        HeightRequest="80"
+                        HorizontalOptions="Center"
+                        StrokeShape="RoundRectangle 40"
+                        StrokeThickness="0"
+                        WidthRequest="80">
+                        <Label
+                            FontSize="36"
+                            HorizontalOptions="Center"
+                            Text="🔒"
+                            VerticalOptions="Center" />
+                    </Border>
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        Text="История недоступна"
+                        TextColor="{StaticResource TextPrimary}" />
+
+                    <Label
+                        FontSize="15"
+                        HorizontalTextAlignment="Center"
+                        LineHeight="1.2"
+                        Text="Войдите в аккаунт, чтобы сохранять историю проверок и иметь доступ к ней с любого устройства."
+                        TextColor="{StaticResource TextSecondary}" />
+
+                    <Button
+                        BackgroundColor="{StaticResource Primary}"
+                        Command="{Binding GoToLoginCommand}"
+                        CornerRadius="25"
+                        FontAttributes="Bold"
+                        HeightRequest="50"
+                        Margin="0,20,0,0"
+                        Text="Войти в аккаунт"
+                        TextColor="White"
+                        WidthRequest="200">
+                        <Button.Shadow>
+                            <Shadow
+                                Brush="{StaticResource Primary}"
+                                Offset="0,4"
+                                Opacity="0.4"
+                                Radius="10" />
+                        </Button.Shadow>
+                    </Button>
+                </VerticalStackLayout>
+            </Grid>
         </Grid>
     </Grid>
 </ContentPage>
@@ -10443,6 +10641,233 @@ public partial class LoginPage : ContentPage
 </toolkit:Popup>
 ````
 
+## File: MedCompatibility/Pages/Shared/RegisterPage.xaml
+````
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
+    x:Class="MedCompatibility.Pages.Shared.RegisterPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid>
+        <!--  Декоративный фон (Пузыри)  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="210"
+                HeightRequest="420"
+                WidthRequest="420" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.95,0.30,520,520"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="260"
+                HeightRequest="520"
+                WidthRequest="520" />
+        </AbsoluteLayout>
+
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <Grid Padding="20" RowDefinitions="*">
+
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    Spacing="25"
+                    VerticalOptions="Center">
+
+                    <!--  Заголовок  -->
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="5">
+                        <Label
+                            HorizontalTextAlignment="Center"
+                            Style="{StaticResource HeaderLabel}"
+                            Text="Новый аккаунт" />
+                        <Label
+                            HorizontalTextAlignment="Center"
+                            Style="{StaticResource SubHeaderLabel}"
+                            Text="Заполните данные для входа" />
+                    </VerticalStackLayout>
+
+                    <!--  Карточка регистрации  -->
+                    <Frame
+                        BackgroundColor="{StaticResource Surface}"
+                        CornerRadius="24"
+                        HasShadow="True"
+                        Padding="24"
+                        WidthRequest="380">
+                        <VerticalStackLayout Spacing="15">
+
+                            <!--  Блок ФИО  -->
+                            <VerticalStackLayout Spacing="10">
+
+                                <!--  Фамилия (на всю ширину)  -->
+                                <VerticalStackLayout Spacing="6">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        Text="Фамилия"
+                                        TextColor="{StaticResource TextPrimary}" />
+                                    <Border Style="{StaticResource InputFrame}">
+                                        <Entry Placeholder="Иванов" Text="{Binding LastName}" />
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <!--  Имя и Отчество (в один ряд)  -->
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="6">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="13"
+                                            Text="Имя"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                        <Border Style="{StaticResource InputFrame}">
+                                            <Entry Placeholder="Иван" Text="{Binding FirstName}" />
+                                        </Border>
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="13"
+                                            Text="Отчество"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                        <Border Style="{StaticResource InputFrame}">
+                                            <Entry Placeholder="Иванович" Text="{Binding MiddleName}" />
+                                        </Border>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                            </VerticalStackLayout>
+
+                            <!--  Логин  -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="13"
+                                    Text="Логин"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Border Style="{StaticResource InputFrame}">
+                                    <Entry Placeholder="Придумайте логин" Text="{Binding Login}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!--  Пароль  -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="13"
+                                    Text="Пароль"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Border Style="{StaticResource InputFrame}">
+                                    <Entry
+                                        IsPassword="True"
+                                        Placeholder="Минимум 6 символов"
+                                        Text="{Binding Password}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!--  Подтверждение пароля  -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="13"
+                                    Text="Повторите пароль"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Border Style="{StaticResource InputFrame}">
+                                    <Entry
+                                        IsPassword="True"
+                                        Placeholder="Пароль ещё раз"
+                                        Text="{Binding ConfirmPassword}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!--  Выбор роли  -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="13"
+                                    Text="Тип аккаунта"
+                                    TextColor="{StaticResource TextPrimary}" />
+
+                                <Border Style="{StaticResource InputFrame}">
+                                    <Picker
+                                        BackgroundColor="Transparent"
+                                        HorizontalOptions="Fill"
+                                        ItemsSource="{Binding AvailableRoles}"
+                                        SelectedItem="{Binding SelectedRole}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        TitleColor="{StaticResource TextSecondary}" />
+                                </Border>
+
+                                <!--  Инфо-сообщение (появляется при выборе Врача)  -->
+                                <Border
+                                    BackgroundColor="#E3F2FD"
+                                    Margin="0,5,0,0"
+                                    Padding="10"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="0">
+                                    <Border.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding SelectedRole}"
+                                            TargetType="Border"
+                                            Value="Врач">
+                                            <Setter Property="IsVisible" Value="True" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding SelectedRole}"
+                                            TargetType="Border"
+                                            Value="Пациент">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding SelectedRole}"
+                                            TargetType="Border"
+                                            Value="{x:Null}">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+
+                                    <Label
+                                        FontSize="11"
+                                        Text="⚠️ Аккаунт врача требует подтверждения администратора"
+                                        TextColor="{StaticResource Primary}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!--  Ошибка  -->
+                            <Label
+                                FontSize="13"
+                                HorizontalTextAlignment="Center"
+                                IsVisible="{Binding IsErrorVisible}"
+                                Text="{Binding ErrorMessage}"
+                                TextColor="{StaticResource Error}" />
+
+                            <!--  Кнопка Регистрации  -->
+                            <Button
+                                Command="{Binding RegisterCommand}"
+                                Margin="0,10,0,0"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="Зарегистрироваться" />
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!--  Кнопка Назад  -->
+                    <Button
+                        Command="{Binding GoBackCommand}"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource TextButton}"
+                        Text="У меня уже есть аккаунт" />
+
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>
+````
+
 ## File: MedCompatibility/Platforms/Android/MedCompatAuthCallbackActivity.cs
 ````csharp
 using Android.App;
@@ -11052,6 +11477,43 @@ public interface ILoadingService
 }
 ````
 
+## File: MedCompatibility/Services/Interfaces/IPrescriptionService.cs
+````csharp
+using MedCompatibility.Models;
+
+namespace MedCompatibility.Services.Interfaces;
+
+public interface IPrescriptionService
+{
+    Task<List<prescription>> GetPatientPrescriptionsAsync(int patientId);
+
+    Task<prescription?> GetByIdAsync(int prescriptionId);
+
+    // Создание (обязательные поля уже тут)
+    Task<prescription> CreateAsync(
+        int patientId,
+        int doctorId,
+        int medicineId,
+        DateTime startDate,
+        DateTime endDate,
+        string dosage,
+        string? notes);
+
+    // Редактирование (разрешено только создателю)
+    Task UpdateAsync(
+        int prescriptionId,
+        int doctorId,
+        int medicineId,
+        DateTime startDate,
+        DateTime endDate,
+        string dosage,
+        string? notes);
+
+    // Удаление (разрешено только создателю)
+    Task DeleteAsync(int prescriptionId, int doctorId);
+}
+````
+
 ## File: MedCompatibility/Services/LoadingService.cs
 ````csharp
 using CommunityToolkit.Maui.Views;
@@ -11102,6 +11564,117 @@ public class LoadingService : ILoadingService
     }
     
     public bool IsShown => _popup != null;
+}
+````
+
+## File: MedCompatibility/Services/PrescriptionService.cs
+````csharp
+using MedCompatibility.Models;
+using MedCompatibility.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+namespace MedCompatibility.Services;
+
+public class PrescriptionService : IPrescriptionService
+{
+    private readonly IDbContextFactory<DrugContext> _contextFactory;
+
+    public PrescriptionService(IDbContextFactory<DrugContext> contextFactory)
+    {
+        _contextFactory = contextFactory;
+    }
+
+    public async Task<List<prescription>> GetPatientPrescriptionsAsync(int patientId)
+    {
+        await using var ctx = await _contextFactory.CreateDbContextAsync();
+        return await ctx.prescriptions
+            .AsNoTracking()
+            .Where(p => p.PatientId == patientId)
+            .Include(p => p.Medicine)
+            .Include(p => p.Doctor)
+            .OrderByDescending(p => p.PrescribedAt)
+            .ToListAsync();
+    }
+
+    public async Task<prescription?> GetByIdAsync(int prescriptionId)
+    {
+        await using var ctx = await _contextFactory.CreateDbContextAsync();
+        return await ctx.prescriptions
+            .Include(p => p.Medicine)
+            .Include(p => p.Doctor)
+            .Include(p => p.Patient)
+            .FirstOrDefaultAsync(p => p.PrescriptionId == prescriptionId);
+    }
+
+    public async Task<prescription> CreateAsync(
+        int patientId,
+        int doctorId,
+        int medicineId,
+        DateTime startDate,
+        DateTime endDate,
+        string dosage,
+        string? notes)
+    {
+        await using var ctx = await _contextFactory.CreateDbContextAsync();
+
+        var p = new prescription
+        {
+            PatientId = patientId,
+            DoctorId = doctorId,
+            MedicineId = medicineId,
+            PrescribedAt = DateTime.Now,
+            StartDate = startDate,
+            EndDate = endDate,
+            Dosage = dosage,
+            Notes = notes
+        };
+
+        ctx.prescriptions.Add(p);
+        await ctx.SaveChangesAsync();
+        return p;
+    }
+
+    public async Task UpdateAsync(
+        int prescriptionId,
+        int doctorId,
+        int medicineId,
+        DateTime startDate,
+        DateTime endDate,
+        string dosage,
+        string? notes)
+    {
+        await using var ctx = await _contextFactory.CreateDbContextAsync();
+
+        var p = await ctx.prescriptions.FirstOrDefaultAsync(x => x.PrescriptionId == prescriptionId);
+        if (p == null) throw new Exception("Назначение не найдено.");
+
+        // Права: только автор
+        if (p.DoctorId != doctorId)
+            throw new UnauthorizedAccessException("Редактировать может только врач, который создал назначение.");
+
+        p.MedicineId = medicineId;
+        p.StartDate = startDate;
+        p.EndDate = endDate;
+        p.Dosage = dosage;
+        p.Notes = notes;
+
+        await ctx.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(int prescriptionId, int doctorId)
+    {
+        await using var ctx = await _contextFactory.CreateDbContextAsync();
+
+        var p = await ctx.prescriptions.FirstOrDefaultAsync(x => x.PrescriptionId == prescriptionId);
+        if (p == null) return;
+
+        // Права: только автор
+        if (p.DoctorId != doctorId)
+            throw new UnauthorizedAccessException("Удалять может только врач, который создал назначение.");
+
+        ctx.prescriptions.Remove(p);
+        await ctx.SaveChangesAsync();
+    }
 }
 ````
 
@@ -11671,162 +12244,6 @@ public partial class DoctorHomeViewModel : ObservableObject
     [RelayCommand] private Task GoToMedicinesAsync() => Shell.Current.GoToAsync(nameof(MedicinesListPage));
     [RelayCommand] private Task GoToInteractionsAsync() => Shell.Current.GoToAsync(nameof(InteractionsListPage));
     [RelayCommand] private Task GoToProfileAsync() => Shell.Current.GoToAsync(nameof(ProfilePage));
-}
-````
-
-## File: MedCompatibility/ViewModels/Doctor/DoctorPatientCardViewModel.cs
-````csharp
-using System.Collections.ObjectModel;
-using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using MedCompatibility.Models;
-using MedCompatibility.Pages.Shared;
-using MedCompatibility.Pages.Shared.Popups;
-using MedCompatibility.Services.Interfaces;
-
-namespace MedCompatibility.ViewModels.Doctor;
-
-public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttributable
-{
-    private readonly IPrescriptionService _prescriptionService;
-    private readonly IInteractionService _interactionService;
-    private readonly IMedicineService _medicineService;
-    private readonly IScanService _scanService;
-    private readonly IUserSessionService _session;
-
-    [ObservableProperty] private user? patient;
-    [ObservableProperty] private ObservableCollection<prescription> prescriptions = new();
-    [ObservableProperty] private bool isBusy;
-
-    public string PatientFullName =>
-        Patient == null ? "" : $"{Patient.LastName} {Patient.FirstName} {Patient.MiddleName}".Trim();
-
-    public string PatientLogin => Patient == null ? "" : $"@{Patient.Login}";
-
-    public DoctorPatientCardViewModel(
-        IPrescriptionService prescriptionService,
-        IInteractionService interactionService,
-        IMedicineService medicineService,
-        IScanService scanService,
-        IUserSessionService session)
-    {
-        _prescriptionService = prescriptionService;
-        _interactionService = interactionService;
-        _medicineService = medicineService;
-        _scanService = scanService;
-        _session = session;
-    }
-
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-        if (query.TryGetValue("SelectedPatient", out var obj) && obj is user u)
-        {
-            Patient = u;
-            OnPropertyChanged(nameof(PatientFullName));
-            OnPropertyChanged(nameof(PatientLogin));
-
-            // важно: грузим данные после установки Patient
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                if (LoadDataCommand.CanExecute(null))
-                    await LoadDataCommand.ExecuteAsync(null);
-            });
-        }
-    }
-
-    [RelayCommand]
-    public async Task LoadDataAsync()
-    {
-        if (Patient == null || IsBusy) return;
-
-        try
-        {
-            IsBusy = true;
-            var list = await _prescriptionService.GetPatientPrescriptionsAsync(Patient.UserId);
-            Prescriptions = new ObservableCollection<prescription>(list);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    private async Task AddMedicineAsync()
-    {
-        if (Patient == null) return;
-
-        var doctor = _session.CurrentUser;
-        if (doctor == null) return;
-
-        // 1) Выбор препарата
-        var popup = new MedicineSelectionPopup(_medicineService, _scanService);
-        var result = await Shell.Current.ShowPopupAsync(popup);
-
-        if (result is string action && action == "SCAN")
-        {
-            await Shell.Current.GoToAsync(nameof(CodeScannerPage));
-            return;
-        }
-
-        if (result is not medicine selectedMed) return;
-
-        // 2) Текущие назначения
-        var current = await _prescriptionService.GetPatientPrescriptionsAsync(Patient.UserId);
-
-        // 3) Проверка взаимодействий
-        var allConflicts = new List<interaction>();
-        foreach (var p in current)
-        {
-            if (p.MedicineId == selectedMed.MedicineId) continue;
-
-            var conflicts = await _interactionService.CheckInteractionAsync(p.MedicineId, selectedMed.MedicineId);
-            if (conflicts != null && conflicts.Count > 0)
-                allConflicts.AddRange(conflicts);
-        }
-
-        // 4) Popup с деталями
-        var critical = allConflicts.Any(c => (c.RiskLevel?.Severity ?? 0) >= 3);
-        if (allConflicts.Any())
-        {
-            var detailsPopup = new InteractionsDetailsPopup(allConflicts, critical);
-            var confirm = await Shell.Current.ShowPopupAsync(detailsPopup);
-
-            if (confirm is not bool ok || !ok)
-                return;
-        }
-
-        // 5) Добавляем назначение
-        var notes = critical
-            ? "⚠️ Назначено несмотря на критические взаимодействия"
-            : allConflicts.Any()
-                ? $"⚠ Назначено с учетом {allConflicts.Count} взаимодействий"
-                : null;
-
-        await _prescriptionService.AddPrescriptionAsync(
-            Patient.UserId,
-            doctor.UserId,
-            selectedMed.MedicineId,
-            notes);
-
-        // 6) Обновляем список
-        await LoadDataAsync();
-    }
-
-    [RelayCommand]
-    private async Task GoBackAsync()
-        => await Shell.Current.GoToAsync("..");
-
-    [RelayCommand]
-    private async Task LogoutAsync()
-    {
-        var confirm = await Shell.Current.DisplayAlert("Выход", "Выйти из аккаунта?", "Да", "Нет");
-        if (!confirm) return;
-
-        _session.EndSession();
-        await Shell.Current.GoToAsync("Login");
-    }
 }
 ````
 
@@ -12454,625 +12871,37 @@ public partial class RegisterViewModel : ObservableObject
 }
 ````
 
-## File: MedCompatibility/App.xaml
-````
-<?xml version="1.0" encoding="UTF-8" ?>
-<Application
-    x:Class="MedCompatibility.App"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:local="clr-namespace:MedCompatibility.Converters"
-    xmlns:m="clr-namespace:UraniumUI.Material.Resources;assembly=UraniumUI.Material"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <Application.Resources>
-        <ResourceDictionary>
-            <local:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <m:StyleResource />
-                <!--  базовые стили Uranium Material  -->
-            </ResourceDictionary.MergedDictionaries>
-
-            <!--  ==================== ЦВЕТОВАЯ ПАЛИТРА (Medical Theme) ====================  -->
-
-            <!--  Основные медицинские цвета  -->
-            <Color x:Key="Primary">#00796B</Color>
-            <!--  Бирюзовый (основной)  -->
-            <Color x:Key="PrimaryDark">#004D40</Color>
-            <!--  Темнее для нажатий  -->
-            <Color x:Key="PrimaryLight">#B2DFDB</Color>
-            <!--  Светлый для фонов  -->
-            <Color x:Key="Secondary">#0097A7</Color>
-            <!--  Акцент  -->
-
-            <!--  Фоны и поверхности  -->
-            <Color x:Key="AppBackground">#F5F8FA</Color>
-            <!--  Нейтральный светло-серый  -->
-            <Color x:Key="Surface">#FFFFFF</Color>
-            <!--  Белый для поверхностей (используется Shell/AppShell и старыми страницами)  -->
-            <Color x:Key="CardSurface">#FFFFFF</Color>
-            <!--  Белый для карточек  -->
-            <Color x:Key="SectionBackground">#FAFBFC</Color>
-            <!--  Еле заметный серый для секций  -->
-
-            <!--  Текст  -->
-            <Color x:Key="TextPrimary">#263238</Color>
-            <!--  Основной темный  -->
-            <Color x:Key="TextSecondary">#78909C</Color>
-            <!--  Серый для вспомогательного  -->
-            <Color x:Key="TextPlaceholder">#B0BEC5</Color>
-            <!--  Placeholder для input  -->
-            <Color x:Key="TextOnPrimary">#FFFFFF</Color>
-            <!--  Белый на кнопках  -->
-
-            <!--  Границы и разделители  -->
-            <Color x:Key="BorderLight">#E0E5E9</Color>
-            <Color x:Key="BorderMedium">#CFD8DC</Color>
-
-            <!--  Статусные цвета  -->
-            <Color x:Key="Success">#66BB6A</Color>
-            <Color x:Key="Error">#EF5350</Color>
-            <Color x:Key="Warning">#FFA726</Color>
-            <Color x:Key="Info">#42A5F5</Color>
-
-            <!--  ==================== ГРАДИЕНТ ДЛЯ ФОНА СТРАНИЦ ====================  -->
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" x:Key="PageBackgroundGradient">
-                <GradientStop Color="#E8F5F3" Offset="0.0" />
-                <!--  Светлый бирюзовый  -->
-                <GradientStop Color="#F5F8FA" Offset="0.4" />
-                <GradientStop Color="#FFFFFF" Offset="1.0" />
-            </LinearGradientBrush>
-
-            <!--  ==================== БАЗОВЫЕ СТИЛИ СТРАНИЦ ====================  -->
-
-            <Style ApplyToDerivedTypes="True" TargetType="ContentPage">
-                <Setter Property="Background" Value="{StaticResource PageBackgroundGradient}" />
-                <Setter Property="Padding" Value="0" />
-            </Style>
-
-            <!--  ==================== ТИПОГРАФИКА ====================  -->
-
-            <!--  Главный заголовок страницы  -->
-            <Style TargetType="Label" x:Key="PageTitle">
-                <Setter Property="FontSize" Value="26" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="FontFamily" Value="OpenSansSemibold" />
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-                <Setter Property="Margin" Value="0" />
-            </Style>
-
-            <!--  Заголовок секции  -->
-            <Style TargetType="Label" x:Key="SectionTitle">
-                <Setter Property="FontSize" Value="18" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-                <Setter Property="Margin" Value="0,0,0,10" />
-            </Style>
-
-            <!--  Подзаголовок / описание  -->
-            <Style TargetType="Label" x:Key="Subtitle">
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-                <Setter Property="LineHeight" Value="1.4" />
-            </Style>
-
-            <!--  Обычный текст  -->
-            <Style TargetType="Label" x:Key="BodyText">
-                <Setter Property="FontSize" Value="15" />
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-            </Style>
-
-            <!--  Подпись/caption  -->
-            <Style TargetType="Label" x:Key="Caption">
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-            </Style>
-
-            <!--  ==================== КАРТОЧКИ ====================  -->
-
-            <!--  Основная карточка (Frame)  -->
-            <Style TargetType="Frame" x:Key="MedCard">
-                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
-                <Setter Property="BorderColor" Value="Transparent" />
-                <Setter Property="CornerRadius" Value="16" />
-                <Setter Property="Padding" Value="16" />
-                <Setter Property="Margin" Value="0,0,0,12" />
-                <Setter Property="HasShadow" Value="False" />
-                <Setter Property="Shadow">
-                    <Shadow
-                        Brush="#90A4AE"
-                        Offset="0,4"
-                        Opacity="0.08"
-                        Radius="12" />
-                </Setter>
-            </Style>
-
-            <!--  Карточка для форм ввода (с большими отступами)  -->
-            <Style
-                BasedOn="{StaticResource MedCard}"
-                TargetType="Frame"
-                x:Key="MedFormCard">
-                <Setter Property="Padding" Value="20" />
-                <Setter Property="MaximumWidthRequest" Value="600" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-            </Style>
-
-            <!--  Карточка в списке (меньше отступы)  -->
-            <Style
-                BasedOn="{StaticResource MedCard}"
-                TargetType="Frame"
-                x:Key="MedListCard">
-                <Setter Property="Padding" Value="14" />
-                <Setter Property="Margin" Value="0,0,0,8" />
-            </Style>
-
-            <!--  ==================== ПОЛЯ ВВОДА ====================  -->
-
-            <!--  Контейнер поля (Border)  -->
-            <Style TargetType="Border" x:Key="MedInputContainer">
-                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-                <Setter Property="BackgroundColor" Value="#FAFAFA" />
-                <Setter Property="Padding" Value="14,0" />
-                <Setter Property="HeightRequest" Value="48" />
-                <Setter Property="Margin" Value="0,0,0,12" />
-            </Style>
-
-            <!--  Entry (само поле)  -->
-            <Style TargetType="Entry">
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-                <Setter Property="PlaceholderColor" Value="{StaticResource TextPlaceholder}" />
-                <Setter Property="BackgroundColor" Value="Transparent" />
-                <Setter Property="FontSize" Value="15" />
-                <Setter Property="VerticalOptions" Value="Center" />
-            </Style>
-
-            <!--  Editor (многострочный текст)  -->
-            <Style TargetType="Editor">
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-                <Setter Property="BackgroundColor" Value="#FAFAFA" />
-                <Setter Property="PlaceholderColor" Value="{StaticResource TextPlaceholder}" />
-                <Setter Property="FontSize" Value="15" />
-            </Style>
-
-            <!--  Picker  -->
-            <Style TargetType="Picker">
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-                <Setter Property="TitleColor" Value="{StaticResource TextSecondary}" />
-                <Setter Property="BackgroundColor" Value="Transparent" />
-                <Setter Property="FontSize" Value="15" />
-            </Style>
-
-            <!--  ==================== КНОПКИ ====================  -->
-
-            <!--  Основная кнопка (Primary)  -->
-            <Style TargetType="Button" x:Key="PrimaryButton">
-                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
-                <Setter Property="TextColor" Value="{StaticResource TextOnPrimary}" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="CornerRadius" Value="12" />
-                <Setter Property="HeightRequest" Value="50" />
-                <Setter Property="Margin" Value="0,4" />
-                <Setter Property="Shadow">
-                    <Shadow
-                        Brush="{StaticResource Primary}"
-                        Offset="0,4"
-                        Opacity="0.25"
-                        Radius="10" />
-                </Setter>
-                <Setter Property="VisualStateManager.VisualStateGroups">
-                    <VisualStateGroupList>
-                        <VisualStateGroup x:Name="CommonStates">
-                            <VisualState x:Name="Normal" />
-                            <VisualState x:Name="Pressed">
-                                <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
-                                    <Setter Property="Scale" Value="0.98" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </Setter>
-            </Style>
-
-            <!--  Вторичная кнопка (Outline)  -->
-            <Style TargetType="Button" x:Key="SecondaryButton">
-                <Setter Property="BackgroundColor" Value="Transparent" />
-                <Setter Property="TextColor" Value="{StaticResource Primary}" />
-                <Setter Property="BorderColor" Value="{StaticResource Primary}" />
-                <Setter Property="BorderWidth" Value="2" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="CornerRadius" Value="12" />
-                <Setter Property="HeightRequest" Value="50" />
-                <Setter Property="Margin" Value="0,4" />
-                <Setter Property="VisualStateManager.VisualStateGroups">
-                    <VisualStateGroupList>
-                        <VisualStateGroup x:Name="CommonStates">
-                            <VisualState x:Name="Normal" />
-                            <VisualState x:Name="Pressed">
-                                <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}" />
-                                    <Setter Property="Opacity" Value="0.9" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </Setter>
-            </Style>
-
-            <!--  Текстовая кнопка (без фона)  -->
-            <Style TargetType="Button" x:Key="TextButton">
-                <Setter Property="BackgroundColor" Value="Transparent" />
-                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="Padding" Value="8,6" />
-            </Style>
-
-            <!--  Кнопка "Назад" в хедере  -->
-            <Style TargetType="Border" x:Key="BackButton">
-                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
-                <Setter Property="StrokeThickness" Value="0" />
-                <Setter Property="HeightRequest" Value="42" />
-                <Setter Property="WidthRequest" Value="42" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Shadow">
-                    <Shadow
-                        Brush="#000000"
-                        Offset="0,2"
-                        Opacity="0.08"
-                        Radius="6" />
-                </Setter>
-            </Style>
-
-            <!--  ==================== HEADER СТРАНИЦЫ ====================  -->
-
-            <!--  Стиль для Grid-хедера с кнопкой "Назад"  -->
-            <Style TargetType="Grid" x:Key="PageHeader">
-                <Setter Property="HeightRequest" Value="60" />
-                <Setter Property="Padding" Value="16,10" />
-                <Setter Property="BackgroundColor" Value="Transparent" />
-            </Style>
-
-            <!--  ==================== СПИСКИ ====================  -->
-
-            <Style TargetType="CollectionView">
-                <Setter Property="BackgroundColor" Value="Transparent" />
-            </Style>
-
-            <!--  Разделитель в списке  -->
-            <Style TargetType="BoxView" x:Key="ListSeparator">
-                <Setter Property="HeightRequest" Value="1" />
-                <Setter Property="Color" Value="{StaticResource BorderLight}" />
-                <Setter Property="Margin" Value="0,8" />
-            </Style>
-
-            <!--  ==================== БЕЙДЖИ / МЕТКИ СТАТУСА ====================  -->
-
-            <Style TargetType="Border" x:Key="StatusBadge">
-                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
-                <Setter Property="StrokeThickness" Value="0" />
-                <Setter Property="Padding" Value="10,4" />
-                <Setter Property="HorizontalOptions" Value="Start" />
-            </Style>
-
-
-
-            <!--  ===== Modern surfaces (Admin) =====  -->
-
-            <Style TargetType="Border" x:Key="ElevatedCard">
-                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
-                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="StrokeShape" Value="RoundRectangle 18" />
-                <Setter Property="Padding" Value="16" />
-                <Setter Property="Shadow">
-                    <Shadow
-                        Brush="#000000"
-                        Offset="0,10"
-                        Opacity="0.06"
-                        Radius="22" />
-                </Setter>
-            </Style>
-
-            <Style TargetType="Label" x:Key="StatValue">
-                <Setter Property="FontSize" Value="28" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-            </Style>
-
-            <Style TargetType="Label" x:Key="StatCaption">
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-            </Style>
-
-            <Style
-                BasedOn="{StaticResource ElevatedCard}"
-                TargetType="Border"
-                x:Key="ActionTile">
-                <Setter Property="Padding" Value="14" />
-            </Style>
-
-            <Style
-                BasedOn="{StaticResource ElevatedCard}"
-                TargetType="Border"
-                x:Key="ActionRow">
-                <Setter Property="Padding" Value="14" />
-            </Style>
-
-            <Style TargetType="Label" x:Key="Chevron">
-                <Setter Property="Text" Value="›" />
-                <Setter Property="FontSize" Value="20" />
-                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-                <Setter Property="VerticalOptions" Value="Center" />
-            </Style>
-
-            <Style TargetType="Border" x:Key="ActionIconCircle">
-                <Setter Property="StrokeThickness" Value="0" />
-                <Setter Property="StrokeShape" Value="RoundRectangle 14" />
-                <Setter Property="HeightRequest" Value="44" />
-                <Setter Property="WidthRequest" Value="44" />
-                <Setter Property="Padding" Value="0" />
-            </Style>
-
-            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0" x:Key="HeaderGradient">
-                <GradientStop Color="#D9F4EE" Offset="0.0" />
-                <GradientStop Color="#E8F5F3" Offset="0.45" />
-                <GradientStop Color="#F5F8FA" Offset="1.0" />
-            </LinearGradientBrush>
-            <!--  ==================== КОНВЕРТЕРЫ ====================  -->
-
-            <local:BoolToTextConverter x:Key="BoolToTextConverter" />
-            <local:BoolToColorConverter x:Key="BoolToColorConverter" />
-            <local:IsNullConverter x:Key="IsNullConverter" />
-            <local:RoleToColorConverter x:Key="RoleToColorConverter" />
-            <local:StringFirstCharConverter x:Key="StringFirstCharConverter" />
-
-
-
-            <!--  Modern dashboard tokens  -->
-            <Thickness x:Key="SpacePage">20</Thickness>
-            <Thickness x:Key="SpaceCard">16</Thickness>
-
-            <Style TargetType="Border" x:Key="AdminCard">
-                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
-                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="StrokeShape" Value="RoundRectangle 14" />
-                <Setter Property="Padding" Value="{StaticResource SpaceCard}" />
-                <Setter Property="Shadow">
-                    <Shadow
-                        Brush="#000000"
-                        Offset="0,14"
-                        Opacity="0.06"
-                        Radius="26" />
-                </Setter>
-            </Style>
-
-            <Style TargetType="Label" x:Key="AdminStatNumber">
-                <Setter Property="FontSize" Value="32" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-            </Style>
-
-            <Style TargetType="Label" x:Key="AdminStatLabel">
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-            </Style>
-
-
-            <!--  ==================== BACKWARD COMPATIBILITY (алиасы для старого XAML) ====================  -->
-
-            <!--  Старые стили заголовков  -->
-            <Style TargetType="Label" x:Key="HeaderLabel">
-                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
-                <Setter Property="FontSize" Value="28" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="FontFamily" Value="OpenSansSemibold" />
-            </Style>
-
-            <Style TargetType="Label" x:Key="SubHeaderLabel">
-                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
-                <Setter Property="FontSize" Value="16" />
-            </Style>
-
-            <!--  Старая карточка CardFrame (используется в LoginPage, DoctorHomePage и др.)  -->
-            <Style TargetType="Frame" x:Key="CardFrame">
-                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
-                <Setter Property="CornerRadius" Value="24" />
-                <Setter Property="BorderColor" Value="Transparent" />
-                <Setter Property="Padding" Value="30" />
-                <Setter Property="MaximumWidthRequest" Value="420" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="HasShadow" Value="False" />
-                <Setter Property="Shadow">
-                    <Shadow
-                        Brush="#90A4AE"
-                        Offset="0,10"
-                        Opacity="0.15"
-                        Radius="30" />
-                </Setter>
-            </Style>
-
-            <!--  Старая рамка InputFrame для полей ввода  -->
-            <Style TargetType="Border" x:Key="InputFrame">
-                <Setter Property="Stroke" Value="#E0E0E0" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-                <Setter Property="BackgroundColor" Value="#FAFAFA" />
-                <Setter Property="Padding" Value="15,2" />
-                <Setter Property="HeightRequest" Value="52" />
-                <Setter Property="VisualStateManager.VisualStateGroups">
-                    <VisualStateGroupList>
-                        <VisualStateGroup x:Name="CommonStates">
-                            <VisualState x:Name="Normal" />
-                            <VisualState x:Name="PointerOver">
-                                <VisualState.Setters>
-                                    <Setter Property="Stroke" Value="#B0BEC5" />
-                                    <Setter Property="BackgroundColor" Value="#FFFFFF" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </Setter>
-            </Style>
-
-        </ResourceDictionary>
-    </Application.Resources>
-</Application>
-````
-
-## File: MedCompatibility/MauiProgram.cs
+## File: MedCompatibility/AppShell.xaml.cs
 ````csharp
-using System.Reflection;
-using MedCompatibility.Configuration;
-using MedCompatibility.Models;
-using MedCompatibility.Services;
-using MedCompatibility.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using CommunityToolkit.Maui;
+using MedCompatibility.Pages.Admin;
 using MedCompatibility.Pages.Doctor;
 using MedCompatibility.Pages.Patient;
-using MedCompatibility.Pages.Shared.Popups;
-using MedCompatibility.ViewModels.Admin;
-using MedCompatibility.ViewModels.Doctor;
-using MedCompatibility.ViewModels.Patient;
-using MedCompatibility.ViewModels.Shared;
-using UraniumUI;
-using ZXing.Net.Maui.Controls;
 
 namespace MedCompatibility;
-
-public static class MauiProgram
+using MedCompatibility.Pages.Shared;
+public partial class AppShell : Shell
 {
-    public static MauiApp CreateMauiApp()
+    public AppShell()
     {
-        var builder = MauiApp.CreateBuilder();
-
-        // 1) App + Fonts
-        builder
-            .UseMauiApp<App>()
-            .UseMauiCommunityToolkit()
-            .UseUraniumUI()          
-            .UseUraniumUIMaterial()  
-            .UseBarcodeReader()
-            .ConfigureFonts(fonts =>
-            {
-                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            });
-
-#if DEBUG
-        builder.Logging.AddDebug();
-#endif
-        
-        var a = Assembly.GetExecutingAssembly();
-        // Имя ресурса: "NamespaceПроекта.ИмяФайла"
-        // Если проект MedCompatibility и файл в корне:
-        using var stream = a.GetManifestResourceStream("MedCompatibility.appsettings.json");
-
-        if (stream != null)
-        {
-            var config = new ConfigurationBuilder()
-                .AddJsonStream(stream)
-                .AddEnvironmentVariables()
-                .Build();
-
-            builder.Configuration.AddConfiguration(config);
-        }
-        else
-        {
-            System.Diagnostics.Debug.WriteLine("ОШИБКА: appsettings.json не найден в ресурсах!");
-        }
-
-        builder.Services.Configure<DatabaseSettings>(
-            builder.Configuration.GetSection("Database"));
-
-        // 3) DB infrastructure
-        builder.Services.AddSingleton<IConnectionStringFactory, ConnectionStringFactory>();
-
-        builder.Services.AddDbContextFactory<DrugContext>((sp, options) =>
-        {
-            var factory = sp.GetRequiredService<IConnectionStringFactory>();
-            var cs = factory.CreateMySqlConnectionString();
-            var serverVersion = new MySqlServerVersion(new Version(8, 0, 44));
-            options.UseMySql(cs, serverVersion);
-        });
-        
-        // 4) Domain services (лучше Singleton, если внутри нет состояния)
-        builder.Services.AddSingleton<IAuthService, AuthService>();
-        builder.Services.AddSingleton<IUserService, UserService>();
-        builder.Services.AddSingleton<IDatabaseHealthService, DatabaseHealthService>();
-        builder.Services.AddSingleton<ILoadingService, LoadingService>();
-        builder.Services.AddSingleton<IMedicineService, MedicineService>();
-        builder.Services.AddSingleton<IInteractionService, InteractionService>();
-        builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
-        builder.Services.AddTransient<IScanService, ScanService>();
-        builder.Services.AddSingleton<IPrescriptionService, PrescriptionService>();
-        builder.Services.AddSingleton<IDoctorStatsService, DoctorStatsService>();
-        
-
-        // 5) ViewModels
-        builder.Services.AddTransient<MedCompatibility.Pages.Shared.Popups.PatientSearchPopup>();
-        builder.Services.AddTransient<LoginViewModel>();
-        builder.Services.AddTransient<RegisterViewModel>();
-        builder.Services.AddTransient<UsersListViewModel>();
-        builder.Services.AddTransient<AdminHomeViewModel>();
-        builder.Services.AddTransient<MedicinesListViewModel>();
-        builder.Services.AddTransient<MedicineAddViewModel>();
-        builder.Services.AddTransient<InteractionsListViewModel>();
-        builder.Services.AddTransient<InteractionAddViewModel>();
-        builder.Services.AddTransient<ScanPageViewModel>();
-        builder.Services.AddTransient<HistoryViewModel>();
-        builder.Services.AddTransient<ProfileViewModel>();
-        builder.Services.AddTransient<SystemLogsViewModel>();
-        builder.Services.AddTransient<CompatibilityViewModel>();
-        builder.Services.AddTransient<MedicineDetailsViewModel>();
-        builder.Services.AddTransient<DoctorHomeViewModel>();
-        builder.Services.AddTransient<DoctorPatientsViewModel>();
-        
-
-
-        // 6) Pages
-        builder.Services.AddTransient<Pages.Shared.LoginPage>();
-        builder.Services.AddTransient<Pages.Shared.RegisterPage>();
-
-        builder.Services.AddTransient<ScanPage>();
-        builder.Services.AddTransient<HistoryPage>();
-        builder.Services.AddTransient<ProfilePage>();
-        builder.Services.AddTransient<CompatibilityPage>();
-        builder.Services.AddTransient<MedicineDetailsPage>();
-
-        builder.Services.AddTransient<Pages.Admin.AdminHomePage>();
-        builder.Services.AddTransient<Pages.Admin.UsersListPage>();
-        builder.Services.AddTransient<Pages.Admin.MedicinesListPage>();
-        builder.Services.AddTransient<Pages.Admin.MedicineAddPage>();
-        builder.Services.AddTransient<Pages.Admin.InteractionsListPage>();
-        builder.Services.AddTransient<Pages.Admin.InteractionAddPage>();
-        builder.Services.AddTransient<Pages.Admin.SystemLogsPage>();
-        builder.Services.AddTransient<DoctorHomePage>();
-        builder.Services.AddTransient<DoctorPatientsPage>();
-        
-        builder.Services.AddTransient<MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel>();
-        builder.Services.AddTransient<MedCompatibility.Pages.Doctor.DoctorPatientCardPage>();
-        
-
-        // 7) UI handlers (Entry borderless)
-        Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("Borderless", (handler, view) =>
-        {
-#if ANDROID
-            handler.PlatformView.BackgroundTintList =
-                Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
-            handler.PlatformView.Background = null;
-#elif WINDOWS
-            handler.PlatformView.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
-            handler.PlatformView.FocusVisualMargin = new Microsoft.UI.Xaml.Thickness(0);
-#endif
-        });
-
-        return builder.Build();
+        InitializeComponent();
+        Routing.RegisterRoute(nameof(RegisterPage), typeof(RegisterPage));
+        Routing.RegisterRoute("UsersList", typeof(Pages.Admin.UsersListPage));
+        Routing.RegisterRoute(nameof(Pages.Admin.MedicinesListPage), typeof(Pages.Admin.MedicinesListPage));
+        Routing.RegisterRoute(nameof(Pages.Admin.MedicineAddPage), typeof(Pages.Admin.MedicineAddPage));
+        Routing.RegisterRoute(nameof(CodeScannerPage), typeof(CodeScannerPage));
+        Routing.RegisterRoute(nameof(InteractionsListPage), typeof(InteractionsListPage));
+        Routing.RegisterRoute(nameof(InteractionAddPage), typeof(InteractionAddPage));
+        Routing.RegisterRoute(nameof(SystemLogsPage), typeof(SystemLogsPage));
+        Routing.RegisterRoute(nameof(CompatibilityPage), typeof(CompatibilityPage));
+        Routing.RegisterRoute(nameof(MedicineDetailsPage), typeof(MedicineDetailsPage));
+        Routing.RegisterRoute(nameof(DoctorHomePage), typeof(DoctorHomePage));
+        Routing.RegisterRoute(nameof(DoctorPatientsPage), typeof(DoctorPatientsPage));
+        Routing.RegisterRoute(nameof(Pages.Doctor.DoctorPatientCardPage),
+            typeof(Pages.Doctor.DoctorPatientCardPage));
+        Routing.RegisterRoute(nameof(MedCompatibility.Pages.Doctor.DoctorPatientCardPage),
+            typeof(MedCompatibility.Pages.Doctor.DoctorPatientCardPage));
+        Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
+        Routing.RegisterRoute(nameof(PrescriptionEditPage), typeof(PrescriptionEditPage));
     }
 }
 ````
@@ -25674,4 +25503,990 @@ public partial class RegisterViewModel : ObservableObject
 
     </Grid>
 </ContentPage>
+````
+
+## File: MedCompatibility/Pages/Doctor/DoctorPatientCardPage.xaml
+````
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
+    Title="Карта пациента"
+    x:Class="MedCompatibility.Pages.Doctor.DoctorPatientCardPage"
+    x:Name="RootPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid>
+        <!--  Фон  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="210"
+                HeightRequest="420"
+                WidthRequest="420" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.95,0.30,520,520"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="260"
+                HeightRequest="520"
+                WidthRequest="520" />
+        </AbsoluteLayout>
+
+        <Grid RowDefinitions="Auto,*">
+            <!--  Шапка  -->
+            <Grid
+                ColumnDefinitions="48,*"
+                Grid.Row="0"
+                HeightRequest="80"
+                Padding="16,10">
+                <Border
+                    BackgroundColor="{StaticResource Surface}"
+                    HeightRequest="42"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    VerticalOptions="Start"
+                    WidthRequest="42">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                    </Border.GestureRecognizers>
+                    <Border.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Offset="0,2"
+                            Opacity="0.1"
+                            Radius="4" />
+                    </Border.Shadow>
+                    <Label
+                        FontSize="26"
+                        HorizontalOptions="Center"
+                        Margin="0,0,0,4"
+                        Text="‹"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center" />
+                </Border>
+
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    HorizontalOptions="Center"
+                    Margin="-48,0,0,0"
+                    Spacing="0"
+                    VerticalOptions="Center">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Карта пациента"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <Label
+                        FontSize="13"
+                        HorizontalOptions="Center"
+                        Text="Назначения и совместимость"
+                        TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!--  Контент  -->
+            <ScrollView Grid.Row="1" Padding="16,0">
+                <VerticalStackLayout
+                    HorizontalOptions="Fill"
+                    MaximumWidthRequest="800"
+                    Spacing="16">
+
+                    <!--  Инфо о пациенте  -->
+                    <Border
+                        BackgroundColor="{StaticResource Surface}"
+                        Padding="16"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,4"
+                                Opacity="0.05"
+                                Radius="8" />
+                        </Border.Shadow>
+                        <Grid ColumnDefinitions="60,*" ColumnSpacing="16">
+                            <!--  Иконка профиля  -->
+                            <Border
+                                BackgroundColor="#E3F2FD"
+                                HeightRequest="60"
+                                StrokeShape="RoundRectangle 30"
+                                StrokeThickness="0"
+                                WidthRequest="60">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="30"
+                                    HorizontalOptions="Center"
+                                    Text="👤"
+                                    TextColor="{StaticResource Primary}"
+                                    VerticalOptions="Center" />
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    Text="{Binding PatientFullName}"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Label
+                                    FontSize="14"
+                                    Text="{Binding PatientLogin, StringFormat='@{0}'}"
+                                    TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!--  Кнопка добавить  -->
+                    <Button
+                        Command="{Binding AddMedicineCommand}"
+                        CornerRadius="14"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        HeightRequest="54"
+                        Style="{StaticResource PrimaryButton}"
+                        Text="+ Добавить препарат">
+                        <Button.Shadow>
+                            <Shadow
+                                Brush="{StaticResource Primary}"
+                                Offset="0,4"
+                                Opacity="0.3"
+                                Radius="8" />
+                        </Button.Shadow>
+                    </Button>
+
+                    <BoxView Color="Transparent" HeightRequest="4" />
+
+                    <!--  Список назначений  -->
+                    <CollectionView
+                        EmptyView="Нет назначений"
+                        HorizontalOptions="Fill"
+                        ItemsSource="{Binding Prescriptions}"
+                        SelectionMode="None">
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:prescription">
+                                <Border
+                                    BackgroundColor="{StaticResource Surface}"
+                                    Margin="0,0,0,12"
+                                    Padding="16"
+                                    StrokeShape="RoundRectangle 16"
+                                    StrokeThickness="0">
+
+                                    <!--  ТАП по карточке = открыть редактирование  -->
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.EditPrescriptionCommand}"
+                                            CommandParameter="{Binding .}"
+                                            x:DataType="{x:Null}" />
+                                    </Border.GestureRecognizers>
+
+                                    <Border.Shadow>
+                                        <Shadow
+                                            Brush="Black"
+                                            Offset="0,4"
+                                            Opacity="0.05"
+                                            Radius="8" />
+                                    </Border.Shadow>
+
+                                    <Grid RowDefinitions="Auto,Auto" RowSpacing="6">
+                                        <!--  Верхняя строка: Название + Дата  -->
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                Text="{Binding Medicine.TradeName}"
+                                                TextColor="{StaticResource TextPrimary}" />
+
+                                            <!--  Дата Badge  -->
+                                            <Border
+                                                BackgroundColor="#E8F5E9"
+                                                Grid.Column="1"
+                                                Padding="8,4"
+                                                StrokeShape="RoundRectangle 6"
+                                                StrokeThickness="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="11"
+                                                    Text="{Binding PrescribedAt, StringFormat='{0:dd.MM.yy}'}"
+                                                    TextColor="#2E7D32" />
+                                            </Border>
+                                        </Grid>
+
+                                        <!--  Нижняя строка: Врач  -->
+                                        <Label
+                                            FontSize="13"
+                                            Grid.Row="1"
+                                            TextColor="{StaticResource TextSecondary}">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span FontAttributes="Bold" Text="Врач: " />
+                                                    <Span Text="{Binding Doctor.LastName}" />
+                                                    <Span Text=" " />
+                                                    <Span Text="{Binding Doctor.FirstName}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <BoxView HeightRequest="40" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>
+````
+
+## File: MedCompatibility/ViewModels/Doctor/DoctorPatientCardViewModel.cs
+````csharp
+using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MedCompatibility.Models;
+using MedCompatibility.Pages.Shared;
+using MedCompatibility.Pages.Shared.Popups;
+using MedCompatibility.Services.Interfaces;
+using MedCompatibility.Pages.Doctor;
+
+namespace MedCompatibility.ViewModels.Doctor;
+
+public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttributable
+{
+    private readonly IPrescriptionService _prescriptionService;
+    private readonly IInteractionService _interactionService;
+    private readonly IMedicineService _medicineService;
+    private readonly IScanService _scanService;
+    private readonly IUserSessionService _session;
+
+    [ObservableProperty] private user? patient;
+    [ObservableProperty] private ObservableCollection<prescription> prescriptions = new();
+    [ObservableProperty] private bool isBusy;
+
+    public string PatientFullName =>
+        Patient == null ? "" : $"{Patient.LastName} {Patient.FirstName} {Patient.MiddleName}".Trim();
+
+    public string PatientLogin => Patient == null ? "" : $"@{Patient.Login}";
+
+    public DoctorPatientCardViewModel(
+        IPrescriptionService prescriptionService,
+        IInteractionService interactionService,
+        IMedicineService medicineService,
+        IScanService scanService,
+        IUserSessionService session)
+    {
+        _prescriptionService = prescriptionService;
+        _interactionService = interactionService;
+        _medicineService = medicineService;
+        _scanService = scanService;
+        _session = session;
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("SelectedPatient", out var obj) && obj is user u)
+        {
+            Patient = u;
+            OnPropertyChanged(nameof(PatientFullName));
+            OnPropertyChanged(nameof(PatientLogin));
+
+            // важно: грузим данные после установки Patient
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (LoadDataCommand.CanExecute(null))
+                    await LoadDataCommand.ExecuteAsync(null);
+            });
+        }
+    }
+
+    [RelayCommand]
+    public async Task LoadDataAsync()
+    {
+        if (Patient == null || IsBusy) return;
+
+        try
+        {
+            IsBusy = true;
+            var list = await _prescriptionService.GetPatientPrescriptionsAsync(Patient.UserId);
+            Prescriptions = new ObservableCollection<prescription>(list);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+    
+    [RelayCommand]
+    private async Task AddMedicineAsync()
+    {
+        if (Patient == null) return;
+
+        var doctor = _session.CurrentUser;
+        if (doctor == null) return;
+
+        await Shell.Current.GoToAsync(nameof(PrescriptionEditPage), new Dictionary<string, object>
+        {
+            ["PatientId"] = Patient.UserId
+        });
+    }
+
+    [RelayCommand]
+    private async Task GoBackAsync()
+        => await Shell.Current.GoToAsync("..");
+
+    [RelayCommand]
+    private async Task LogoutAsync()
+    {
+        var confirm = await Shell.Current.DisplayAlert("Выход", "Выйти из аккаунта?", "Да", "Нет");
+        if (!confirm) return;
+
+        _session.EndSession();
+        await Shell.Current.GoToAsync("Login");
+    }
+    
+    [RelayCommand]
+    private async Task EditPrescriptionAsync(prescription p)
+    {
+        if (Patient == null || p == null) return;
+
+        await Shell.Current.GoToAsync(nameof(PrescriptionEditPage), new Dictionary<string, object>
+        {
+            ["PatientId"] = Patient.UserId,
+            ["PrescriptionId"] = p.PrescriptionId
+        });
+    }
+}
+````
+
+## File: MedCompatibility/App.xaml
+````
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application
+    x:Class="MedCompatibility.App"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:local="clr-namespace:MedCompatibility.Converters"
+    xmlns:m="clr-namespace:UraniumUI.Material.Resources;assembly=UraniumUI.Material"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <local:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter" />
+            <local:IsNullConverter x:Key="IsNullConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <m:StyleResource />
+                <!--  базовые стили Uranium Material  -->
+            </ResourceDictionary.MergedDictionaries>
+
+            <!--  ==================== ЦВЕТОВАЯ ПАЛИТРА (Medical Theme) ====================  -->
+
+            <!--  Основные медицинские цвета  -->
+            <Color x:Key="Primary">#00796B</Color>
+            <!--  Бирюзовый (основной)  -->
+            <Color x:Key="PrimaryDark">#004D40</Color>
+            <!--  Темнее для нажатий  -->
+            <Color x:Key="PrimaryLight">#B2DFDB</Color>
+            <!--  Светлый для фонов  -->
+            <Color x:Key="Secondary">#0097A7</Color>
+            <!--  Акцент  -->
+
+            <!--  Фоны и поверхности  -->
+            <Color x:Key="AppBackground">#F5F8FA</Color>
+            <!--  Нейтральный светло-серый  -->
+            <Color x:Key="Surface">#FFFFFF</Color>
+            <!--  Белый для поверхностей (используется Shell/AppShell и старыми страницами)  -->
+            <Color x:Key="CardSurface">#FFFFFF</Color>
+            <!--  Белый для карточек  -->
+            <Color x:Key="SectionBackground">#FAFBFC</Color>
+            <!--  Еле заметный серый для секций  -->
+
+            <!--  Текст  -->
+            <Color x:Key="TextPrimary">#263238</Color>
+            <!--  Основной темный  -->
+            <Color x:Key="TextSecondary">#78909C</Color>
+            <!--  Серый для вспомогательного  -->
+            <Color x:Key="TextPlaceholder">#B0BEC5</Color>
+            <!--  Placeholder для input  -->
+            <Color x:Key="TextOnPrimary">#FFFFFF</Color>
+            <!--  Белый на кнопках  -->
+
+            <!--  Границы и разделители  -->
+            <Color x:Key="BorderLight">#E0E5E9</Color>
+            <Color x:Key="BorderMedium">#CFD8DC</Color>
+
+            <!--  Статусные цвета  -->
+            <Color x:Key="Success">#66BB6A</Color>
+            <Color x:Key="Error">#EF5350</Color>
+            <Color x:Key="Warning">#FFA726</Color>
+            <Color x:Key="Info">#42A5F5</Color>
+
+            <!--  ==================== ГРАДИЕНТ ДЛЯ ФОНА СТРАНИЦ ====================  -->
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" x:Key="PageBackgroundGradient">
+                <GradientStop Color="#E8F5F3" Offset="0.0" />
+                <!--  Светлый бирюзовый  -->
+                <GradientStop Color="#F5F8FA" Offset="0.4" />
+                <GradientStop Color="#FFFFFF" Offset="1.0" />
+            </LinearGradientBrush>
+
+            <!--  ==================== БАЗОВЫЕ СТИЛИ СТРАНИЦ ====================  -->
+
+            <Style ApplyToDerivedTypes="True" TargetType="ContentPage">
+                <Setter Property="Background" Value="{StaticResource PageBackgroundGradient}" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <!--  ==================== ТИПОГРАФИКА ====================  -->
+
+            <!--  Главный заголовок страницы  -->
+            <Style TargetType="Label" x:Key="PageTitle">
+                <Setter Property="FontSize" Value="26" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="Margin" Value="0" />
+            </Style>
+
+            <!--  Заголовок секции  -->
+            <Style TargetType="Label" x:Key="SectionTitle">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+            </Style>
+
+            <!--  Подзаголовок / описание  -->
+            <Style TargetType="Label" x:Key="Subtitle">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="LineHeight" Value="1.4" />
+            </Style>
+
+            <!--  Обычный текст  -->
+            <Style TargetType="Label" x:Key="BodyText">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            </Style>
+
+            <!--  Подпись/caption  -->
+            <Style TargetType="Label" x:Key="Caption">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            </Style>
+
+            <!--  ==================== КАРТОЧКИ ====================  -->
+
+            <!--  Основная карточка (Frame)  -->
+            <Style TargetType="Frame" x:Key="MedCard">
+                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
+                <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="CornerRadius" Value="16" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="Margin" Value="0,0,0,12" />
+                <Setter Property="HasShadow" Value="False" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#90A4AE"
+                        Offset="0,4"
+                        Opacity="0.08"
+                        Radius="12" />
+                </Setter>
+            </Style>
+
+            <!--  Карточка для форм ввода (с большими отступами)  -->
+            <Style
+                BasedOn="{StaticResource MedCard}"
+                TargetType="Frame"
+                x:Key="MedFormCard">
+                <Setter Property="Padding" Value="20" />
+                <Setter Property="MaximumWidthRequest" Value="600" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+            </Style>
+
+            <!--  Карточка в списке (меньше отступы)  -->
+            <Style
+                BasedOn="{StaticResource MedCard}"
+                TargetType="Frame"
+                x:Key="MedListCard">
+                <Setter Property="Padding" Value="14" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+            </Style>
+
+            <!--  ==================== ПОЛЯ ВВОДА ====================  -->
+
+            <!--  Контейнер поля (Border)  -->
+            <Style TargetType="Border" x:Key="MedInputContainer">
+                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+                <Setter Property="BackgroundColor" Value="#FAFAFA" />
+                <Setter Property="Padding" Value="14,0" />
+                <Setter Property="HeightRequest" Value="48" />
+                <Setter Property="Margin" Value="0,0,0,12" />
+            </Style>
+
+            <!--  Entry (само поле)  -->
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextPlaceholder}" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <!--  Editor (многострочный текст)  -->
+            <Style TargetType="Editor">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="BackgroundColor" Value="#FAFAFA" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextPlaceholder}" />
+                <Setter Property="FontSize" Value="15" />
+            </Style>
+
+            <!--  Picker  -->
+            <Style TargetType="Picker">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="TitleColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="FontSize" Value="15" />
+            </Style>
+
+            <!--  ==================== КНОПКИ ====================  -->
+
+            <!--  Основная кнопка (Primary)  -->
+            <Style TargetType="Button" x:Key="PrimaryButton">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="TextColor" Value="{StaticResource TextOnPrimary}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="Margin" Value="0,4" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="{StaticResource Primary}"
+                        Offset="0,4"
+                        Opacity="0.25"
+                        Radius="10" />
+                </Setter>
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
+                                    <Setter Property="Scale" Value="0.98" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!--  Вторичная кнопка (Outline)  -->
+            <Style TargetType="Button" x:Key="SecondaryButton">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                <Setter Property="BorderColor" Value="{StaticResource Primary}" />
+                <Setter Property="BorderWidth" Value="2" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="Margin" Value="0,4" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}" />
+                                    <Setter Property="Opacity" Value="0.9" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!--  Текстовая кнопка (без фона)  -->
+            <Style TargetType="Button" x:Key="TextButton">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Padding" Value="8,6" />
+            </Style>
+
+            <!--  Кнопка "Назад" в хедере  -->
+            <Style TargetType="Border" x:Key="BackButton">
+                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="HeightRequest" Value="42" />
+                <Setter Property="WidthRequest" Value="42" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#000000"
+                        Offset="0,2"
+                        Opacity="0.08"
+                        Radius="6" />
+                </Setter>
+            </Style>
+
+            <!--  ==================== HEADER СТРАНИЦЫ ====================  -->
+
+            <!--  Стиль для Grid-хедера с кнопкой "Назад"  -->
+            <Style TargetType="Grid" x:Key="PageHeader">
+                <Setter Property="HeightRequest" Value="60" />
+                <Setter Property="Padding" Value="16,10" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+
+            <!--  ==================== СПИСКИ ====================  -->
+
+            <Style TargetType="CollectionView">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+
+            <!--  Разделитель в списке  -->
+            <Style TargetType="BoxView" x:Key="ListSeparator">
+                <Setter Property="HeightRequest" Value="1" />
+                <Setter Property="Color" Value="{StaticResource BorderLight}" />
+                <Setter Property="Margin" Value="0,8" />
+            </Style>
+
+            <!--  ==================== БЕЙДЖИ / МЕТКИ СТАТУСА ====================  -->
+
+            <Style TargetType="Border" x:Key="StatusBadge">
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+            </Style>
+
+
+
+            <!--  ===== Modern surfaces (Admin) =====  -->
+
+            <Style TargetType="Border" x:Key="ElevatedCard">
+                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 18" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#000000"
+                        Offset="0,10"
+                        Opacity="0.06"
+                        Radius="22" />
+                </Setter>
+            </Style>
+
+            <Style TargetType="Label" x:Key="StatValue">
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            </Style>
+
+            <Style TargetType="Label" x:Key="StatCaption">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            </Style>
+
+            <Style
+                BasedOn="{StaticResource ElevatedCard}"
+                TargetType="Border"
+                x:Key="ActionTile">
+                <Setter Property="Padding" Value="14" />
+            </Style>
+
+            <Style
+                BasedOn="{StaticResource ElevatedCard}"
+                TargetType="Border"
+                x:Key="ActionRow">
+                <Setter Property="Padding" Value="14" />
+            </Style>
+
+            <Style TargetType="Label" x:Key="Chevron">
+                <Setter Property="Text" Value="›" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <Style TargetType="Border" x:Key="ActionIconCircle">
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+                <Setter Property="HeightRequest" Value="44" />
+                <Setter Property="WidthRequest" Value="44" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0" x:Key="HeaderGradient">
+                <GradientStop Color="#D9F4EE" Offset="0.0" />
+                <GradientStop Color="#E8F5F3" Offset="0.45" />
+                <GradientStop Color="#F5F8FA" Offset="1.0" />
+            </LinearGradientBrush>
+            <!--  ==================== КОНВЕРТЕРЫ ====================  -->
+
+            <local:BoolToTextConverter x:Key="BoolToTextConverter" />
+            <local:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <local:RoleToColorConverter x:Key="RoleToColorConverter" />
+            <local:StringFirstCharConverter x:Key="StringFirstCharConverter" />
+
+
+
+            <!--  Modern dashboard tokens  -->
+            <Thickness x:Key="SpacePage">20</Thickness>
+            <Thickness x:Key="SpaceCard">16</Thickness>
+
+            <Style TargetType="Border" x:Key="AdminCard">
+                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+                <Setter Property="Stroke" Value="{StaticResource BorderLight}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+                <Setter Property="Padding" Value="{StaticResource SpaceCard}" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#000000"
+                        Offset="0,14"
+                        Opacity="0.06"
+                        Radius="26" />
+                </Setter>
+            </Style>
+
+            <Style TargetType="Label" x:Key="AdminStatNumber">
+                <Setter Property="FontSize" Value="32" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+            </Style>
+
+            <Style TargetType="Label" x:Key="AdminStatLabel">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            </Style>
+
+
+            <!--  ==================== BACKWARD COMPATIBILITY (алиасы для старого XAML) ====================  -->
+
+            <!--  Старые стили заголовков  -->
+            <Style TargetType="Label" x:Key="HeaderLabel">
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            </Style>
+
+            <Style TargetType="Label" x:Key="SubHeaderLabel">
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+
+            <!--  Старая карточка CardFrame (используется в LoginPage, DoctorHomePage и др.)  -->
+            <Style TargetType="Frame" x:Key="CardFrame">
+                <Setter Property="BackgroundColor" Value="{StaticResource CardSurface}" />
+                <Setter Property="CornerRadius" Value="24" />
+                <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="Padding" Value="30" />
+                <Setter Property="MaximumWidthRequest" Value="420" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HasShadow" Value="False" />
+                <Setter Property="Shadow">
+                    <Shadow
+                        Brush="#90A4AE"
+                        Offset="0,10"
+                        Opacity="0.15"
+                        Radius="30" />
+                </Setter>
+            </Style>
+
+            <!--  Старая рамка InputFrame для полей ввода  -->
+            <Style TargetType="Border" x:Key="InputFrame">
+                <Setter Property="Stroke" Value="#E0E0E0" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+                <Setter Property="BackgroundColor" Value="#FAFAFA" />
+                <Setter Property="Padding" Value="15,2" />
+                <Setter Property="HeightRequest" Value="52" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="Stroke" Value="#B0BEC5" />
+                                    <Setter Property="BackgroundColor" Value="#FFFFFF" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
+````
+
+## File: MedCompatibility/MauiProgram.cs
+````csharp
+using System.Reflection;
+using MedCompatibility.Configuration;
+using MedCompatibility.Models;
+using MedCompatibility.Services;
+using MedCompatibility.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui;
+using MedCompatibility.Pages.Doctor;
+using MedCompatibility.Pages.Patient;
+using MedCompatibility.Pages.Shared.Popups;
+using MedCompatibility.ViewModels.Admin;
+using MedCompatibility.ViewModels.Doctor;
+using MedCompatibility.ViewModels.Patient;
+using MedCompatibility.ViewModels.Shared;
+using UraniumUI;
+using ZXing.Net.Maui.Controls;
+
+namespace MedCompatibility;
+
+public static class MauiProgram
+{
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+
+        // 1) App + Fonts
+        builder
+            .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
+            .UseUraniumUI()          
+            .UseUraniumUIMaterial()  
+            .UseBarcodeReader()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
+
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
+        
+        var a = Assembly.GetExecutingAssembly();
+        // Имя ресурса: "NamespaceПроекта.ИмяФайла"
+        // Если проект MedCompatibility и файл в корне:
+        using var stream = a.GetManifestResourceStream("MedCompatibility.appsettings.json");
+
+        if (stream != null)
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .AddEnvironmentVariables()
+                .Build();
+
+            builder.Configuration.AddConfiguration(config);
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("ОШИБКА: appsettings.json не найден в ресурсах!");
+        }
+
+        builder.Services.Configure<DatabaseSettings>(
+            builder.Configuration.GetSection("Database"));
+
+        // 3) DB infrastructure
+        builder.Services.AddSingleton<IConnectionStringFactory, ConnectionStringFactory>();
+
+        builder.Services.AddDbContextFactory<DrugContext>((sp, options) =>
+        {
+            var factory = sp.GetRequiredService<IConnectionStringFactory>();
+            var cs = factory.CreateMySqlConnectionString();
+            var serverVersion = new MySqlServerVersion(new Version(8, 0, 44));
+            options.UseMySql(cs, serverVersion);
+        });
+        
+        // 4) Domain services (лучше Singleton, если внутри нет состояния)
+        builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<IUserService, UserService>();
+        builder.Services.AddSingleton<IDatabaseHealthService, DatabaseHealthService>();
+        builder.Services.AddSingleton<ILoadingService, LoadingService>();
+        builder.Services.AddSingleton<IMedicineService, MedicineService>();
+        builder.Services.AddSingleton<IInteractionService, InteractionService>();
+        builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
+        builder.Services.AddTransient<IScanService, ScanService>();
+        builder.Services.AddSingleton<IPrescriptionService, PrescriptionService>();
+        builder.Services.AddSingleton<IDoctorStatsService, DoctorStatsService>();
+        
+
+        // 5) ViewModels
+        builder.Services.AddTransient<MedCompatibility.Pages.Shared.Popups.PatientSearchPopup>();
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<RegisterViewModel>();
+        builder.Services.AddTransient<UsersListViewModel>();
+        builder.Services.AddTransient<AdminHomeViewModel>();
+        builder.Services.AddTransient<MedicinesListViewModel>();
+        builder.Services.AddTransient<MedicineAddViewModel>();
+        builder.Services.AddTransient<InteractionsListViewModel>();
+        builder.Services.AddTransient<InteractionAddViewModel>();
+        builder.Services.AddTransient<ScanPageViewModel>();
+        builder.Services.AddTransient<HistoryViewModel>();
+        builder.Services.AddTransient<ProfileViewModel>();
+        builder.Services.AddTransient<SystemLogsViewModel>();
+        builder.Services.AddTransient<CompatibilityViewModel>();
+        builder.Services.AddTransient<MedicineDetailsViewModel>();
+        builder.Services.AddTransient<DoctorHomeViewModel>();
+        builder.Services.AddTransient<DoctorPatientsViewModel>();
+        builder.Services.AddTransient<MedCompatibility.ViewModels.Doctor.PrescriptionEditViewModel>();
+        
+
+
+        // 6) Pages
+        builder.Services.AddTransient<Pages.Shared.LoginPage>();
+        builder.Services.AddTransient<Pages.Shared.RegisterPage>();
+
+        builder.Services.AddTransient<ScanPage>();
+        builder.Services.AddTransient<HistoryPage>();
+        builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<CompatibilityPage>();
+        builder.Services.AddTransient<MedicineDetailsPage>();
+
+        builder.Services.AddTransient<Pages.Admin.AdminHomePage>();
+        builder.Services.AddTransient<Pages.Admin.UsersListPage>();
+        builder.Services.AddTransient<Pages.Admin.MedicinesListPage>();
+        builder.Services.AddTransient<Pages.Admin.MedicineAddPage>();
+        builder.Services.AddTransient<Pages.Admin.InteractionsListPage>();
+        builder.Services.AddTransient<Pages.Admin.InteractionAddPage>();
+        builder.Services.AddTransient<Pages.Admin.SystemLogsPage>();
+        builder.Services.AddTransient<DoctorHomePage>();
+        builder.Services.AddTransient<DoctorPatientsPage>();
+        
+        builder.Services.AddTransient<MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel>();
+        builder.Services.AddTransient<MedCompatibility.Pages.Doctor.DoctorPatientCardPage>();
+        builder.Services.AddTransient<MedCompatibility.Pages.Doctor.PrescriptionEditPage>();
+        
+
+        // 7) UI handlers (Entry borderless)
+        Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("Borderless", (handler, view) =>
+        {
+#if ANDROID
+            handler.PlatformView.BackgroundTintList =
+                Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+            handler.PlatformView.Background = null;
+#elif WINDOWS
+            handler.PlatformView.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
+            handler.PlatformView.FocusVisualMargin = new Microsoft.UI.Xaml.Thickness(0);
+#endif
+        });
+
+        return builder.Build();
+    }
+}
 ````
