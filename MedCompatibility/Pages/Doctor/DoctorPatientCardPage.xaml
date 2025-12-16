@@ -4,6 +4,7 @@
     Shell.NavBarIsVisible="False"
     Title="Карта пациента"
     x:Class="MedCompatibility.Pages.Doctor.DoctorPatientCardPage"
+    x:Name="RootPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:models="clr-namespace:MedCompatibility.Models"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
@@ -157,6 +158,7 @@
                         HorizontalOptions="Fill"
                         ItemsSource="{Binding Prescriptions}"
                         SelectionMode="None">
+
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:prescription">
                                 <Border
@@ -165,6 +167,15 @@
                                     Padding="16"
                                     StrokeShape="RoundRectangle 16"
                                     StrokeThickness="0">
+
+                                    <!--  ТАП по карточке = открыть редактирование  -->
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.EditPrescriptionCommand}"
+                                            CommandParameter="{Binding .}"
+                                            x:DataType="{x:Null}" />
+                                    </Border.GestureRecognizers>
+
                                     <Border.Shadow>
                                         <Shadow
                                             Brush="Black"

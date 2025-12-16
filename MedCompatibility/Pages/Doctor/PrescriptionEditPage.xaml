@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    Shell.NavBarIsVisible="False"
+    x:Class="MedCompatibility.Pages.Doctor.PrescriptionEditPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Doctor"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid
+        Padding="10"
+        RowDefinitions="Auto,*"
+        RowSpacing="12">
+
+        <!--  HEADER (как в других doctor/admin страницах)  -->
+        <Grid
+            ColumnDefinitions="48,*,48"
+            Grid.Row="0"
+            HeightRequest="48">
+
+            <Border
+                HeightRequest="48"
+                HorizontalOptions="Start"
+                Style="{StaticResource BackButton}"
+                WidthRequest="48">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Border.GestureRecognizers>
+
+                <Label
+                    FontSize="28"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,2"
+                    Text="←"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Center" />
+            </Border>
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                HorizontalOptions="Center"
+                Spacing="0"
+                VerticalOptions="Center">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="{Binding PageTitle}"
+                    TextColor="{StaticResource TextPrimary}" />
+            </VerticalStackLayout>
+
+            <!--  spacer  -->
+            <Border
+                Grid.Column="2"
+                HeightRequest="48"
+                Opacity="0"
+                WidthRequest="48" />
+        </Grid>
+
+        <!--  CONTENT  -->
+        <ScrollView Grid.Row="1">
+            <!--  Контейнер задаёт ширину “как в списках”: на WinUI центр и 800, на Android/iOS во всю ширину  -->
+            <VerticalStackLayout Spacing="16">
+
+                <VerticalStackLayout WidthRequest="{OnPlatform WinUI=800, Default=-1}">
+                    <VerticalStackLayout.HorizontalOptions>
+                        <OnPlatform x:TypeArguments="LayoutOptions">
+                            <On Platform="WinUI" Value="Center" />
+                            <On Platform="Android,iOS" Value="Fill" />
+                        </OnPlatform>
+                    </VerticalStackLayout.HorizontalOptions>
+
+                    <!--  Карточка формы (широкая на Android, ограниченная контейнером на WinUI)  -->
+                    <Frame Padding="20" Style="{StaticResource MedCard}">
+                        <VerticalStackLayout Spacing="14">
+
+                            <!--  Препарат  -->
+                            <Label Style="{StaticResource Caption}" Text="Препарат" />
+
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Border
+                                    Grid.Column="0"
+                                    HeightRequest="44"
+                                    Margin="0"
+                                    Padding="10,0"
+                                    Style="{StaticResource MedInputContainer}">
+                                    <Label
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding SelectedMedicine.TradeName, TargetNullValue='Не выбран'}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        VerticalOptions="Center" />
+                                </Border>
+
+                                <Button
+                                    Command="{Binding PickMedicineCommand}"
+                                    Grid.Column="1"
+                                    HeightRequest="44"
+                                    Padding="18,0"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Text="Выбрать" />
+                            </Grid>
+
+                            <!--  Период  -->
+                            <Label Style="{StaticResource Caption}" Text="Период" />
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Style="{StaticResource Caption}" Text="Начало" />
+                                    <Border
+                                        HeightRequest="44"
+                                        Margin="0"
+                                        Padding="10,0"
+                                        Style="{StaticResource MedInputContainer}">
+                                        <DatePicker Date="{Binding StartDate}" Format="dd.MM.yyyy" />
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                    <Label Style="{StaticResource Caption}" Text="Окончание" />
+                                    <Border
+                                        HeightRequest="44"
+                                        Margin="0"
+                                        Padding="10,0"
+                                        Style="{StaticResource MedInputContainer}">
+                                        <DatePicker Date="{Binding EndDate}" Format="dd.MM.yyyy" />
+                                    </Border>
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <!--  Дозировка  -->
+                            <Label Style="{StaticResource Caption}" Text="Дозировка" />
+                            <Border
+                                HeightRequest="44"
+                                Padding="10,0"
+                                Style="{StaticResource MedInputContainer}">
+                                <Entry
+                                    Placeholder="Напр. 1 таб. 2 раза/день"
+                                    ReturnType="Done"
+                                    Text="{Binding Dosage}" />
+                            </Border>
+
+                            <!--  Заметки  -->
+                            <Label Style="{StaticResource Caption}" Text="Заметки (необязательно)" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                HeightRequest="140"
+                                Padding="12"
+                                Stroke="{StaticResource BorderLight}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1">
+                                <Editor
+                                    AutoSize="TextChanges"
+                                    BackgroundColor="Transparent"
+                                    Placeholder="Комментарий врача..."
+                                    Text="{Binding Notes}" />
+                            </Border>
+
+                            <!--  Ошибка  -->
+                            <Label
+                                FontSize="13"
+                                IsVisible="{Binding HasError}"
+                                Text="{Binding ErrorText}"
+                                TextColor="{StaticResource Error}" />
+
+                            <!--  Кнопки  -->
+                            <Button
+                                Command="{Binding SaveCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                Text="Сохранить" />
+
+                            <Button
+                                BorderColor="{StaticResource Error}"
+                                Command="{Binding DeleteCommand}"
+                                IsVisible="{Binding IsEditMode}"
+                                Style="{StaticResource SecondaryButton}"
+                                Text="Удалить"
+                                TextColor="{StaticResource Error}" />
+
+                        </VerticalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

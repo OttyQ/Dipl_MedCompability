@@ -106,6 +106,7 @@ public static class MauiProgram
         builder.Services.AddTransient<MedicineDetailsViewModel>();
         builder.Services.AddTransient<DoctorHomeViewModel>();
         builder.Services.AddTransient<DoctorPatientsViewModel>();
+        builder.Services.AddTransient<MedCompatibility.ViewModels.Doctor.PrescriptionEditViewModel>();
         
 
 
@@ -131,6 +132,7 @@ public static class MauiProgram
         
         builder.Services.AddTransient<MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel>();
         builder.Services.AddTransient<MedCompatibility.Pages.Doctor.DoctorPatientCardPage>();
+        builder.Services.AddTransient<MedCompatibility.Pages.Doctor.PrescriptionEditPage>();
         
 
         // 7) UI handlers (Entry borderless)

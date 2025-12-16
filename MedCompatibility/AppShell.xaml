@@ -1,76 +1,86 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
-    x:Class="MedCompatibility.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:shared="clr-namespace:MedCompatibility.Pages.Shared"
-    xmlns:patient="clr-namespace:MedCompatibility.Pages.Patient" 
-    xmlns:admin="clr-namespace:MedCompatibility.Pages.Admin"
-    xmlns:doctor="clr-namespace:MedCompatibility.Pages.Doctor"
-    Shell.FlyoutBehavior="Disabled"
-    Title="MedCompatibility"
-    
     Shell.BackgroundColor="{StaticResource Surface}"
-    Shell.ForegroundColor="{StaticResource TextPrimary}"
-    Shell.TitleColor="{StaticResource TextPrimary}"
     Shell.DisabledColor="#B4FFFFFF"
-    Shell.UnselectedColor="{StaticResource TextSecondary}"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.ForegroundColor="{StaticResource TextPrimary}"
     Shell.TabBarBackgroundColor="{StaticResource Surface}"
     Shell.TabBarForegroundColor="{StaticResource Primary}"
+    Shell.TabBarTitleColor="{StaticResource Primary}"
     Shell.TabBarUnselectedColor="{StaticResource TextSecondary}"
-    Shell.TabBarTitleColor="{StaticResource Primary}">
+    Shell.TitleColor="{StaticResource TextPrimary}"
+    Shell.UnselectedColor="{StaticResource TextSecondary}"
+    Title="MedCompatibility"
+    x:Class="MedCompatibility.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:admin="clr-namespace:MedCompatibility.Pages.Admin"
+    xmlns:doctor="clr-namespace:MedCompatibility.Pages.Doctor"
+    xmlns:patient="clr-namespace:MedCompatibility.Pages.Patient"
+    xmlns:shared="clr-namespace:MedCompatibility.Pages.Shared"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Shell.Resources>
-        <Style x:Key="BaseStyle" TargetType="Element">
-            <Setter Property="Shell.BackgroundColor" Value="{StaticResource Surface}" /> 
+        <Style TargetType="Element" x:Key="BaseStyle">
+            <Setter Property="Shell.BackgroundColor" Value="{StaticResource Surface}" />
             <Setter Property="Shell.ForegroundColor" Value="{StaticResource TextPrimary}" />
             <Setter Property="Shell.TitleColor" Value="{StaticResource TextPrimary}" />
             <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
             <Setter Property="Shell.UnselectedColor" Value="{StaticResource TextSecondary}" />
             <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Surface}" />
-            <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}"/>
-            <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TextSecondary}"/>
-            <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}"/>
+            <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TextSecondary}" />
+            <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}" />
         </Style>
     </Shell.Resources>
 
-    <!-- 1. Экран входа -->
+    <!--  1. Экран входа  -->
     <ShellContent
+        ContentTemplate="{DataTemplate shared:LoginPage}"
         Route="Login"
-        ContentTemplate="{DataTemplate shared:LoginPage}" 
         Shell.NavBarIsVisible="False"
         Shell.TabBarIsVisible="False" />
 
-    <!-- 2. Зона Пациента -->
+    <!--  2. Зона Пациента  -->
     <TabBar Route="Patient" Shell.NavBarIsVisible="False">
-        
-        <!-- Используем patient:HistoryPage -->
-        <ShellContent Title="История" Icon="icon_history.png"
-                      ContentTemplate="{DataTemplate patient:HistoryPage}" />
-        <!-- НОВАЯ ВКЛАДКА -->
-        <ShellContent Title="Проверка" Icon="icon_check.png" 
-                      ContentTemplate="{DataTemplate patient:CompatibilityPage}" />
-        <!-- Используем patient:ScanPage -->
-        <ShellContent Title="СКАНЕР" Icon="icon_qr.png"
-                      ContentTemplate="{DataTemplate patient:ScanPage}" />
 
-        <!-- Используем patient:ProfilePage -->
-        <ShellContent Title="Профиль" Icon="icon_profile.png"
-                      ContentTemplate="{DataTemplate patient:ProfilePage}" />
-                      
+        <!--  Используем patient:HistoryPage  -->
+        <ShellContent
+            ContentTemplate="{DataTemplate patient:HistoryPage}"
+            Icon="icon_history.png"
+            Title="История" />
+        <!--  НОВАЯ ВКЛАДКА  -->
+        <ShellContent
+            ContentTemplate="{DataTemplate patient:CompatibilityPage}"
+            Icon="icon_check.png"
+            Title="Проверка" />
+        <!--  Используем patient:ScanPage  -->
+        <ShellContent
+            ContentTemplate="{DataTemplate patient:ScanPage}"
+            Icon="icon_qr.png"
+            Title="СКАНЕР" />
+
+        <!--  Используем patient:ProfilePage  -->
+        <ShellContent
+            ContentTemplate="{DataTemplate patient:ProfilePage}"
+            Icon="icon_profile.png"
+            Title="Профиль" />
+
     </TabBar>
-    
-    <!-- 3. Зона Админа -->
+
+    <!--  3. Зона Админа  -->
     <ShellContent
-        Route="Admin"
         ContentTemplate="{DataTemplate admin:AdminHomePage}"
-        Shell.NavBarIsVisible="False" 
-        Shell.TabBarIsVisible="False"/> 
-    
+        Route="Admin"
+        Shell.NavBarIsVisible="False"
+        Shell.TabBarIsVisible="False" />
+
     <ShellContent
-        Route="Doctor"
         ContentTemplate="{DataTemplate doctor:DoctorHomePage}"
-        Shell.NavBarIsVisible="False" 
-        Shell.TabBarIsVisible="False"/> 
+        Route="Doctor"
+        Shell.NavBarIsVisible="False"
+        Shell.TabBarIsVisible="False" />
+    
+    <ShellContent ContentTemplate="{DataTemplate doctor:PrescriptionEditPage}" Route="PrescriptionEditPage" Shell.NavBarIsVisible="False"
+                  Shell.TabBarIsVisible="False" />
 
 </Shell>
