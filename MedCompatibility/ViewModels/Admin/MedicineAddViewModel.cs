@@ -242,4 +242,17 @@ public partial class MedicineAddViewModel : ObservableObject, IQueryAttributable
             _loading.Hide();
         }
     }
+    
+    [RelayCommand]
+    private async Task OpenManufacturerPickerAsync()
+    {
+        var popup = new SelectFromListPopup(
+            "Выбор производителя",
+            Manufacturers.Cast<object>(),
+            o => ((manufacturer)o).Name);
+
+        var result = await Shell.Current.ShowPopupAsync(popup);
+        if (result is manufacturer m)
+            SelectedManufacturer = m;
+    }
 }

@@ -47,6 +47,13 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
             Patient = u;
             OnPropertyChanged(nameof(PatientFullName));
             OnPropertyChanged(nameof(PatientLogin));
+
+            // важно: грузим данные после установки Patient
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (LoadDataCommand.CanExecute(null))
+                    await LoadDataCommand.ExecuteAsync(null);
+            });
         }
     }
 
@@ -71,10 +78,11 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
     private async Task AddMedicineAsync()
     {
         if (Patient == null) return;
+
         var doctor = _session.CurrentUser;
         if (doctor == null) return;
 
-        // Выбор лекарства (у тебя popup уже используется в CompatibilityViewModel) [file:1]
+        // 1) Выбор препарата
         var popup = new MedicineSelectionPopup(_medicineService, _scanService);
         var result = await Shell.Current.ShowPopupAsync(popup);
 
@@ -86,10 +94,11 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
 
         if (result is not medicine selectedMed) return;
 
-        // Берём актуальные назначения и проверяем на конфликты
+        // 2) Текущие назначения
         var current = await _prescriptionService.GetPatientPrescriptionsAsync(Patient.UserId);
-        var allConflicts = new List<interaction>();
 
+        // 3) Проверка взаимодействий
+        var allConflicts = new List<interaction>();
         foreach (var p in current)
         {
             if (p.MedicineId == selectedMed.MedicineId) continue;
@@ -99,24 +108,34 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
                 allConflicts.AddRange(conflicts);
         }
 
-        // Пример правила: Severity >= 3 считаем “критично” (подстрой под свои RiskLevel) [file:1]
-        var critical = allConflicts.Any(c => c.RiskLevel?.Severity >= 3);
-
+        // 4) Popup с деталями
+        var critical = allConflicts.Any(c => (c.RiskLevel?.Severity ?? 0) >= 3);
         if (allConflicts.Any())
         {
-            var title = critical ? "Опасная несовместимость" : "Есть взаимодействия";
-            var msg = critical
-                ? "Найдены критические взаимодействия. Добавить всё равно?"
-                : $"Найдены взаимодействия: {allConflicts.Count}. Добавить?";
+            var detailsPopup = new InteractionsDetailsPopup(allConflicts, critical);
+            var confirm = await Shell.Current.ShowPopupAsync(detailsPopup);
 
-            var confirm = await Shell.Current.ShowPopupAsync(new ConfirmPopup(title, msg, "Добавить", "Отмена"));
-            if (confirm is not bool ok || !ok) return;
+            if (confirm is not bool ok || !ok)
+                return;
         }
 
-        await _prescriptionService.AddPrescriptionAsync(Patient.UserId, doctor.UserId, selectedMed.MedicineId, notes: null);
+        // 5) Добавляем назначение
+        var notes = critical
+            ? "⚠️ Назначено несмотря на критические взаимодействия"
+            : allConflicts.Any()
+                ? $"⚠ Назначено с учетом {allConflicts.Count} взаимодействий"
+                : null;
+
+        await _prescriptionService.AddPrescriptionAsync(
+            Patient.UserId,
+            doctor.UserId,
+            selectedMed.MedicineId,
+            notes);
+
+        // 6) Обновляем список
         await LoadDataAsync();
     }
-    
+
     [RelayCommand]
     private async Task GoBackAsync()
         => await Shell.Current.GoToAsync("..");

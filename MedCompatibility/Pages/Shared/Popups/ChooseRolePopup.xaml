@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.ChooseRolePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border
+        BackgroundColor="White"
+        HorizontalOptions="Center"
+        Padding="20"
+        StrokeShape="RoundRectangle 16"
+        VerticalOptions="Center"
+        WidthRequest="360">
+
+        <VerticalStackLayout Spacing="14">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="Выберите роль"
+                TextColor="{StaticResource TextPrimary}" />
+
+            <Label
+                FontSize="14"
+                Text="Это нужно один раз, чтобы открыть нужные разделы приложения."
+                TextColor="{StaticResource TextSecondary}" />
+
+            <!--  Основные действия  -->
+            <Button
+                Clicked="OnPatientClicked"
+                Style="{StaticResource PrimaryButton}"
+                Text="Пациент" />
+
+            <Button
+                Clicked="OnDoctorClicked"
+                Style="{StaticResource SecondaryButton}"
+                Text="Врач" />
+
+            <!--  Отмена  -->
+            <Button
+                Clicked="OnCancelClicked"
+                Style="{StaticResource TextButton}"
+                Text="Отмена" />
+        </VerticalStackLayout>
+
+    </Border>
+</toolkit:Popup>

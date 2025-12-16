@@ -21,10 +21,6 @@ public class AuthService : IAuthService
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Login == login);
         if (user == null) return null;
-        if (user.IsApproved == false) 
-        {
-            throw new Exception("Ваш аккаунт еще не подтвержден администратором.");
-        }
         bool isPasswordValid = false;
         try 
         {

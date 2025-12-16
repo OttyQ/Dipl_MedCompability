@@ -7,7 +7,7 @@ namespace MedCompatibility.ViewModels.Patient;
 public partial class ProfileViewModel : ObservableObject
 {
     private readonly IUserSessionService _sessionService;
-    private readonly IUserService _userService; // Добавляем сервис для сохранения
+    private readonly IUserService _userService;
 
     [ObservableProperty]
     private string fullName;
@@ -20,6 +20,9 @@ public partial class ProfileViewModel : ObservableObject
 
     [ObservableProperty]
     private bool isUser;
+    
+    [ObservableProperty]
+    private bool isDoctor;
 
     // --- Поля для редактирования ---
     [ObservableProperty]
@@ -32,11 +35,10 @@ public partial class ProfileViewModel : ObservableObject
     private string editMiddleName;
     
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsNotEditing))] // Чтобы инвертировать видимость
+    [NotifyPropertyChangedFor(nameof(IsNotEditing))]
     private bool isEditing;
 
     public bool IsNotEditing => !IsEditing;
-    // -------------------------------
 
     public ProfileViewModel(IUserSessionService sessionService, IUserService userService)
     {
@@ -49,17 +51,20 @@ public partial class ProfileViewModel : ObservableObject
     {
         IsGuest = _sessionService.IsGuest;
         IsUser = !IsGuest;
-        IsEditing = false; // Сбрасываем режим редактирования при входе
+        
+        // Определяем, врач ли это, для показа кнопки "Назад"
+        var currentRole = _sessionService.CurrentUser?.Role?.Name;
+        IsDoctor = string.Equals(currentRole, "doctor", StringComparison.OrdinalIgnoreCase);
+        
+        IsEditing = false;
 
         if (IsUser && _sessionService.CurrentUser != null)
         {
             var user = _sessionService.CurrentUser;
             
-            // Заполняем отображение
             FullName = $"{user.LastName} {user.FirstName} {user.MiddleName}".Trim();
             RoleName = user.Role?.Description ?? "Пользователь";
 
-            // Заполняем поля для возможного редактирования
             EditFirstName = user.FirstName;
             EditLastName = user.LastName;
             EditMiddleName = user.MiddleName;
@@ -68,6 +73,7 @@ public partial class ProfileViewModel : ObservableObject
         {
             FullName = "Гость";
             RoleName = "Ограниченный доступ";
+            IsDoctor = false;
         }
     }
 
@@ -80,7 +86,6 @@ public partial class ProfileViewModel : ObservableObject
     [RelayCommand]
     private void CancelEditing()
     {
-        // Возвращаем старые значения
         LoadProfile(); 
     }
 
@@ -103,13 +108,13 @@ public partial class ProfileViewModel : ObservableObject
             // 1. Сохраняем в БД
             await _userService.UpdateUserProfileAsync(currentUser.UserId, EditFirstName, EditLastName, EditMiddleName);
 
-            // 2. Обновляем локальную сессию (объект в памяти)
+            // 2. Обновляем локальную сессию
             currentUser.FirstName = EditFirstName;
             currentUser.LastName = EditLastName;
             currentUser.MiddleName = EditMiddleName;
             
             // 3. Обновляем UI
-            LoadProfile(); // Перезагрузит FullName и сбросит IsEditing
+            LoadProfile();
             
             await Shell.Current.DisplayAlert("Успех", "Данные обновлены", "OK");
         }
@@ -126,6 +131,7 @@ public partial class ProfileViewModel : ObservableObject
         if (!confirm) return;
 
         _sessionService.EndSession();
+        // Используем абсолютный путь, чтобы сбросить навигационный стек
         await Shell.Current.GoToAsync("//Login");
     }
     
@@ -133,5 +139,12 @@ public partial class ProfileViewModel : ObservableObject
     private async Task GoToLoginAsync()
     {
         await Shell.Current.GoToAsync("//Login");
+    }
+    
+    [RelayCommand]
+    private async Task GoBackAsync()
+    {
+        // Возвращаемся в корень навигации врача
+        await Shell.Current.GoToAsync("//Doctor");
     }
 }

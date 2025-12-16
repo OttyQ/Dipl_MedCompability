@@ -1,132 +1,246 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             x:Class="MedCompatibility.Pages.Admin.SystemLogsPage"
-             Title="Системные логи"
-             BackgroundColor="{StaticResource AppBackground}"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    Shell.NavBarIsVisible="False"
+    Title="Системные логи"
+    x:Class="MedCompatibility.Pages.Admin.SystemLogsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!-- Основной контент с отступами -->
-        <Grid RowDefinitions="Auto, *" Padding="10">
-            
-            <!-- ВЕРХНЯЯ ЧАСТЬ (Адаптивная ширина) -->
-            <VerticalStackLayout Spacing="15" HorizontalOptions="Fill" 
-                                 WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
+
+        <!--  Фон-пузырьки (как Login/AdminHome)  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="210"
+                HeightRequest="420"
+                WidthRequest="420" />
+
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.95,0.30,520,520"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="260"
+                HeightRequest="520"
+                WidthRequest="520" />
+
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.35,0.98,620,620"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#0F90A4AE"
+                CornerRadius="310"
+                HeightRequest="620"
+                WidthRequest="620" />
+        </AbsoluteLayout>
+
+        <!--  Контент  -->
+        <Grid Padding="10" RowDefinitions="Auto, *">
+
+            <!--  Верхняя часть  -->
+            <VerticalStackLayout
+                Grid.Row="0"
+                HorizontalOptions="Fill"
+                Spacing="15"
+                WidthRequest="{OnPlatform WinUI='800',
+                                          Default='-1'}">
+
                 <VerticalStackLayout.HorizontalOptions>
-                     <OnPlatform x:TypeArguments="LayoutOptions">
-                         <On Platform="WinUI" Value="Center" />
-                         <On Platform="Android,iOS" Value="Fill" />
-                     </OnPlatform>
+                    <OnPlatform x:TypeArguments="LayoutOptions">
+                        <On Platform="WinUI" Value="Center" />
+                        <On Platform="Android,iOS" Value="Fill" />
+                    </OnPlatform>
                 </VerticalStackLayout.HorizontalOptions>
 
-                <!-- 1. ШАПКА -->
-                <Grid ColumnDefinitions="48, *, 48" HeightRequest="48" Margin="0,0,0,5">
-                    <!-- Кнопка Назад -->
-                    <Border StrokeShape="RoundRectangle 24" BackgroundColor="White" StrokeThickness="0" 
-                            HeightRequest="48" WidthRequest="48" Padding="0" HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
-                        </Border.Shadow>
+                <!--  1) Шапка  -->
+                <Grid
+                    ColumnDefinitions="48,*,48"
+                    HeightRequest="48"
+                    Margin="0,0,0,5">
+
+                    <Border
+                        HeightRequest="48"
+                        Style="{StaticResource BackButton}"
+                        WidthRequest="48">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnBackClicked"/>
+                            <TapGestureRecognizer Tapped="OnBackClicked" />
                         </Border.GestureRecognizers>
-                        <Label Text="←" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#333" Margin="0,0,0,2"/>
+                        <Label
+                            FontSize="26"
+                            HorizontalOptions="Center"
+                            Margin="0,0,0,2"
+                            Text="←"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalOptions="Center" />
                     </Border>
-                    
-                    <!-- Заголовок -->
-                    <Label Grid.Column="1" Text="История активности" 
-                           FontSize="20" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"
-                           VerticalOptions="Center" HorizontalOptions="Center"/>
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Grid.Column="1"
+                        HorizontalOptions="Center"
+                        Text="История активности"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center" />
                 </Grid>
 
-                <!-- 2. ИНФО-ПАНЕЛЬ (Статус БД) -->
-                <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" StrokeThickness="0" Padding="16" HorizontalOptions="Fill">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.05"/>
-                    </Border.Shadow>
-                    
-                    <Grid ColumnDefinitions="*, Auto">
+                <!--  2) Инфо-панель  -->
+                <Frame
+                    Margin="0"
+                    Padding="16"
+                    Style="{StaticResource MedCard}">
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+
                         <VerticalStackLayout Spacing="2">
-                            <Label Text="Статус системы" FontSize="12" TextColor="{StaticResource TextSecondary}" FontAttributes="Bold"/>
-                            <Label Text="Мониторинг базы данных и действий пользователей" FontSize="11" TextColor="#9E9E9E"/>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="Статус системы"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Label
+                                FontSize="11"
+                                Opacity="0.85"
+                                Text="Мониторинг базы данных и действий пользователей"
+                                TextColor="{StaticResource TextSecondary}" />
                         </VerticalStackLayout>
 
-                        <!-- Индикатор БД -->
-                        <Border Grid.Column="1" StrokeShape="RoundRectangle 10" BackgroundColor="{Binding DbStatusColor}" 
-                                StrokeThickness="0" Padding="12,6" VerticalOptions="Center">
-                            <Label Text="{Binding DbStatusText}" TextColor="White" FontSize="12" FontAttributes="Bold"/>
+                        <!--  Индикатор БД  -->
+                        <Border
+                            BackgroundColor="{Binding DbStatusColor}"
+                            Grid.Column="1"
+                            Padding="12,6"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="0"
+                            VerticalOptions="Center">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="{Binding DbStatusText}"
+                                TextColor="White" />
                         </Border>
+
                     </Grid>
-                </Border>
+                </Frame>
             </VerticalStackLayout>
 
-            <!-- 3. СПИСОК ЛОГОВ -->
-            <RefreshView Grid.Row="1" Command="{Binding LoadLogsCommand}" IsRefreshing="{Binding IsBusy}" Margin="0,15,0,0">
-                <CollectionView ItemsSource="{Binding Logs}"
-                                HorizontalOptions="Fill" 
-                                WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
-                     <CollectionView.HorizontalOptions>
-                         <OnPlatform x:TypeArguments="LayoutOptions">
-                             <On Platform="WinUI" Value="Center" />
-                             <On Platform="Android,iOS" Value="Fill" />
-                         </OnPlatform>
+            <!--  3) Список логов  -->
+            <RefreshView
+                Command="{Binding LoadLogsCommand}"
+                Grid.Row="1"
+                IsRefreshing="{Binding IsBusy}"
+                Margin="0,15,0,0">
+
+                <CollectionView
+                    HorizontalOptions="Fill"
+                    ItemsSource="{Binding Logs}"
+                    WidthRequest="{OnPlatform WinUI='800',
+                                              Default='-1'}">
+
+                    <CollectionView.HorizontalOptions>
+                        <OnPlatform x:TypeArguments="LayoutOptions">
+                            <On Platform="WinUI" Value="Center" />
+                            <On Platform="Android,iOS" Value="Fill" />
+                        </OnPlatform>
                     </CollectionView.HorizontalOptions>
 
                     <CollectionView.EmptyView>
-                        <VerticalStackLayout Spacing="10" VerticalOptions="Center" HorizontalOptions="Center">
-                            <Label Text="📭" FontSize="40" HorizontalOptions="Center"/>
-                            <Label Text="Логов пока нет" TextColor="#999" HorizontalOptions="Center"/>
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label
+                                FontSize="40"
+                                HorizontalOptions="Center"
+                                Text="📭" />
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="Логов пока нет"
+                                TextColor="{StaticResource TextSecondary}" />
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:scan">
-                            <!-- Карточка лога -->
-                            <Border StrokeShape="RoundRectangle 12" BackgroundColor="White" StrokeThickness="0" Margin="0,0,0,10" Padding="12">
-                                <Border.Shadow>
-                                    <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
-                                </Border.Shadow>
-                                
-                                <Grid ColumnDefinitions="40, *, Auto" ColumnSpacing="12">
-                                    
-                                    <!-- Иконка типа действия -->
-                                    <Frame HeightRequest="40" WidthRequest="40" CornerRadius="10"
-                                           BackgroundColor="#E3F2FD" Padding="0" BorderColor="Transparent" 
-                                           HorizontalOptions="Start" VerticalOptions="Start">
-                                        <Label Text="🔎" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                    </Frame>
+                            <Frame
+                                Margin="0,0,0,10"
+                                Padding="12"
+                                Style="{StaticResource MedListCard}">
 
-                                    <!-- Основная информация -->
-                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                                        <!-- Кто -->
-                                        <Label Text="{Binding User.Login}" FontAttributes="Bold" FontSize="15" 
-                                               TextColor="{StaticResource TextPrimary}" LineBreakMode="TailTruncation"/>
-                                        
-                                        <!-- Что сделал -->
-                                        <Label FontSize="13" TextColor="{StaticResource TextSecondary}" LineBreakMode="TailTruncation">
+                                <Grid ColumnDefinitions="40,*,Auto" ColumnSpacing="12">
+
+                                    <!--  Иконка  -->
+                                    <Border
+                                        BackgroundColor="#E3F2FD"
+                                        HeightRequest="40"
+                                        HorizontalOptions="Start"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Start"
+                                        WidthRequest="40">
+                                        <Label
+                                            FontSize="18"
+                                            HorizontalOptions="Center"
+                                            Text="🔎"
+                                            VerticalOptions="Center" />
+                                    </Border>
+
+                                    <!--  Текст  -->
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Spacing="2"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="15"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding User.Login}"
+                                            TextColor="{StaticResource TextPrimary}" />
+
+                                        <Label
+                                            FontSize="13"
+                                            LineBreakMode="TailTruncation"
+                                            TextColor="{StaticResource TextSecondary}">
                                             <Label.FormattedText>
                                                 <FormattedString>
                                                     <Span Text="Сканировал: " />
-                                                    <Span Text="{Binding Medicine.TradeName}" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+                                                    <Span
+                                                        FontAttributes="Bold"
+                                                        Text="{Binding Medicine.TradeName}"
+                                                        TextColor="{StaticResource Primary}" />
                                                 </FormattedString>
                                             </Label.FormattedText>
                                         </Label>
                                     </VerticalStackLayout>
 
-                                    <!-- Время -->
-                                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" Spacing="0">
-                                        <Label Text="{Binding ScannedAt, StringFormat='{0:HH:mm}'}" 
-                                               FontSize="14" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" HorizontalOptions="End"/>
-                                        <Label Text="{Binding ScannedAt, StringFormat='{0:dd.MM}'}" 
-                                               FontSize="11" TextColor="#9E9E9E" HorizontalOptions="End"/>
+                                    <!--  Время  -->
+                                    <VerticalStackLayout
+                                        Grid.Column="2"
+                                        HorizontalOptions="End"
+                                        Spacing="0"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            HorizontalOptions="End"
+                                            Text="{Binding ScannedAt, StringFormat='{0:HH:mm}'}"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                        <Label
+                                            FontSize="11"
+                                            HorizontalOptions="End"
+                                            Opacity="0.85"
+                                            Text="{Binding ScannedAt, StringFormat='{0:dd.MM}'}"
+                                            TextColor="{StaticResource TextSecondary}" />
                                     </VerticalStackLayout>
+
                                 </Grid>
-                            </Border>
+                            </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
+
                 </CollectionView>
             </RefreshView>
         </Grid>

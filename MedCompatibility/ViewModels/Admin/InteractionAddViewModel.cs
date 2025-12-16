@@ -174,4 +174,30 @@ public partial class InteractionAddViewModel : ObservableObject, IQueryAttributa
         PageTitle = "Редактирование";
         ButtonText = "Сохранить изменения";
     }
+    
+    [RelayCommand]
+    private async Task OpenRiskPickerAsync()
+    {
+        var popup = new SelectFromListPopup(
+            "Уровень риска",
+            Risks,
+            o => ((risklevel)o).Name);
+
+        var result = await Shell.Current.ShowPopupAsync(popup);
+        if (result is risklevel risk)
+            SelectedRisk = risk;
+    }
+    
+    [RelayCommand]
+    private async Task OpenTypePickerAsync()
+    {
+        var popup = new SelectFromListPopup(
+            "Тип взаимодействия",
+            Types,
+            o => ((interactiontype)o).Name);
+
+        var result = await Shell.Current.ShowPopupAsync(popup);
+        if (result is interactiontype type)
+            SelectedType = type;
+    }
 }
