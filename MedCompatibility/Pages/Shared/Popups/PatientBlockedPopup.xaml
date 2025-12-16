@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.PatientBlockedPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border
+        BackgroundColor="White"
+        HorizontalOptions="Center"
+        Padding="20"
+        StrokeShape="RoundRectangle 16"
+        VerticalOptions="Center"
+        WidthRequest="360">
+
+        <VerticalStackLayout Spacing="14">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="Доступ ограничен"
+                TextColor="{StaticResource TextPrimary}" />
+
+            <Label
+                FontSize="14"
+                Text="Ваш аккаунт пациента заблокирован администратором. Обратитесь в поддержку или к администратору для разблокировки."
+                TextColor="{StaticResource TextSecondary}" />
+
+            <Button
+                Clicked="OnOkClicked"
+                Style="{StaticResource PrimaryButton}"
+                Text="OK" />
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>
