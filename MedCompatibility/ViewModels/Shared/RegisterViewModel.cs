@@ -1,5 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MedCompatibility.Pages.Shared.Popups;
 using MedCompatibility.Services.Interfaces;
 
 namespace MedCompatibility.ViewModels.Shared;
@@ -77,8 +79,9 @@ public partial class RegisterViewModel : ObservableObject
             // Успех
             if (dbRoleName == "Doctor")
             {
-                await Shell.Current.DisplayAlert("Регистрация успешна", 
-                    "Ваш аккаунт врача создан. Ожидайте подтверждения администратором.", "OK");
+                await Shell.Current.ShowPopupAsync(new ApprovalPendingPopup());
+                await Shell.Current.GoToAsync(".."); // обратно на логин как и было
+                return;
             }
             else
             {

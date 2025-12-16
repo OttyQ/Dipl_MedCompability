@@ -9,8 +9,6 @@ namespace MedCompatibility;
 [IntentFilter(
     new[] { Intent.ActionView },
     Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-    DataScheme = "medcompat",
-    DataHost = "auth")]
-public class MedCompatAuthCallbackActivity : Microsoft.Maui.Authentication.WebAuthenticatorCallbackActivity
-{
-}
+    DataScheme = "com.googleusercontent.apps.285954249476-6ofmkkjb4m6n8qs6bdd4chht713n4hd8"
+)]
+public class MedCompatAuthCallbackActivity : WebAuthenticatorCallbackActivity { }
