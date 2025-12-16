@@ -1,187 +1,225 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Doctor"
-             xmlns:models="clr-namespace:MedCompatibility.Models"
-             x:Class="MedCompatibility.Pages.Doctor.DoctorPatientCardPage"
-             Title="Карта пациента"
-             BackgroundColor="{StaticResource AppBackground}"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
+    Title="Карта пациента"
+    x:Class="MedCompatibility.Pages.Doctor.DoctorPatientCardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- 2 строки: верх Auto, низ * (чтобы ничего не наезжало) -->
-    <Grid RowDefinitions="Auto, *" Padding="10" RowSpacing="12">
+    <Grid>
+        <!--  Фон  -->
+        <AbsoluteLayout InputTransparent="True">
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#1A00796B"
+                CornerRadius="210"
+                HeightRequest="420"
+                WidthRequest="420" />
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0.95,0.30,520,520"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Color="#140097A7"
+                CornerRadius="260"
+                HeightRequest="520"
+                WidthRequest="520" />
+        </AbsoluteLayout>
 
-        <!-- Верхняя часть (как на DoctorPatientsPage) -->
-        <VerticalStackLayout Grid.Row="0"
-                             Spacing="12"
-                             HorizontalOptions="Fill"
-                             WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
-            <VerticalStackLayout.HorizontalOptions>
-                <OnPlatform x:TypeArguments="LayoutOptions">
-                    <On Platform="WinUI" Value="Center" />
-                    <On Platform="Android,iOS" Value="Fill" />
-                </OnPlatform>
-            </VerticalStackLayout.HorizontalOptions>
-
-            <!-- ШАПКА: Назад / Заголовок / Выход -->
-            <Grid ColumnDefinitions="48,*,48" HeightRequest="48">
-
-                <Border StrokeShape="RoundRectangle 24"
-                        BackgroundColor="White"
-                        StrokeThickness="0"
-                        HeightRequest="48"
-                        WidthRequest="48"
-                        Padding="0"
-                        HorizontalOptions="Start">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
-                    </Border.Shadow>
+        <Grid RowDefinitions="Auto,*">
+            <!--  Шапка  -->
+            <Grid
+                ColumnDefinitions="48,*"
+                Grid.Row="0"
+                HeightRequest="80"
+                Padding="16,10">
+                <Border
+                    BackgroundColor="{StaticResource Surface}"
+                    HeightRequest="42"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    VerticalOptions="Start"
+                    WidthRequest="42">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoBackCommand}" />
                     </Border.GestureRecognizers>
-                    <Label Text="←"
-                           FontSize="28"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           TextColor="#333"
-                           Margin="0,0,0,2"/>
-                </Border>
-
-                <VerticalStackLayout Grid.Column="1"
-                                     VerticalOptions="Center"
-                                     HorizontalOptions="Center"
-                                     Spacing="0">
-                    <Label Text="Карта пациента"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource TextPrimary}"
-                           HorizontalOptions="Center"/>
-                    <Label Text="Назначения и совместимость"
-                           FontSize="12"
-                           TextColor="{StaticResource TextSecondary}"
-                           HorizontalOptions="Center"/>
-                </VerticalStackLayout>
-
-                <Border Grid.Column="2"
-                        StrokeShape="RoundRectangle 24"
-                        BackgroundColor="White"
-                        StrokeThickness="0"
-                        HeightRequest="48"
-                        WidthRequest="48"
-                        Padding="0"
-                        HorizontalOptions="End">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1"/>
+                        <Shadow
+                            Brush="Black"
+                            Offset="0,2"
+                            Opacity="0.1"
+                            Radius="4" />
                     </Border.Shadow>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding LogoutCommand}" />
-                    </Border.GestureRecognizers>
-                    <Label Text="⎋"
-                           FontSize="20"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           TextColor="#D32F2F"/>
+                    <Label
+                        FontSize="26"
+                        HorizontalOptions="Center"
+                        Margin="0,0,0,4"
+                        Text="‹"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center" />
                 </Border>
+
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    HorizontalOptions="Center"
+                    Margin="-48,0,0,0"
+                    Spacing="0"
+                    VerticalOptions="Center">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Карта пациента"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <Label
+                        FontSize="13"
+                        HorizontalOptions="Center"
+                        Text="Назначения и совместимость"
+                        TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
             </Grid>
 
-            <!-- Карточка пациента -->
-            <Border StrokeShape="RoundRectangle 16"
-                    BackgroundColor="White"
-                    StrokeThickness="0"
-                    Padding="16">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
-                </Border.Shadow>
+            <!--  Контент  -->
+            <ScrollView Grid.Row="1" Padding="16,0">
+                <VerticalStackLayout
+                    HorizontalOptions="Fill"
+                    MaximumWidthRequest="800"
+                    Spacing="16">
 
-                <VerticalStackLayout Spacing="4">
-                    <Label Text="{Binding PatientFullName}"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource TextPrimary}"
-                           LineBreakMode="TailTruncation"/>
-                    <Label Text="{Binding PatientLogin}"
-                           FontSize="12"
-                           TextColor="{StaticResource TextSecondary}"/>
-                </VerticalStackLayout>
-            </Border>
-
-            <!-- Кнопка добавления -->
-            <Button Text="+ Добавить препарат"
-                    Command="{Binding AddMedicineCommand}"
-                    BackgroundColor="{StaticResource Primary}"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="44"
-                    FontSize="14"
-                    FontAttributes="Bold"/>
-        </VerticalStackLayout>
-
-        <!-- Низ: список назначений (без Margin-костылей) -->
-        <RefreshView Grid.Row="1"
-                     Command="{Binding LoadDataCommand}"
-                     IsRefreshing="{Binding IsBusy}"
-                     RefreshColor="{StaticResource Primary}">
-
-            <CollectionView ItemsSource="{Binding Prescriptions}"
-                            SelectionMode="None"
-                            HorizontalOptions="Fill"
-                            WidthRequest="{OnPlatform WinUI='800', Default='-1'}">
-
-                <CollectionView.HorizontalOptions>
-                    <OnPlatform x:TypeArguments="LayoutOptions">
-                        <On Platform="WinUI" Value="Center" />
-                        <On Platform="Android,iOS" Value="Fill" />
-                    </OnPlatform>
-                </CollectionView.HorizontalOptions>
-
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
-                </CollectionView.ItemsLayout>
-
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:prescription">
-                        <Border StrokeShape="RoundRectangle 12"
-                                BackgroundColor="White"
+                    <!--  Инфо о пациенте  -->
+                    <Border
+                        BackgroundColor="{StaticResource Surface}"
+                        Padding="16"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,4"
+                                Opacity="0.05"
+                                Radius="8" />
+                        </Border.Shadow>
+                        <Grid ColumnDefinitions="60,*" ColumnSpacing="16">
+                            <!--  Иконка профиля  -->
+                            <Border
+                                BackgroundColor="#E3F2FD"
+                                HeightRequest="60"
+                                StrokeShape="RoundRectangle 30"
                                 StrokeThickness="0"
-                                Padding="12">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.05"/>
-                            </Border.Shadow>
+                                WidthRequest="60">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="30"
+                                    HorizontalOptions="Center"
+                                    Text="👤"
+                                    TextColor="{StaticResource Primary}"
+                                    VerticalOptions="Center" />
+                            </Border>
 
-                            <Grid RowDefinitions="Auto,Auto"
-                                  ColumnDefinitions="*,Auto"
-                                  RowSpacing="4">
-                                <Label Grid.Row="0"
-                                       Text="{Binding Medicine.TradeName}"
-                                       FontSize="15"
-                                       FontAttributes="Bold"
-                                       TextColor="{StaticResource TextPrimary}"
-                                       LineBreakMode="TailTruncation"/>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    Text="{Binding PatientFullName}"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Label
+                                    FontSize="14"
+                                    Text="{Binding PatientLogin, StringFormat='@{0}'}"
+                                    TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
 
-                                <Label Grid.Row="0" Grid.Column="1"
-                                       Text="{Binding PrescribedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
-                                       FontSize="11"
-                                       TextColor="{StaticResource TextSecondary}"
-                                       VerticalOptions="Center"/>
+                    <!--  Кнопка добавить  -->
+                    <Button
+                        Command="{Binding AddMedicineCommand}"
+                        CornerRadius="14"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        HeightRequest="54"
+                        Style="{StaticResource PrimaryButton}"
+                        Text="+ Добавить препарат">
+                        <Button.Shadow>
+                            <Shadow
+                                Brush="{StaticResource Primary}"
+                                Offset="0,4"
+                                Opacity="0.3"
+                                Radius="8" />
+                        </Button.Shadow>
+                    </Button>
 
-                                <Label Grid.Row="1"
-                                       Text="{Binding Doctor.LastName, StringFormat='Врач: {0}'}"
-                                       FontSize="11"
-                                       TextColor="{StaticResource TextSecondary}"/>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                    <BoxView Color="Transparent" HeightRequest="4" />
 
-                <CollectionView.EmptyView>
-                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                        <Label Text="Назначений нет" FontSize="18" TextColor="#999" HorizontalOptions="Center"/>
-                        <Label Text="Нажмите «+ Добавить препарат»" FontSize="12" TextColor="#BBB" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
+                    <!--  Список назначений  -->
+                    <CollectionView
+                        EmptyView="Нет назначений"
+                        HorizontalOptions="Fill"
+                        ItemsSource="{Binding Prescriptions}"
+                        SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:prescription">
+                                <Border
+                                    BackgroundColor="{StaticResource Surface}"
+                                    Margin="0,0,0,12"
+                                    Padding="16"
+                                    StrokeShape="RoundRectangle 16"
+                                    StrokeThickness="0">
+                                    <Border.Shadow>
+                                        <Shadow
+                                            Brush="Black"
+                                            Offset="0,4"
+                                            Opacity="0.05"
+                                            Radius="8" />
+                                    </Border.Shadow>
 
-            </CollectionView>
-        </RefreshView>
+                                    <Grid RowDefinitions="Auto,Auto" RowSpacing="6">
+                                        <!--  Верхняя строка: Название + Дата  -->
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                Text="{Binding Medicine.TradeName}"
+                                                TextColor="{StaticResource TextPrimary}" />
 
+                                            <!--  Дата Badge  -->
+                                            <Border
+                                                BackgroundColor="#E8F5E9"
+                                                Grid.Column="1"
+                                                Padding="8,4"
+                                                StrokeShape="RoundRectangle 6"
+                                                StrokeThickness="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="11"
+                                                    Text="{Binding PrescribedAt, StringFormat='{0:dd.MM.yy}'}"
+                                                    TextColor="#2E7D32" />
+                                            </Border>
+                                        </Grid>
+
+                                        <!--  Нижняя строка: Врач  -->
+                                        <Label
+                                            FontSize="13"
+                                            Grid.Row="1"
+                                            TextColor="{StaticResource TextSecondary}">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span FontAttributes="Bold" Text="Врач: " />
+                                                    <Span Text="{Binding Doctor.LastName}" />
+                                                    <Span Text=" " />
+                                                    <Span Text="{Binding Doctor.FirstName}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <BoxView HeightRequest="40" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
     </Grid>
 </ContentPage>

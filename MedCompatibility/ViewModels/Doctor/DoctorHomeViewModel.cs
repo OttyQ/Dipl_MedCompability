@@ -1,107 +1,96 @@
-﻿using CommunityToolkit.Maui.Views; // Обязательно для ShowPopupAsync
+﻿using System;
+using System.Threading.Tasks;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Pages.Admin;
 using MedCompatibility.Pages.Doctor;
 using MedCompatibility.Pages.Patient;
-using MedCompatibility.Pages.Shared.Popups; // Тут лежит наш ConfirmPopup
+using MedCompatibility.Pages.Shared.Popups;
 using MedCompatibility.Services.Interfaces;
 
 namespace MedCompatibility.ViewModels.Doctor;
 
 public partial class DoctorHomeViewModel : ObservableObject
 {
-    private readonly IUserSessionService _sessionService;
-    private readonly ILoadingService _loading;
-    // В будущем сюда добавим IUserService или IDoctorService для загрузки реальной статистики
+    private readonly IUserSessionService sessionService;
+    private readonly ILoadingService loading;
+    private readonly IDoctorStatsService statsService;
 
-    [ObservableProperty]
-    private string welcomeText;
+    [ObservableProperty] private string welcomeText = string.Empty;
+    [ObservableProperty] private int patientsCount;
+    [ObservableProperty] private int prescriptionsCount;
 
-    [ObservableProperty]
-    private int patientsCount = 0;
-
-    [ObservableProperty]
-    private int prescriptionsCount = 0;
-
-    public DoctorHomeViewModel(IUserSessionService sessionService, ILoadingService loading)
+    public DoctorHomeViewModel(
+        IUserSessionService sessionService,
+        ILoadingService loading,
+        IDoctorStatsService statsService)
     {
-        _sessionService = sessionService;
-        _loading = loading;
-        UpdateInfo();
+        this.sessionService = sessionService;
+        this.loading = loading;
+        this.statsService = statsService;
+
+        UpdateWelcome();
     }
 
-    // Метод, который вызывается при открытии страницы (из CodeBehind)
     public async Task OnAppearingAsync()
     {
-        UpdateInfo();
+        UpdateWelcome();
 
-        // Пример загрузки статистики (как в Админке). 
-        // Пока оставим заглушки или простые значения, 
-        // но структура готова для внедрения реальных запросов к БД.
-        /*
-        try 
+        var doctor = sessionService.CurrentUser;
+        if (doctor == null)
         {
-            _loading.Show();
-            // var stats = await _doctorService.GetStatsAsync();
-            // PatientsCount = stats.Patients;
-            // PrescriptionsCount = stats.Prescriptions;
-        } 
-        finally 
-        {
-            _loading.Hide();
+            PatientsCount = 0;
+            PrescriptionsCount = 0;
+            return;
         }
-        */
-        await Task.CompletedTask; 
+
+        try
+        {
+            loading.Show();
+
+            var stats = await statsService.GetDoctorStatsAsync(doctor.UserId);
+            PatientsCount = stats.Patients;
+            PrescriptionsCount = stats.Prescriptions;
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            loading.Hide();
+        }
     }
 
-    private void UpdateInfo()
+    private void UpdateWelcome()
     {
-        var user = _sessionService.CurrentUser;
-        WelcomeText = user != null
-            ? $"{user.FirstName} {user.MiddleName}"
-            : "Врач";
+        var user = sessionService.CurrentUser;
+        if (user == null)
+        {
+            WelcomeText = string.Empty;
+            return;
+        }
+
+        var name = $"{user.FirstName} {user.MiddleName}".Trim();
+        WelcomeText = string.IsNullOrWhiteSpace(name) ? user.Login : name;
     }
 
     [RelayCommand]
     private async Task LogoutAsync()
     {
-        // --- ИСПОЛЬЗУЕМ КРАСИВЫЙ ПОПАП ---
         var resultObj = await Shell.Current.ShowPopupAsync(
-            new ConfirmPopup(
-                "Выход",
-                "Вы уверены, что хотите выйти из аккаунта?",
-                okText: "Выйти",
-                cancelText: "Отмена"));
+            new ConfirmPopup("Выход", "Выйти из аккаунта?", okText: "Да", cancelText: "Нет"));
 
         if (resultObj is bool ok && ok)
         {
-            _sessionService.EndSession();
+            sessionService.EndSession();
             await Shell.Current.GoToAsync("//Login");
         }
     }
 
-    [RelayCommand]
-    private async Task GoToPatientsAsync()
-    {
-        await Shell.Current.GoToAsync(nameof(DoctorPatientsPage));
-    }
-
-    [RelayCommand]
-    private async Task GoToMedicinesAsync()
-    {
-        await Shell.Current.GoToAsync(nameof(MedicinesListPage));
-    }
-
-    [RelayCommand]
-    private async Task GoToInteractionsAsync()
-    {
-        await Shell.Current.GoToAsync(nameof(InteractionsListPage));
-    }
-
-    [RelayCommand]
-    private async Task GoToProfileAsync()
-    {
-        await Shell.Current.GoToAsync(nameof(ProfilePage));
-    }
+    [RelayCommand] private Task GoToPatientsAsync() => Shell.Current.GoToAsync(nameof(DoctorPatientsPage));
+    [RelayCommand] private Task GoToMedicinesAsync() => Shell.Current.GoToAsync(nameof(MedicinesListPage));
+    [RelayCommand] private Task GoToInteractionsAsync() => Shell.Current.GoToAsync(nameof(InteractionsListPage));
+    [RelayCommand] private Task GoToProfileAsync() => Shell.Current.GoToAsync(nameof(ProfilePage));
 }
