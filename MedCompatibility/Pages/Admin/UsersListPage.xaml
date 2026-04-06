@@ -18,8 +18,6 @@
     </ContentPage.Resources>
 
     <Grid>
-
-        <!--  Фон-пузырьки (как на Login)  -->
         <AbsoluteLayout InputTransparent="True">
             <BoxView
                 AbsoluteLayout.LayoutBounds="0.10,0.10,520,520"
@@ -96,8 +94,6 @@
                         TextColor="{StaticResource TextPrimary}"
                         VerticalOptions="Center" />
                 </Grid>
-
-                <!--  2) Фильтры (карточка как в новом стиле)  -->
                 <Frame
                     Margin="0"
                     Padding="16"

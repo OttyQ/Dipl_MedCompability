@@ -29,7 +29,6 @@
                                    Tablet=380,
                                    Desktop=340}">
 
-            <!--  Важно: Grid, чтобы список мог FillAndExpand  -->
             <Grid RowDefinitions="Auto,Auto,Auto,* ,Auto" RowSpacing="10">
 
                 <!--  Заголовок  -->

@@ -28,10 +28,7 @@
                 Color="#0A0097A7"
                 CornerRadius="100" />
         </AbsoluteLayout>
-
-        <!--  Основной контент (Твой оригинальный код)  -->
         <Grid RowDefinitions="Auto, *">
-
             <!--  1. ЗАГОЛОВОК  -->
             <Grid
                 BackgroundColor="Transparent"

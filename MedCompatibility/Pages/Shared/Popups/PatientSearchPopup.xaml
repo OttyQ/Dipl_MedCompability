@@ -1,84 +1,95 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-               xmlns:models="clr-namespace:MedCompatibility.Models"
-               x:Class="MedCompatibility.Pages.Shared.Popups.PatientSearchPopup"
-               Color="Transparent"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               CanBeDismissedByTappingOutsideOfPopup="True"
-               Opened="OnPopupOpened">
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent"
+    HorizontalOptions="Center"
+    Opened="OnPopupOpened"
+    VerticalOptions="Center"
+    x:Class="MedCompatibility.Pages.Shared.Popups.PatientSearchPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Border StrokeShape="RoundRectangle 20"
-            BackgroundColor="White"
-            WidthRequest="350"
-            HeightRequest="500"
-            StrokeThickness="0"
-            Padding="20">
+    <Border
+        BackgroundColor="White"
+        HeightRequest="500"
+        Padding="20"
+        StrokeShape="RoundRectangle 20"
+        StrokeThickness="0"
+        WidthRequest="350">
 
         <Grid RowDefinitions="Auto, Auto, Auto, *, Auto" RowSpacing="12">
 
-            <Label Grid.Row="0"
-                   Text="Добавить пациента"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   TextColor="Black"/>
+            <Label
+                FontAttributes="Bold"
+                FontSize="20"
+                Grid.Row="0"
+                Text="Добавить пациента"
+                TextColor="Black" />
 
-            <SearchBar Grid.Row="1"
-                       x:Name="SearchInput"
-                       Placeholder="Фамилия или логин..."
-                       TextChanged="OnSearchTextChanged"
-                       BackgroundColor="#F0F0F0"/>
+            <SearchBar
+                BackgroundColor="#F0F0F0"
+                Grid.Row="1"
+                Placeholder="Фамилия или логин..."
+                TextChanged="OnSearchTextChanged"
+                x:Name="SearchInput" />
 
-            <ActivityIndicator Grid.Row="2"
-                               x:Name="Loader"
-                               IsVisible="False"
-                               IsRunning="False"
-                               Color="#2563EB"
-                               HeightRequest="24"/>
+            <ActivityIndicator
+                Color="#2563EB"
+                Grid.Row="2"
+                HeightRequest="24"
+                IsRunning="False"
+                IsVisible="False"
+                x:Name="Loader" />
 
-            <!-- ВАЖНО: CollectionView сам скроллится, ScrollView тут не нужен -->
-            <CollectionView Grid.Row="3"
-                            x:Name="ResultsList"
-                            SelectionMode="Single"
-                            SelectionChanged="OnSelectionChanged">
+            <CollectionView
+                Grid.Row="3"
+                SelectionChanged="OnSelectionChanged"
+                SelectionMode="Single"
+                x:Name="ResultsList">
                 <CollectionView.EmptyView>
-                    <Label Text="Пациенты не найдены"
-                           TextColor="#999"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
+                    <Label
+                        HorizontalOptions="Center"
+                        Text="Пациенты не найдены"
+                        TextColor="#999"
+                        VerticalOptions="Center" />
                 </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:user">
-                        <Border Padding="12"
-                                Margin="0,0,0,8"
-                                BackgroundColor="#F5F5F5"
-                                StrokeShape="RoundRectangle 10"
-                                StrokeThickness="0">
+                        <Border
+                            BackgroundColor="#F5F5F5"
+                            Margin="0,0,0,8"
+                            Padding="12"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="0">
                             <VerticalStackLayout Spacing="2">
-                                <Label Text="{Binding LastName}"
-                                       FontAttributes="Bold"
-                                       FontSize="16"
-                                       TextColor="Black"/>
-                                <Label Text="{Binding FirstName}"
-                                       FontSize="14"
-                                       TextColor="Gray"/>
-                                <Label Text="{Binding Login, StringFormat='@{0}'}"
-                                       FontSize="12"
-                                       TextColor="Gray"/>
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="{Binding LastName}"
+                                    TextColor="Black" />
+                                <Label
+                                    FontSize="14"
+                                    Text="{Binding FirstName}"
+                                    TextColor="Gray" />
+                                <Label
+                                    FontSize="12"
+                                    Text="{Binding Login, StringFormat='@{0}'}"
+                                    TextColor="Gray" />
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Button Grid.Row="4"
-                    Text="Закрыть"
-                    Clicked="OnCloseClicked"
-                    BackgroundColor="#E0E0E0"
-                    TextColor="Black"/>
+            <Button
+                BackgroundColor="#E0E0E0"
+                Clicked="OnCloseClicked"
+                Grid.Row="4"
+                Text="Закрыть"
+                TextColor="Black" />
         </Grid>
     </Border>
 </toolkit:Popup>

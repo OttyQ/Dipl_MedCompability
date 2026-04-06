@@ -40,7 +40,7 @@ public class LoadingService : ILoadingService
             }
             catch
             {
-                // Hide() никогда не должен ронять приложение
+
             }
         });
     }

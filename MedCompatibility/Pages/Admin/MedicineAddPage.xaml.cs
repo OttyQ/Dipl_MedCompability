@@ -60,7 +60,6 @@ public partial class MedicineAddPage : ContentPage
         }
         else
         {
-            // Если все ок - сохраняем
             if (_viewModel.SaveCommand.CanExecute(null))
             {
                 _viewModel.SaveCommand.Execute(null);

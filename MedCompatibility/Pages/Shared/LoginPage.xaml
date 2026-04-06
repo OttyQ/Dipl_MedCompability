@@ -6,8 +6,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-
-        <!--  Фон (у Login своя раскладка пузырьков)  -->
         <AbsoluteLayout InputTransparent="True">
             <!--  Большой слева снизу  -->
             <BoxView
@@ -45,7 +43,7 @@
                 Spacing="16"
                 VerticalOptions="Center">
 
-                <!--  Шапка: стикер + название + слоган (как на старом)  -->
+                <!--  Шапка: стикер + название + слоган  -->
                 <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
 
                     <Border
@@ -153,7 +151,7 @@
                             Style="{StaticResource SecondaryButton}"
                             Text="Продолжить с Google" />
 
-                        <!--  Разделитель как на старом ("Или")  -->
+                        <!--  Разделитель  -->
                         <Grid
                             ColumnDefinitions="*,Auto,*"
                             ColumnSpacing="12"
@@ -175,13 +173,13 @@
                                 VerticalOptions="Center" />
                         </Grid>
 
-                        <!--  Регистрация (явная, как кнопка)  -->
+                        <!--  Регистрация  -->
                         <Button
                             Command="{Binding GoToRegisterCommand}"
                             Style="{StaticResource SecondaryButton}"
                             Text="Создать аккаунт" />
 
-                        <!--  Гость (тоже кликабельная кнопка-линк)  -->
+                        <!--  Гость  -->
                         <Button
                             Command="{Binding GuestLoginCommand}"
                             HorizontalOptions="Center"

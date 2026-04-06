@@ -57,8 +57,7 @@ public partial class InteractionsListViewModel : ObservableObject
             await LoadDataAsync();
         }
     }
-
-    // Команда перехода на создание (пока просто заглушка, сделаем попап позже)
+    
     [RelayCommand]
     private async Task GoToAddInteractionAsync()
     {
