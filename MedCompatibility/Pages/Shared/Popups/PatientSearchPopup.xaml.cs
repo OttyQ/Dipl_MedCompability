@@ -38,7 +38,6 @@ public partial class PatientSearchPopup : Popup
 
             var patients = await _userService.SearchNewPatientsAsync(query, doctor.UserId);
 
-            // ItemsSource лучше обновлять на UI-потоке. [web:29]
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 ResultsList.ItemsSource = patients;

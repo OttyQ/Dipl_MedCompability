@@ -16,11 +16,6 @@
                 <Setter Property="Stroke" Value="#E6EAF0" />
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="Padding" Value="16" />
-
-                <!--  Убираем Fill — чтобы плитки не "уезжали" влево  -->
-                <!--<Setter Property="HorizontalOptions" Value="Fill" />-->
-                <!--<Setter Property="VerticalOptions" Value="Fill" />-->
-
                 <Setter Property="Shadow">
                     <Shadow
                         Brush="#90A4AE"

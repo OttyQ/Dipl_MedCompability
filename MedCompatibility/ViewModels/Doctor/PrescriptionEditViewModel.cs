@@ -108,8 +108,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
     {
         var popup = new MedicineSelectionPopup(_medicineService, _scanService);
         var result = await Shell.Current.ShowPopupAsync(popup);
-
-        // В попапе Scan = Close("SCAN") [file:58]
+        
         if (result is string action && action == "SCAN")
         {
             await Shell.Current.GoToAsync(nameof(CodeScannerPage));
@@ -146,7 +145,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
 
     private async Task<bool> ConfirmIfConflictsAsync(int selectedMedicineId)
     {
-        var current = await _prescriptionService.GetPatientPrescriptionsAsync(_patientId); // [file:58]
+        var current = await _prescriptionService.GetPatientPrescriptionsAsync(_patientId); 
 
         // Если редактируем — исключаем текущее назначение из сравнения
         if (IsEditMode)
@@ -172,7 +171,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         if (!allConflicts.Any())
             return true;
 
-        var isCritical = allConflicts.Any(c => (c.RiskLevel?.Severity ?? 0) >= 3); // [file:58]
+        var isCritical = allConflicts.Any(c => (c.RiskLevel?.Severity ?? 0) >= 3); 
 
         var result = await Shell.Current.ShowPopupAsync(
             new InteractionsDetailsPopup(allConflicts, isCritical));
@@ -187,8 +186,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
 
         var doctor = _session.CurrentUser;
         if (doctor == null) return;
-
-        // ВОССТАНОВЛЕНО: проверяем взаимодействия перед сохранением [file:58]
+        
         if (!await ConfirmIfConflictsAsync(SelectedMedicine!.MedicineId))
             return;
 

@@ -1,58 +1,99 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-               xmlns:models="clr-namespace:MedCompatibility.Models"
-               x:Class="MedCompatibility.Pages.Shared.Popups.SelectSubstancePopup"
-               Color="Transparent"
-               CanBeDismissedByTappingOutsideOfPopup="True">
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.SelectSubstancePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Border StrokeShape="RoundRectangle 20" 
-            BackgroundColor="{StaticResource Surface}" 
-            Stroke="{StaticResource Primary}"
-            StrokeThickness="1"
-            Padding="20" 
-            WidthRequest="340" 
-            VerticalOptions="Start" Margin="0,60,0,0"
-            Shadow="{Shadow Brush={StaticResource Primary}, Offset='0,4', Radius=10, Opacity=0.2}">
-        
+    <Border
+        BackgroundColor="{StaticResource Surface}"
+        Margin="0,60,0,0"
+        Padding="20"
+        Shadow="{Shadow Brush={StaticResource Primary},
+                        Offset='0,4',
+                        Radius=10,
+                        Opacity=0.2}"
+        Stroke="{StaticResource Primary}"
+        StrokeShape="RoundRectangle 20"
+        StrokeThickness="1"
+        VerticalOptions="Start"
+        WidthRequest="340">
+
         <VerticalStackLayout Spacing="10">
-            <Label Text="Выбор вещества" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center"/>
-            
-            <!-- Поле поиска -->
-            <Border StrokeShape="RoundRectangle 10" BackgroundColor="{StaticResource AppBackground}" StrokeThickness="0" HeightRequest="44" Padding="10,0">
+            <Label
+                FontAttributes="Bold"
+                FontSize="16"
+                HorizontalOptions="Center"
+                Text="Выбор вещества"
+                TextColor="{StaticResource TextPrimary}" />
+
+            <!--  Поле поиска  -->
+            <Border
+                BackgroundColor="{StaticResource AppBackground}"
+                HeightRequest="44"
+                Padding="10,0"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="0">
                 <Grid ColumnDefinitions="*, Auto">
-                    <Entry x:Name="SearchEntry" 
-                           Placeholder="Начните вводить..." 
-                           TextChanged="OnSearchTextChanged" 
-                           TextColor="{StaticResource TextPrimary}"
-                           PlaceholderColor="{StaticResource TextSecondary}"
-                           VerticalOptions="Center"/>
-                    <!-- Кнопка очистки (свой крестик) -->
-                    <Button Grid.Column="1" Text="✕" BackgroundColor="Transparent" TextColor="{StaticResource TextSecondary}" 
-                            Clicked="OnClearSearchClicked" HeightRequest="40" WidthRequest="40" Padding="0"/>
+                    <Entry
+                        Placeholder="Начните вводить..."
+                        PlaceholderColor="{StaticResource TextSecondary}"
+                        TextChanged="OnSearchTextChanged"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center"
+                        x:Name="SearchEntry" />
+                    <!--  Кнопка очистки (свой крестик)  -->
+                    <Button
+                        BackgroundColor="Transparent"
+                        Clicked="OnClearSearchClicked"
+                        Grid.Column="1"
+                        HeightRequest="40"
+                        Padding="0"
+                        Text="✕"
+                        TextColor="{StaticResource TextSecondary}"
+                        WidthRequest="40" />
                 </Grid>
             </Border>
 
-            <!-- Лоадер -->
-            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="True" Color="{StaticResource Primary}" HeightRequest="20" IsVisible="False"/>
+            <!--  Лоадер  -->
+            <ActivityIndicator
+                Color="{StaticResource Primary}"
+                HeightRequest="20"
+                IsRunning="True"
+                IsVisible="False"
+                x:Name="LoadingIndicator" />
 
-            <!-- Список существующих веществ -->
-            <!-- Важно: HeightRequest ограничен, чтобы список скроллился внутри попапа -->
-            <CollectionView x:Name="ResultsList" HeightRequest="180" SelectionMode="Single" SelectionChanged="OnSubstanceSelected" IsVisible="False">
+            <!--  Список существующих веществ  -->
+            <CollectionView
+                HeightRequest="180"
+                IsVisible="False"
+                SelectionChanged="OnSubstanceSelected"
+                SelectionMode="Single"
+                x:Name="ResultsList">
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="4"/>
+                    <LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:activesubstance">
-                        <Border StrokeShape="RoundRectangle 8" BackgroundColor="Transparent" StrokeThickness="0" Padding="10">
-                            <Label Text="{Binding Name}" TextColor="{StaticResource TextPrimary}" FontSize="14"/>
+                        <Border
+                            BackgroundColor="Transparent"
+                            Padding="10"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="0">
+                            <Label
+                                FontSize="14"
+                                Text="{Binding Name}"
+                                TextColor="{StaticResource TextPrimary}" />
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal" />
                                     <VisualState x:Name="Selected">
                                         <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="#E0F7FA" /> <!-- Подсветка при нажатии -->
+                                            <Setter Property="BackgroundColor" Value="#E0F7FA" />
+                                            <!--  Подсветка при нажатии  -->
                                         </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>
@@ -62,29 +103,63 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- Динамический блок создания -->
-            <VerticalStackLayout x:Name="CreateBlock" IsVisible="False" Spacing="8">
-                <BoxView HeightRequest="1" Color="{StaticResource Primary}" Opacity="0.3" Margin="0,5"/>
-                <Label Text="Не найдено. Создать новое?" FontSize="12" TextColor="{StaticResource Secondary}" HorizontalOptions="Center"/>
-                
-                <!-- Название (копия из поиска) -->
-                <Label Text="{Binding Source={x:Reference NewNameEntry}, Path=Text}" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" HorizontalOptions="Center" FontSize="16"/>
-                <Entry x:Name="NewNameEntry" IsVisible="False"/> 
+            <!--  Динамический блок создания  -->
+            <VerticalStackLayout
+                IsVisible="False"
+                Spacing="8"
+                x:Name="CreateBlock">
+                <BoxView
+                    Color="{StaticResource Primary}"
+                    HeightRequest="1"
+                    Margin="0,5"
+                    Opacity="0.3" />
+                <Label
+                    FontSize="12"
+                    HorizontalOptions="Center"
+                    Text="Не найдено. Создать новое?"
+                    TextColor="{StaticResource Secondary}" />
 
-                <!-- Описание (Исправляем черный фон) -->
-                <Border StrokeShape="RoundRectangle 8" BackgroundColor="{StaticResource AppBackground}" StrokeThickness="0" HeightRequest="80" Padding="10">
-                     <Editor x:Name="NewDescEntry" 
-                             Placeholder="Описание (необязательно)" 
-                             TextColor="{StaticResource TextPrimary}" 
-                             PlaceholderColor="{StaticResource TextSecondary}"
-                             BackgroundColor="Transparent"
-                             AutoSize="TextChanges"/>
+                <!--  Название (копия из поиска)  -->
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HorizontalOptions="Center"
+                    Text="{Binding Source={x:Reference NewNameEntry}, Path=Text}"
+                    TextColor="{StaticResource TextPrimary}" />
+                <Entry IsVisible="False" x:Name="NewNameEntry" />
+
+                <!--  Описание (Исправляем черный фон)  -->
+                <Border
+                    BackgroundColor="{StaticResource AppBackground}"
+                    HeightRequest="80"
+                    Padding="10"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="0">
+                    <Editor
+                        AutoSize="TextChanges"
+                        BackgroundColor="Transparent"
+                        Placeholder="Описание (необязательно)"
+                        PlaceholderColor="{StaticResource TextSecondary}"
+                        TextColor="{StaticResource TextPrimary}"
+                        x:Name="NewDescEntry" />
                 </Border>
 
-                <Button Text="Сохранить и выбрать" Clicked="OnCreateClicked" Style="{StaticResource PrimaryButton}" CornerRadius="10" HeightRequest="44"/>
+                <Button
+                    Clicked="OnCreateClicked"
+                    CornerRadius="10"
+                    HeightRequest="44"
+                    Style="{StaticResource PrimaryButton}"
+                    Text="Сохранить и выбрать" />
             </VerticalStackLayout>
-            
-            <Button Text="Отмена" Clicked="OnCancelClicked" BackgroundColor="Transparent" TextColor="{StaticResource TextSecondary}" FontSize="14" HeightRequest="36" Margin="0,10,0,0"/>
+
+            <Button
+                BackgroundColor="Transparent"
+                Clicked="OnCancelClicked"
+                FontSize="14"
+                HeightRequest="36"
+                Margin="0,10,0,0"
+                Text="Отмена"
+                TextColor="{StaticResource TextSecondary}" />
         </VerticalStackLayout>
     </Border>
 </toolkit:Popup>

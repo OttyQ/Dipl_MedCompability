@@ -12,8 +12,7 @@ public class InteractionService : IInteractionService
     {
         _contextFactory = contextFactory;
     }
-
-    // --- СУЩЕСТВУЮЩИЕ МЕТОДЫ (Оставляем как есть) ---
+    
 
     public async Task<List<interaction>> GetAllInteractionsAsync()
     {
@@ -28,7 +27,6 @@ public class InteractionService : IInteractionService
             .ToListAsync();
     }
     
-    // ... (Методы Add, Delete, GetDictionaries оставляем без изменений) ...
 
     public async Task<List<interactiontype>> GetInteractionTypesAsync()
     {
@@ -44,7 +42,6 @@ public class InteractionService : IInteractionService
 
     public async Task AddInteractionAsync(int subId1, int subId2, int typeId, int riskId, string desc, string recommendation)
     {
-        // ... (Твой код добавления) ...
          if (subId1 == subId2)
             throw new Exception("Нельзя создать конфликт вещества с самим собой.");
 
@@ -107,8 +104,7 @@ public class InteractionService : IInteractionService
         context.interactions.Update(item);
         await context.SaveChangesAsync();
     }
-
-    // --- НОВЫЙ МЕТОД: ПРОВЕРКА КОНФЛИКТА ---
+    
     public async Task<List<interaction>> CheckInteractionAsync(int medicineId1, int medicineId2)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
@@ -135,7 +131,7 @@ public class InteractionService : IInteractionService
         // 3. Ищем взаимодействия
         var conflicts = await context.interactions
             .Include(i => i.RiskLevel)
-            .Include(i => i.InteractionType) // Чтобы показать тип (хотя ты просил скрыть, но в модели пусть будет)
+            .Include(i => i.InteractionType) 
             .Include(i => i.SubstanceId1Navigation)
             .Include(i => i.SubstanceId2Navigation)
             .Where(i => 

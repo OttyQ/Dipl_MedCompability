@@ -9,8 +9,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-
-        <!--  Фон-пузырьки (как Login/AdminHome)  -->
         <AbsoluteLayout InputTransparent="True">
             <BoxView
                 AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"

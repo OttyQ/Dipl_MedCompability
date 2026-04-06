@@ -38,8 +38,7 @@ public partial class DoctorPatientsViewModel : ObservableObject
                 Patients.Clear();
                 return;
             }
-
-            // ВАЖНО: тут должен быть метод "мои пациенты" (по связке doctor-patient).
+            
             var list = await _userService.GetDoctorPatientsAsync(doctor.UserId);
             Patients = new ObservableCollection<user>(list);
         }
