@@ -57,7 +57,7 @@
         <ShellContent
             ContentTemplate="{DataTemplate patient:ScanPage}"
             Icon="icon_qr.png"
-            Title="СКАНЕР" />
+            Title="Сканер" />
 
         <!--  Используем patient:ProfilePage  -->
         <ShellContent

@@ -131,6 +131,7 @@ public partial class ProfileViewModel : ObservableObject
         if (!confirm) return;
 
         _sessionService.EndSession();
+        Application.Current.MainPage = new AppShell();
         // Используем абсолютный путь, чтобы сбросить навигационный стек
         await Shell.Current.GoToAsync("//Login");
     }

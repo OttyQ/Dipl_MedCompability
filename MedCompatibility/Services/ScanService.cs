@@ -20,7 +20,6 @@ public class ScanService : IScanService
         // 1. Гостям историю не пишем (согласно ТЗ)
         if (!_sessionService.IsAuthenticated || _sessionService.CurrentUser == null)
             return;
-
         try
         {
             using var context = await _contextFactory.CreateDbContextAsync();

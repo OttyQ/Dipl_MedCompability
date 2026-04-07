@@ -9,4 +9,16 @@ public partial class ScanPage : ContentPage
         InitializeComponent();
         BindingContext = vm;
     }
+    
+    // Вызывается каждый раз, когда мы переходим на эту вкладку
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        
+        // Проверяем, не сменился ли аккаунт
+        if (BindingContext is ScanPageViewModel vm)
+        {
+            vm.CheckAndClearSessionState();
+        }
+    }
 }
