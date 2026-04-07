@@ -4,110 +4,209 @@
     Title="Проверка лекарств"
     x:Class="MedCompatibility.Pages.Patient.ScanPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
     xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid>
 
-            <!--  Заголовок  -->
-            <Label
-                FontAttributes="Bold"
-                FontSize="22"
-                HorizontalOptions="Center"
-                Text="Проверка совместимости"
-                TextColor="{StaticResource Primary}" />
+        <AbsoluteLayout>
+            <Ellipse
+                AbsoluteLayout.LayoutBounds="-50,-50, 200, 200"
+                AbsoluteLayout.LayoutFlags="None"
+                Fill="{StaticResource PrimaryLight}"
+                Opacity="0.3" />
+            <Ellipse
+                AbsoluteLayout.LayoutBounds="1.2, 0.2, 150, 150"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Fill="{StaticResource Secondary}"
+                Opacity="0.2" />
+            <Ellipse
+                AbsoluteLayout.LayoutBounds="-0.2, 1.1, 250, 250"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Fill="{StaticResource Primary}"
+                Opacity="0.1" />
+        </AbsoluteLayout>
 
-            <!--  Поле поиска  -->
-            <Border
-                BackgroundColor="White"
-                HeightRequest="50"
-                Padding="15,0"
-                StrokeShape="RoundRectangle 25"
-                StrokeThickness="0">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="Black"
-                        Offset="0,4"
-                        Opacity="0.1"
-                        Radius="10" />
-                </Border.Shadow>
-                <Grid ColumnDefinitions="*, Auto">
-                    <Entry
-                        Placeholder="Введите название или штрихкод"
-                        ReturnCommand="{Binding SearchCommand}"
-                        Text="{Binding SearchQuery}"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
+        <Grid
+            HorizontalOptions="{OnPlatform WinUI=Center,
+                                           MacCatalyst=Center,
+                                           Default=Fill}"
+            Margin="{OnPlatform WinUI='0,20',
+                                MacCatalyst='0,20',
+                                Default='0'}"
+            MaximumWidthRequest="700"
+            RowDefinitions="Auto, *"
+            WidthRequest="{OnPlatform WinUI=700,
+                                      MacCatalyst=700}">
 
-                    <ImageButton
+            <VerticalStackLayout
+                Grid.Row="0"
+                Padding="20"
+                Spacing="20">
+
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    HorizontalOptions="Center"
+                    Text="Поиск и сканирование"
+                    TextColor="{StaticResource Primary}" />
+
+                <Grid
+                    ColumnDefinitions="*, 130"
+                    ColumnSpacing="15"
+                    HeightRequest="50">
+
+                    <Border
+                        BackgroundColor="White"
+                        Grid.Column="0"
+                        HorizontalOptions="Fill"
+                        Padding="15,0,5,0"
+                        StrokeShape="RoundRectangle 25"
+                        StrokeThickness="0"
+                        VerticalOptions="Fill">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,4"
+                                Opacity="0.1"
+                                Radius="10" />
+                        </Border.Shadow>
+
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Entry
+                                Grid.Column="0"
+                                Placeholder="Введите название или штрихкод..."
+                                ReturnCommand="{Binding SearchCommand}"
+                                Text="{Binding SearchQuery}"
+                                TextColor="{StaticResource TextPrimary}"
+                                VerticalOptions="Center" />
+
+                            <Button
+                                BackgroundColor="Transparent"
+                                Command="{Binding ClearSearchCommand}"
+                                FontSize="18"
+                                Grid.Column="1"
+                                HeightRequest="40"
+                                IsVisible="{Binding IsClearButtonVisible}"
+                                Padding="0"
+                                Text="✕"
+                                TextColor="#999"
+                                VerticalOptions="Center"
+                                WidthRequest="40" />
+                        </Grid>
+                    </Border>
+
+                    <Button
+                        BackgroundColor="{StaticResource Primary}"
                         Command="{Binding SearchCommand}"
+                        CornerRadius="25"
+                        FontAttributes="Bold"
                         Grid.Column="1"
-                        HeightRequest="24"
-                        Source="search_icon.png"
-                        VerticalOptions="Center"
-                        WidthRequest="24">
-                        <!--  Если нет иконки, можно текст  -->
-                    </ImageButton>
+                        HorizontalOptions="Fill"
+                        Text="Поиск"
+                        TextColor="White"
+                        VerticalOptions="Fill">
+                        <Button.Shadow>
+                            <Shadow
+                                Brush="{StaticResource Primary}"
+                                Offset="0,4"
+                                Opacity="0.3"
+                                Radius="10" />
+                        </Button.Shadow>
+                    </Button>
                 </Grid>
-            </Border>
 
-            <!--  Кнопка сканера  -->
-            <Button
-                BackgroundColor="{StaticResource Primary}"
-                Command="{Binding ScanBarcodeCommand}"
-                CornerRadius="25"
-                FontAttributes="Bold"
-                HeightRequest="50"
-                Text="📷 Сканировать штрихкод"
-                TextColor="White" />
+                <Button
+                    BackgroundColor="{StaticResource Secondary}"
+                    Command="{Binding ScanBarcodeCommand}"
+                    CornerRadius="25"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    Text="📷 Сканировать код"
+                    TextColor="White">
+                    <Button.IsVisible>
+                        <OnPlatform x:TypeArguments="x:Boolean">
+                            <On Platform="Android,iOS" Value="True" />
+                            <On Platform="WinUI,MacCatalyst" Value="False" />
+                        </OnPlatform>
+                    </Button.IsVisible>
+                </Button>
 
-            <!--  Результат: Лекарство найдено  -->
-            <Border
-                BackgroundColor="White"
-                IsVisible="{Binding IsMedicineVisible}"
-                Padding="15"
-                StrokeShape="RoundRectangle 15"
-                StrokeThickness="0">
-                <VerticalStackLayout Spacing="10">
-                    <Label
-                        FontSize="12"
-                        Text="Результат:"
-                        TextColor="#999" />
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="20"
-                        Text="{Binding FoundMedicine.TradeName}"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <Label
-                        FontSize="14"
-                        Text="{Binding FoundMedicine.INN}"
-                        TextColor="{StaticResource TextSecondary}" />
+            </VerticalStackLayout>
 
-                    <BoxView
-                        Color="#EEE"
-                        HeightRequest="1"
-                        Margin="0,5" />
+            <Grid Grid.Row="1" Padding="20,0,20,20">
 
-                    <Label
-                        FontAttributes="Bold"
-                        Text="Состав:"
-                        TextColor="{StaticResource TextPrimary}" />
+                <ActivityIndicator
+                    Color="{StaticResource Primary}"
+                    HorizontalOptions="Center"
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}"
+                    Margin="0,30,0,0"
+                    VerticalOptions="Start" />
 
-                    <Label
-                        FontSize="12"
-                        Text="✅ Лекарство распознано и добавлено в историю."
-                        TextColor="Green" />
-                </VerticalStackLayout>
-            </Border>
+                <Label
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsNotFoundVisible}"
+                    Margin="0,30,0,0"
+                    Text="Лекарства не найдены в базе."
+                    TextColor="#FF5252"
+                    VerticalOptions="Start" />
 
-            <!--  Результат: Не найдено  -->
-            <Label
-                HorizontalOptions="Center"
-                IsVisible="{Binding IsNotFoundVisible}"
-                Text="Лекарство не найдено в базе данных."
-                TextColor="#FF5252" />
+                <CollectionView
+                    IsVisible="{Binding IsMedicineVisible}"
+                    ItemsSource="{Binding FoundMedicines}"
+                    SelectionMode="None">
 
-        </VerticalStackLayout>
-    </ScrollView>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="15" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:medicine">
+                            <Border
+                                BackgroundColor="White"
+                                Padding="15"
+                                StrokeShape="RoundRectangle 15"
+                                StrokeThickness="0">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ScanPageViewModel}}, Path=GoToDetailsCommand}" CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <Border.Shadow>
+                                    <Shadow
+                                        Brush="Black"
+                                        Offset="0,2"
+                                        Opacity="0.05"
+                                        Radius="5" />
+                                </Border.Shadow>
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout Spacing="5">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="18"
+                                            Text="{Binding TradeName}"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                        <Label
+                                            FontSize="13"
+                                            Text="{Binding INN}"
+                                            TextColor="{StaticResource TextSecondary}" />
+                                        <Label
+                                            FontSize="11"
+                                            Text="{Binding GTIN, StringFormat='GTIN: {0}'}"
+                                            TextColor="#999" />
+                                    </VerticalStackLayout>
+                                    <Label
+                                        FontSize="24"
+                                        Grid.Column="1"
+                                        Text="›"
+                                        TextColor="{StaticResource Primary}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Grid>
+    </Grid>
 </ContentPage>
