@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
     Title="Проверка лекарств"
     x:Class="MedCompatibility.Pages.Patient.ScanPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"

@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
     Title="Совместимость"
     x:Class="MedCompatibility.Pages.Patient.CompatibilityPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -9,7 +10,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!--  Декоративный фон (Пузыри)  -->
         <AbsoluteLayout InputTransparent="True">
             <BoxView
                 AbsoluteLayout.LayoutBounds="1.0,-0.1,300,300"
@@ -23,16 +23,47 @@
                 CornerRadius="200" />
         </AbsoluteLayout>
 
-        <!--  Основной контент (Твой оригинальный код)  -->
-        <Grid RowDefinitions="Auto, *">
+        <Grid
+            HorizontalOptions="{OnPlatform WinUI=Center,
+                                           MacCatalyst=Center,
+                                           Default=Fill}"
+            MaximumWidthRequest="800"
+            RowDefinitions="Auto, *"
+            WidthRequest="{OnPlatform WinUI=800,
+                                      MacCatalyst=800}">
 
-            <!--  Шапка  -->
-            <Grid Grid.Row="0" HeightRequest="60">
+            <Grid
+                ColumnDefinitions="48,*,48"
+                Grid.Row="0"
+                HeightRequest="48"
+                Margin="20,15,20,5">
+
+                <Border
+                    BackgroundColor="#FFEBEE"
+                    HeightRequest="48"
+                    Stroke="#E53935"
+                    StrokeThickness="2"
+                    Style="{StaticResource BackButton}"
+                    WidthRequest="48">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackClicked" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="26"
+                        HorizontalOptions="Center"
+                        Margin="0,0,0,2"
+                        Text="←"
+                        TextColor="#E53935"
+                        VerticalOptions="Center" />
+                </Border>
+
                 <Label
                     FontAttributes="Bold"
-                    FontSize="20"
+                    FontSize="22"
+                    Grid.Column="1"
                     HorizontalOptions="Center"
-                    Text="Проверка совместимости"
+                    Text="Совместимость"
                     TextColor="{StaticResource TextPrimary}"
                     VerticalOptions="Center" />
             </Grid>
@@ -40,10 +71,8 @@
             <ScrollView Grid.Row="1" Padding="20">
                 <VerticalStackLayout Spacing="20">
 
-                    <!--  Блок выбора лекарств  -->
                     <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
 
-                        <!--  Лекарство А  -->
                         <Border
                             BackgroundColor="White"
                             Grid.Column="0"
@@ -77,7 +106,6 @@
                             </VerticalStackLayout>
                         </Border>
 
-                        <!--  Иконка плюса  -->
                         <Label
                             FontSize="30"
                             Grid.Column="1"
@@ -86,7 +114,6 @@
                             TextColor="{StaticResource Primary}"
                             VerticalOptions="Center" />
 
-                        <!--  Лекарство Б  -->
                         <Border
                             BackgroundColor="White"
                             Grid.Column="2"
@@ -121,7 +148,6 @@
                         </Border>
                     </Grid>
 
-                    <!--  Кнопки действия  -->
                     <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
                         <Button
                             BackgroundColor="{StaticResource Primary}"
@@ -133,29 +159,33 @@
                             Text="Проверить"
                             TextColor="White" />
 
-                        <Button
+                        <Border
                             BackgroundColor="{StaticResource Surface}"
-                            BorderColor="Red"
-                            BorderWidth="1"
-                            Command="{Binding ClearCommand}"
-                            CornerRadius="10"
                             Grid.Column="1"
                             HeightRequest="50"
-                            Text="🗑️"
-                            TextColor="Red"
-                            WidthRequest="50" />
+                            Stroke="Red"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="1"
+                            WidthRequest="50">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ClearCommand}" />
+                            </Border.GestureRecognizers>
+                            <Label
+                                FontSize="22"
+                                HorizontalOptions="Center"
+                                Text="🗑️"
+                                VerticalOptions="Center" />
+                        </Border>
                     </Grid>
 
                     <ActivityIndicator Color="{StaticResource Primary}" IsRunning="{Binding IsBusy}" />
 
-                    <!--  Статус  -->
                     <Label
                         FontAttributes="Italic"
                         HorizontalTextAlignment="Center"
                         Text="{Binding StatusMessage}"
                         TextColor="{StaticResource TextSecondary}" />
 
-                    <!--  Результаты  -->
                     <VerticalStackLayout IsVisible="{Binding HasConflicts}" Spacing="10">
                         <Label
                             FontAttributes="Bold"
@@ -181,7 +211,6 @@
                                         </Border.Shadow>
 
                                         <VerticalStackLayout Spacing="8">
-                                            <!--  Заголовок с уровнем риска  -->
                                             <Grid ColumnDefinitions="*, Auto">
                                                 <Label
                                                     FontAttributes="Bold"
@@ -190,7 +219,6 @@
                                                     TextColor="Red" />
                                             </Grid>
 
-                                            <!--  Вещества  -->
                                             <Label>
                                                 <Label.FormattedText>
                                                     <FormattedString>
@@ -213,10 +241,8 @@
                                                 HeightRequest="1"
                                                 Opacity="0.3" />
 
-                                            <!--  Описание  -->
                                             <Label Text="{Binding Description}" TextColor="{StaticResource TextPrimary}" />
 
-                                            <!--  Рекомендация  -->
                                             <Label Text="{Binding Recommendation, StringFormat='Рекомендация: {0}'}" TextColor="{StaticResource Primary}">
                                                 <Label.Triggers>
                                                     <DataTrigger
