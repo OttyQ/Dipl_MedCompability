@@ -2,7 +2,6 @@
 <Shell
     Shell.BackgroundColor="{StaticResource Surface}"
     Shell.DisabledColor="#B4FFFFFF"
-    Shell.FlyoutBehavior="Disabled"
     Shell.ForegroundColor="{StaticResource TextPrimary}"
     Shell.TabBarBackgroundColor="{StaticResource Surface}"
     Shell.TabBarForegroundColor="{StaticResource Primary}"
@@ -19,55 +18,18 @@
     xmlns:shared="clr-namespace:MedCompatibility.Pages.Shared"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Shell.Resources>
-        <Style TargetType="Element" x:Key="BaseStyle">
-            <Setter Property="Shell.BackgroundColor" Value="{StaticResource Surface}" />
-            <Setter Property="Shell.ForegroundColor" Value="{StaticResource TextPrimary}" />
-            <Setter Property="Shell.TitleColor" Value="{StaticResource TextPrimary}" />
-            <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
-            <Setter Property="Shell.UnselectedColor" Value="{StaticResource TextSecondary}" />
-            <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Surface}" />
-            <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}" />
-            <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TextSecondary}" />
-            <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}" />
-        </Style>
-    </Shell.Resources>
-
-    <!--  1. Экран входа  -->
     <ShellContent
         ContentTemplate="{DataTemplate shared:LoginPage}"
         Route="Login"
         Shell.NavBarIsVisible="False"
         Shell.TabBarIsVisible="False" />
 
-    <!--  2. Зона Пациента  -->
-    <TabBar Route="Patient" Shell.NavBarIsVisible="False">
+    <ShellContent
+        ContentTemplate="{DataTemplate patient:PatientHomePage}"
+        Route="Patient"
+        Shell.NavBarIsVisible="False"
+        Shell.TabBarIsVisible="False" />
 
-        <!--  Используем patient:HistoryPage  -->
-        <ShellContent
-            ContentTemplate="{DataTemplate patient:HistoryPage}"
-            Icon="icon_history.png"
-            Title="История" />
-        <!--  НОВАЯ ВКЛАДКА  -->
-        <ShellContent
-            ContentTemplate="{DataTemplate patient:CompatibilityPage}"
-            Icon="icon_check.png"
-            Title="Проверка" />
-        <!--  Используем patient:ScanPage  -->
-        <ShellContent
-            ContentTemplate="{DataTemplate patient:ScanPage}"
-            Icon="icon_qr.png"
-            Title="Сканер" />
-
-        <!--  Используем patient:ProfilePage  -->
-        <ShellContent
-            ContentTemplate="{DataTemplate patient:ProfilePage}"
-            Icon="icon_profile.png"
-            Title="Профиль" />
-
-    </TabBar>
-
-    <!--  3. Зона Админа  -->
     <ShellContent
         ContentTemplate="{DataTemplate admin:AdminHomePage}"
         Route="Admin"

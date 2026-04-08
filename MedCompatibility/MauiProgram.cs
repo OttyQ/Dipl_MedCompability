@@ -89,9 +89,10 @@ public static class MauiProgram
         
 
         // 5) ViewModels
-        builder.Services.AddTransient<MedCompatibility.Pages.Shared.Popups.PatientSearchPopup>();
+        builder.Services.AddTransient<PatientSearchPopup>();
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
+        builder.Services.AddTransient<PatientHomePageViewModel>();
         builder.Services.AddTransient<UsersListViewModel>();
         builder.Services.AddTransient<AdminHomeViewModel>();
         builder.Services.AddTransient<MedicinesListViewModel>();
@@ -106,20 +107,23 @@ public static class MauiProgram
         builder.Services.AddTransient<MedicineDetailsViewModel>();
         builder.Services.AddTransient<DoctorHomeViewModel>();
         builder.Services.AddTransient<DoctorPatientsViewModel>();
-        builder.Services.AddTransient<MedCompatibility.ViewModels.Doctor.PrescriptionEditViewModel>();
+        builder.Services.AddTransient<PrescriptionEditViewModel>();
+        
         
 
 
-        // 6) Pages
+        //6) Pages
+        //Shared
         builder.Services.AddTransient<Pages.Shared.LoginPage>();
         builder.Services.AddTransient<Pages.Shared.RegisterPage>();
-
+        //Patient & Guest
+        builder.Services.AddTransient<PatientHomePage>();
         builder.Services.AddTransient<ScanPage>();
         builder.Services.AddTransient<HistoryPage>();
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<CompatibilityPage>();
         builder.Services.AddTransient<MedicineDetailsPage>();
-
+        //Admin
         builder.Services.AddTransient<Pages.Admin.AdminHomePage>();
         builder.Services.AddTransient<Pages.Admin.UsersListPage>();
         builder.Services.AddTransient<Pages.Admin.MedicinesListPage>();
@@ -127,12 +131,12 @@ public static class MauiProgram
         builder.Services.AddTransient<Pages.Admin.InteractionsListPage>();
         builder.Services.AddTransient<Pages.Admin.InteractionAddPage>();
         builder.Services.AddTransient<Pages.Admin.SystemLogsPage>();
+        //Doctor
         builder.Services.AddTransient<DoctorHomePage>();
         builder.Services.AddTransient<DoctorPatientsPage>();
-        
-        builder.Services.AddTransient<MedCompatibility.ViewModels.Doctor.DoctorPatientCardViewModel>();
-        builder.Services.AddTransient<MedCompatibility.Pages.Doctor.DoctorPatientCardPage>();
-        builder.Services.AddTransient<MedCompatibility.Pages.Doctor.PrescriptionEditPage>();
+        builder.Services.AddTransient<DoctorPatientCardViewModel>();
+        builder.Services.AddTransient<DoctorPatientCardPage>();
+        builder.Services.AddTransient<PrescriptionEditPage>();
         
 
         // 7) UI handlers (Entry borderless)
