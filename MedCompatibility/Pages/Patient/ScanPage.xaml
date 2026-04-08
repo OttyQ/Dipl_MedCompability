@@ -5,29 +5,14 @@
     Title="Проверка лекарств"
     x:Class="MedCompatibility.Pages.Patient.ScanPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:models="clr-namespace:MedCompatibility.Models"
     xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-
-        <AbsoluteLayout>
-            <Ellipse
-                AbsoluteLayout.LayoutBounds="-50,-50, 200, 200"
-                AbsoluteLayout.LayoutFlags="None"
-                Fill="{StaticResource PrimaryLight}"
-                Opacity="0.3" />
-            <Ellipse
-                AbsoluteLayout.LayoutBounds="1.2, 0.2, 150, 150"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Fill="{StaticResource Secondary}"
-                Opacity="0.2" />
-            <Ellipse
-                AbsoluteLayout.LayoutBounds="-0.2, 1.1, 250, 250"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Fill="{StaticResource Primary}"
-                Opacity="0.1" />
-        </AbsoluteLayout>
+        <!--  фон  -->
+        <controls:BackgroundBubblesView />
 
         <Grid
             HorizontalOptions="{OnPlatform WinUI=Center,

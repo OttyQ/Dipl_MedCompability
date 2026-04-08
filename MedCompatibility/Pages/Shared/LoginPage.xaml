@@ -3,37 +3,42 @@
     Shell.NavBarIsVisible="False"
     x:Class="MedCompatibility.Pages.Shared.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <AbsoluteLayout InputTransparent="True">
-            <!--  Большой слева снизу  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.05,0.80,680,680"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#140097A7"
-                CornerRadius="340"
-                HeightRequest="680"
-                WidthRequest="680" />
-
-            <!--  Средний справа снизу  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.95,0.92,460,460"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#0F90A4AE"
-                CornerRadius="230"
-                HeightRequest="460"
-                WidthRequest="460" />
-
-            <!--  Маленький сверху  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.52,0.08,260,260"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="130"
-                HeightRequest="260"
-                WidthRequest="260" />
-        </AbsoluteLayout>
+        <controls:BackgroundBubblesView 
+            TopBubbleBounds="0.52, 0.08, 260, 260" 
+            RightBubbleBounds="0.05, 0.80, 680, 680" 
+            BottomBubbleBounds="0.95, 0.92, 460, 460" />
+        <!-- <AbsoluteLayout InputTransparent="True"> -->
+        <!--  ~1~  Большой слева снизу  @1@  -->
+        <!--  <BoxView  -->
+        <!--  AbsoluteLayout.LayoutBounds="0.05,0.80,680,680"  -->
+        <!--  AbsoluteLayout.LayoutFlags="PositionProportional"  -->
+        <!--  Color="#140097A7"  -->
+        <!--  CornerRadius="340"  -->
+        <!--  HeightRequest="680"  -->
+        <!--  WidthRequest="680" />  -->
+        <!--    -->
+        <!--  ~1~  Средний справа снизу  @1@  -->
+        <!--  <BoxView  -->
+        <!--  AbsoluteLayout.LayoutBounds="0.95,0.92,460,460"  -->
+        <!--  AbsoluteLayout.LayoutFlags="PositionProportional"  -->
+        <!--  Color="#0F90A4AE"  -->
+        <!--  CornerRadius="230"  -->
+        <!--  HeightRequest="460"  -->
+        <!--  WidthRequest="460" />  -->
+        <!--    -->
+        <!--  ~1~  Маленький сверху  @1@  -->
+        <!--  <BoxView  -->
+        <!--  AbsoluteLayout.LayoutBounds="0.52,0.08,260,260"  -->
+        <!--  AbsoluteLayout.LayoutFlags="PositionProportional"  -->
+        <!--  Color="#1A00796B"  -->
+        <!--  CornerRadius="130"  -->
+        <!--  HeightRequest="260"  -->
+        <!--  WidthRequest="260" />  -->
+        <!-- </AbsoluteLayout> -->
 
         <ScrollView VerticalScrollBarVisibility="Never">
             <VerticalStackLayout

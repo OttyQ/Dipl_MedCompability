@@ -4,7 +4,7 @@
     Title="Справочник лекарств"
     x:Class="MedCompatibility.Pages.Admin.MedicinesListPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:controls="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:models="clr-namespace:MedCompatibility.Models"
     xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
@@ -12,35 +12,11 @@
 
     <Grid>
 
-        <!--  Пузырьки: новый пресет (чтобы не повторяться)  -->
-        <AbsoluteLayout InputTransparent="True">
-            <!--  Большой сверху справа  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.92,0.12,700,700"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#0F90A4AE"
-                CornerRadius="350"
-                HeightRequest="700"
-                WidthRequest="700" />
-
-            <!--  Средний слева  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.06,0.45,460,460"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#140097A7"
-                CornerRadius="230"
-                HeightRequest="460"
-                WidthRequest="460" />
-
-            <!--  Маленький снизу по центру  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.55,0.98,320,320"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="160"
-                HeightRequest="320"
-                WidthRequest="320" />
-        </AbsoluteLayout>
+        <!--  фон  -->
+        <controls:BackgroundBubblesView
+            BottomBubbleBounds="0.92, 0.12, 700, 700"
+            RightBubbleBounds="0.06, 0.45, 460, 460"
+            TopBubbleBounds="0.55, 0.98, 320, 320" />
 
         <!--  Основной контент  -->
         <Grid Padding="10" RowDefinitions="Auto, *">

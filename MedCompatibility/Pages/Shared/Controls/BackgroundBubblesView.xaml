@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="MedCompatibility.Pages.Shared.Controls.BackgroundBubblesView"
+    x:Name="Root"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <AbsoluteLayout
+        HorizontalOptions="FillAndExpand"
+        InputTransparent="True"
+        VerticalOptions="FillAndExpand">
+
+        <Ellipse
+            AbsoluteLayout.LayoutBounds="{Binding TopBubbleBounds, Source={x:Reference Root}}"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            Fill="#1A00796B" />
+
+        <Ellipse
+            AbsoluteLayout.LayoutBounds="{Binding RightBubbleBounds, Source={x:Reference Root}}"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            Fill="#140097A7" />
+
+        <Ellipse
+            AbsoluteLayout.LayoutBounds="{Binding BottomBubbleBounds, Source={x:Reference Root}}"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            Fill="#0F90A4AE" />
+
+    </AbsoluteLayout>
+</ContentView>

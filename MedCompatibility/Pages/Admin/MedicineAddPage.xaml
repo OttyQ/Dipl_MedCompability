@@ -4,6 +4,7 @@
     Title="Новое лекарство"
     x:Class="MedCompatibility.Pages.Admin.MedicineAddPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:converters="clr-namespace:MedCompatibility.Converters"
     xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:models="clr-namespace:MedCompatibility.Models"
@@ -18,35 +19,11 @@
 
     <Grid>
 
-        <!--  Пузырьки: новый пресет (не повторяем Login/AdminHome/MedicinesList)  -->
-        <AbsoluteLayout InputTransparent="True">
-            <!--  Маленький сверху слева  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.08,0.10,260,260"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#140097A7"
-                CornerRadius="130"
-                HeightRequest="260"
-                WidthRequest="260" />
-
-            <!--  Большой снизу справа  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.95,0.95,780,780"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#0F90A4AE"
-                CornerRadius="390"
-                HeightRequest="780"
-                WidthRequest="780" />
-
-            <!--  Средний ближе к центру справа  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.85,0.38,420,420"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="210"
-                HeightRequest="420"
-                WidthRequest="420" />
-        </AbsoluteLayout>
+        <!--  фон  -->
+        <controls:BackgroundBubblesView
+            BottomBubbleBounds="0.95, 0.95, 780, 780"
+            RightBubbleBounds="0.08, 0.10, 260, 260"
+            TopBubbleBounds="0.85, 0.38, 420, 420" />
 
         <Grid RowDefinitions="Auto,*">
 
