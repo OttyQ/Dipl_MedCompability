@@ -5,33 +5,12 @@
     Title="Профиль"
     x:Class="MedCompatibility.Pages.Patient.ProfilePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!--  Декоративный фон  -->
-        <AbsoluteLayout InputTransparent="True">
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.15,0.08,420,420"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="210"
-                HeightRequest="420"
-                WidthRequest="420" />
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.95,0.30,520,520"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#140097A7"
-                CornerRadius="260"
-                HeightRequest="520"
-                WidthRequest="520" />
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.35,0.98,620,620"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#0F90A4AE"
-                CornerRadius="310"
-                HeightRequest="620"
-                WidthRequest="620" />
-        </AbsoluteLayout>
+        <!--  фон  -->
+        <controls:BackgroundBubblesView />
 
         <!--  Основная сетка  -->
         <Grid Padding="16,10" RowDefinitions="Auto,*">

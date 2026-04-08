@@ -5,23 +5,17 @@
     Title="Совместимость"
     x:Class="MedCompatibility.Pages.Patient.CompatibilityPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:models="clr-namespace:MedCompatibility.Models"
     xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <AbsoluteLayout InputTransparent="True">
-            <BoxView
-                AbsoluteLayout.LayoutBounds="1.0,-0.1,300,300"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="150" />
-            <BoxView
-                AbsoluteLayout.LayoutBounds="-0.1,0.9,400,400"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#0590A4AE"
-                CornerRadius="200" />
-        </AbsoluteLayout>
+        <!--  фон  -->
+        <controls:BackgroundBubblesView
+            BottomBubbleBounds="-0.1, 0.9, 400, 400"
+            RightBubbleBounds="0, 0, 0, 0"
+            TopBubbleBounds="1.0, -0.1, 300, 300" />
 
         <Grid
             HorizontalOptions="{OnPlatform WinUI=Center,

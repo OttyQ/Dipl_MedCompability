@@ -5,6 +5,7 @@
     Title="{Binding PageTitle}"
     x:Class="MedCompatibility.Pages.Admin.InteractionAddPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:converters="clr-namespace:MedCompatibility.Converters"
     xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Admin"
@@ -18,35 +19,11 @@
 
     <Grid>
 
-        <!--  Пузырьки: новый пресет  -->
-        <AbsoluteLayout InputTransparent="True">
-            <!--  Средний сверху справа  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.92,0.10,520,520"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#140097A7"
-                CornerRadius="260"
-                HeightRequest="520"
-                WidthRequest="520" />
-
-            <!--  Большой снизу по центру  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.50,0.98,820,820"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#0F90A4AE"
-                CornerRadius="410"
-                HeightRequest="820"
-                WidthRequest="820" />
-
-            <!--  Маленький слева  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.06,0.42,300,300"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="150"
-                HeightRequest="300"
-                WidthRequest="300" />
-        </AbsoluteLayout>
+        <!--  фон  -->
+        <controls:BackgroundBubblesView
+            BottomBubbleBounds="0.50, 0.98, 820, 820"
+            RightBubbleBounds="0.92, 0.10, 520, 520"
+            TopBubbleBounds="0.06, 0.42, 300, 300" />
 
         <Grid RowDefinitions="Auto,*">
 

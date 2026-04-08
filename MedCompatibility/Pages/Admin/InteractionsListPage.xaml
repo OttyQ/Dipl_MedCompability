@@ -4,6 +4,7 @@
     Title="Конфликты лекарств"
     x:Class="MedCompatibility.Pages.Admin.InteractionsListPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:converters="clr-namespace:MedCompatibility.Converters"
     xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:models="clr-namespace:MedCompatibility.Models"
@@ -18,35 +19,11 @@
 
     <Grid>
 
-        <!--  Пузырьки: новый пресет  -->
-        <AbsoluteLayout InputTransparent="True">
-            <!--  Большой слева снизу  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.08,0.98,760,760"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#140097A7"
-                CornerRadius="380"
-                HeightRequest="760"
-                WidthRequest="760" />
-
-            <!--  Средний справа  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.95,0.45,520,520"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#0F90A4AE"
-                CornerRadius="260"
-                HeightRequest="520"
-                WidthRequest="520" />
-
-            <!--  Маленький сверху по центру  -->
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.52,0.08,280,280"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="140"
-                HeightRequest="280"
-                WidthRequest="280" />
-        </AbsoluteLayout>
+        <!--  фон  -->
+        <controls:BackgroundBubblesView
+            BottomBubbleBounds="0.95, 0.45, 520, 520"
+            RightBubbleBounds="0.08, 0.98, 760, 760"
+            TopBubbleBounds="0.52, 0.08, 280, 280" />
 
         <Grid RowDefinitions="Auto,*">
 

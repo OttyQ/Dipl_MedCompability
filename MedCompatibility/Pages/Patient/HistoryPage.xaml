@@ -5,29 +5,18 @@
     Title="История"
     x:Class="MedCompatibility.Pages.Patient.HistoryPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:models="clr-namespace:MedCompatibility.Models"
     xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!--  Декоративный фон (Пузыри)  -->
-        <AbsoluteLayout InputTransparent="True">
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.1,0.2,250,250"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#1A00796B"
-                CornerRadius="125" />
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.9,0.85,300,300"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#140097A7"
-                CornerRadius="150" />
-            <BoxView
-                AbsoluteLayout.LayoutBounds="0.5,-0.1,200,200"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Color="#0A0097A7"
-                CornerRadius="100" />
-        </AbsoluteLayout>
+        <!--  фон  -->
+        <controls:BackgroundBubblesView
+            BottomBubbleBounds="0.5, -0.1, 200, 200"
+            RightBubbleBounds="0.9, 0.85, 300, 300"
+            TopBubbleBounds="0.1, 0.2, 250, 250" />
+
         <Grid RowDefinitions="Auto, *">
             <!--  1. ЗАГОЛОВОК  -->
             <Grid
