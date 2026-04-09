@@ -12,10 +12,14 @@ public partial class InteractionAddViewModel : ObservableObject, IQueryAttributa
 {
     private readonly IInteractionService _interactionService;
     private readonly IMedicineService _medicineService;
+    private readonly ILoadingService _loading;
     
     // Задача загрузки справочников, чтобы мы могли её ждать
     private Task _initializationTask; 
-
+    
+    [ObservableProperty]
+    private bool isBusy;
+    
     [ObservableProperty]
     private interaction currentInteraction = new();
 
@@ -45,12 +49,16 @@ public partial class InteractionAddViewModel : ObservableObject, IQueryAttributa
     [ObservableProperty]
     private string buttonText = "Создать";
 
-    public InteractionAddViewModel(IInteractionService interactionService, IMedicineService medicineService)
+    // ОБНОВЛЕНО: Добавлен loadingService в конструктор
+    public InteractionAddViewModel(
+        IInteractionService interactionService, 
+        IMedicineService medicineService,
+        ILoadingService loadingService) // Передаем сервис сюда
     {
         _interactionService = interactionService;
         _medicineService = medicineService;
+        _loading = loadingService; // Инициализируем поле
         
-        // Запускаем загрузку сразу, но сохраняем Task
         _initializationTask = LoadDictionariesAsync();
     }
 
@@ -144,10 +152,10 @@ public partial class InteractionAddViewModel : ObservableObject, IQueryAttributa
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.ContainsKey("InteractionToEdit"))
+        if (query.ContainsKey("InteractionToEdit") && query["InteractionToEdit"] is interaction source)
         {
-            var source = query["InteractionToEdit"] as interaction;
-            if (source != null)
+            // Предотвращаем двойную загрузку
+            if (CurrentInteraction?.InteractionId != source.InteractionId)
             {
                 await LoadForEdit(source.InteractionId);
             }
@@ -156,23 +164,41 @@ public partial class InteractionAddViewModel : ObservableObject, IQueryAttributa
 
     private async Task LoadForEdit(int id)
     {
-        // 1. Сначала ждем окончания загрузки справочников!
-        await _initializationTask;
+        if (IsBusy) return; // Защита на уровне ViewModel
 
-        var item = await _interactionService.GetInteractionByIdAsync(id);
-        if (item == null) return;
+        try 
+        {
+            IsBusy = true;
+            _loading.Show(); // ПОКАЗЫВАЕМ ПОПАП ЗАГРУЗКИ
 
-        CurrentInteraction = item;
+            // Ждем, пока загрузятся справочники (типы и риски)
+            await _initializationTask; 
 
-        Substance1 = item.SubstanceId1Navigation;
-        Substance2 = item.SubstanceId2Navigation;
+            var item = await _interactionService.GetInteractionByIdAsync(id);
+            if (item == null) return;
 
-        // 2. Теперь списки точно заполнены, и поиск сработает
-        SelectedType = Types.FirstOrDefault(t => t.InteractionTypeId == item.InteractionTypeId);
-        SelectedRisk = Risks.FirstOrDefault(r => r.RiskLevelId == item.RiskLevelId);
+            CurrentInteraction = item;
 
-        PageTitle = "Редактирование";
-        ButtonText = "Сохранить изменения";
+            // Назначаем вещества
+            Substance1 = item.SubstanceId1Navigation;
+            Substance2 = item.SubstanceId2Navigation;
+
+            // Сопоставляем объекты из загруженных справочников
+            SelectedType = Types.FirstOrDefault(t => t.InteractionTypeId == item.InteractionTypeId);
+            SelectedRisk = Risks.FirstOrDefault(r => r.RiskLevelId == item.RiskLevelId);
+
+            PageTitle = "Редактирование";
+            ButtonText = "Сохранить изменения";
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", "Не удалось загрузить данные конфликта", "OK");
+        }
+        finally
+        {
+            _loading.Hide(); // СКРЫВАЕМ ПОПАП ЗАГРУЗКИ
+            IsBusy = false;
+        }
     }
     
     [RelayCommand]
