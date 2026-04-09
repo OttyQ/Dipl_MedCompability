@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     Shell.NavBarIsVisible="False"
     Title="Пользователи"
@@ -26,55 +26,17 @@
             TopBubbleBounds="0.10, 0.10, 520, 520" />
 
         <!--  Контент  -->
-        <Grid Padding="10" RowDefinitions="Auto, *">
+        <Grid Style="{StaticResource PageContentGrid}" Padding="10" RowDefinitions="Auto, *">
 
             <!--  Верх (шапка + фильтры)  -->
             <VerticalStackLayout
                 Grid.Row="0"
-                HorizontalOptions="Fill"
-                Spacing="15"
-                WidthRequest="{OnPlatform WinUI='800',
-                                          Default='-1'}">
-
-                <VerticalStackLayout.HorizontalOptions>
-                    <OnPlatform x:TypeArguments="LayoutOptions">
-                        <On Platform="WinUI" Value="Center" />
-                        <On Platform="Android,iOS" Value="Fill" />
-                    </OnPlatform>
-                </VerticalStackLayout.HorizontalOptions>
+                Spacing="15">
 
                 <!--  1) Шапка  -->
-                <Grid
-                    ColumnDefinitions="48,*,48"
-                    HeightRequest="48"
-                    Margin="0,0,0,5">
-
-                    <Border
-                        HeightRequest="48"
-                        Style="{StaticResource BackButton}"
-                        WidthRequest="48">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnBackClicked" />
-                        </Border.GestureRecognizers>
-
-                        <Label
-                            FontSize="26"
-                            HorizontalOptions="Center"
-                            Margin="0,0,0,2"
-                            Text="←"
-                            TextColor="{StaticResource TextPrimary}"
-                            VerticalOptions="Center" />
-                    </Border>
-
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="20"
-                        Grid.Column="1"
-                        HorizontalOptions="Center"
-                        Text="Пользователи"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
-                </Grid>
+                <controls:CustomHeader
+                    Margin="0,0,0,5"
+                    Title="Пользователи" />
                 <Frame
                     Margin="0"
                     Padding="16"
@@ -183,25 +145,17 @@
                 Margin="0,15,0,0">
 
                 <CollectionView
-                    HorizontalOptions="Fill"
-                    ItemsSource="{Binding Users}"
-                    WidthRequest="{OnPlatform WinUI='800',
-                                              Default='-1'}">
-
-                    <CollectionView.HorizontalOptions>
-                        <OnPlatform x:TypeArguments="LayoutOptions">
-                            <On Platform="WinUI" Value="Center" />
-                            <On Platform="Android,iOS" Value="Fill" />
-                        </OnPlatform>
-                    </CollectionView.HorizontalOptions>
+                    ItemsSource="{Binding Users}">
 
                     <CollectionView.EmptyView>
-                        <Label
-                            HorizontalOptions="Center"
-                            Text="Пользователи не найдены"
-                            TextColor="{StaticResource TextSecondary}"
-                            VerticalOptions="Center" />
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="Пользователи не найдены." TextColor="{StaticResource TextSecondary}" />
+                        </VerticalStackLayout>
                     </CollectionView.EmptyView>
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="15" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:user">

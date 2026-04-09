@@ -1,9 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Application
     x:Class="MedCompatibility.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:local="clr-namespace:MedCompatibility.Converters"
     xmlns:m="clr-namespace:UraniumUI.Material.Resources;assembly=UraniumUI.Material"
+    xmlns:helpers="clr-namespace:MedCompatibility.Helpers"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -27,8 +28,8 @@
             <!--  Акцент  -->
 
             <!--  Фоны и поверхности  -->
-            <Color x:Key="AppBackground">#F5F8FA</Color>
-            <!--  Нейтральный светло-серый  -->
+            <Color x:Key="AppBackground">#E3EDF2</Color>
+            <!--  Нейтральный сизовато-серый  -->
             <Color x:Key="Surface">#FFFFFF</Color>
             <!--  Белый для поверхностей (используется Shell/AppShell и старыми страницами)  -->
             <Color x:Key="CardSurface">#FFFFFF</Color>
@@ -69,6 +70,12 @@
             <Style ApplyToDerivedTypes="True" TargetType="ContentPage">
                 <Setter Property="Background" Value="{StaticResource PageBackgroundGradient}" />
                 <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <!--  Универсальный контейнер для центрирования на десктопе  -->
+            <Style TargetType="Grid" x:Key="PageContentGrid">
+                <Setter Property="HorizontalOptions" Value="{OnPlatform WinUI=Center, MacCatalyst=Center, Default=Fill}" />
+                <Setter Property="helpers:DesktopLayout.ForceWidth" Value="800" />
             </Style>
 
             <!--  ==================== ТИПОГРАФИКА ====================  -->
@@ -134,8 +141,6 @@
                 TargetType="Frame"
                 x:Key="MedFormCard">
                 <Setter Property="Padding" Value="20" />
-                <Setter Property="MaximumWidthRequest" Value="600" />
-                <Setter Property="HorizontalOptions" Value="Center" />
             </Style>
 
             <!--  Карточка в списке (меньше отступы)  -->

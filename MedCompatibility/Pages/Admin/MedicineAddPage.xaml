@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
     Shell.NavBarIsVisible="False"
-    Title="Новое лекарство"
+    Title="{Binding PageTitle}"
     x:Class="MedCompatibility.Pages.Admin.MedicineAddPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
@@ -18,148 +19,115 @@
     </ContentPage.Resources>
 
     <Grid>
-
-        <!--  фон  -->
         <controls:BackgroundBubblesView
             BottomBubbleBounds="0.95, 0.95, 780, 780"
             RightBubbleBounds="0.08, 0.10, 260, 260"
             TopBubbleBounds="0.85, 0.38, 420, 420" />
 
-        <Grid RowDefinitions="Auto,*">
+        <Grid
+            HorizontalOptions="{OnPlatform WinUI=Center,
+                                           MacCatalyst=Center,
+                                           Default=Fill}"
+            MaximumWidthRequest="800"
+            RowDefinitions="Auto, *"
+            WidthRequest="{OnPlatform WinUI=800,
+                                      MacCatalyst=800}">
 
-            <!--  Шапка  -->
-            <Grid
-                ColumnDefinitions="48,*,48"
+            <controls:CustomHeader
                 Grid.Row="0"
-                HeightRequest="48"
-                Margin="10,5">
+                Margin="20,20,20,10"
+                Title="{Binding PageTitle}" />
 
-                <Border
-                    HeightRequest="48"
-                    Style="{StaticResource BackButton}"
-                    WidthRequest="48">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBackClicked" />
-                    </Border.GestureRecognizers>
-                    <Label
-                        FontSize="26"
-                        HorizontalOptions="Center"
-                        Margin="0,0,0,2"
-                        Text="←"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
-                </Border>
+            <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+                <VerticalStackLayout Padding="20,10,20,40" Spacing="24">
 
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="20"
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Text="Новое лекарство"
-                    TextColor="{StaticResource TextPrimary}"
-                    VerticalOptions="Center" />
-            </Grid>
-
-            <!--  Форма  -->
-            <ScrollView Grid.Row="1" Padding="15">
-                <VerticalStackLayout
-                    HorizontalOptions="Center"
-                    Spacing="20"
-                    WidthRequest="{OnPlatform WinUI='800',
-                                              Default='-1'}">
-
-                    <VerticalStackLayout.HorizontalOptions>
-                        <OnPlatform x:TypeArguments="LayoutOptions">
-                            <On Platform="WinUI" Value="Center" />
-                            <On Platform="Android,iOS" Value="Fill" />
-                        </OnPlatform>
-                    </VerticalStackLayout.HorizontalOptions>
-
-                    <!--  Блок 1  -->
-                    <Frame Padding="20" Style="{StaticResource MedCard}">
-                        <VerticalStackLayout Spacing="15">
+                    <Border
+                        BackgroundColor="White"
+                        Padding="24"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,6"
+                                Opacity="0.05"
+                                Radius="12" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="16">
                             <Label
                                 FontAttributes="Bold"
-                                FontSize="16"
+                                FontSize="18"
                                 Text="Основная информация"
                                 TextColor="{StaticResource Primary}" />
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Торговое название *"
                                     TextColor="{StaticResource TextSecondary}" />
-
-                                <!--  x:Name сохранён для UI-валидации  -->
                                 <Border
-                                    HeightRequest="44"
-                                    Margin="0"
-                                    Padding="10,0"
+                                    HeightRequest="48"
+                                    Padding="12,0"
                                     Stroke="Transparent"
                                     StrokeThickness="1"
                                     Style="{StaticResource MedInputContainer}"
                                     x:Name="NameBorder">
                                     <Entry
-                                        FontSize="14"
+                                        FontSize="15"
                                         Placeholder="Например: Терафлю"
                                         Text="{Binding NewMedicine.TradeName}" />
                                 </Border>
                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="МНН (Международное название) *"
                                     TextColor="{StaticResource TextSecondary}" />
-
                                 <Border
-                                    HeightRequest="44"
-                                    Margin="0"
-                                    Padding="10,0"
+                                    HeightRequest="48"
+                                    Padding="12,0"
                                     Stroke="Transparent"
                                     StrokeThickness="1"
                                     Style="{StaticResource MedInputContainer}"
                                     x:Name="MnnBorder">
                                     <Entry
-                                        FontSize="14"
+                                        FontSize="15"
                                         Placeholder="Например: Парацетамол + Фенилэфрин..."
                                         Text="{Binding NewMedicine.INN}" />
                                 </Border>
                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Форма выпуска *"
                                     TextColor="{StaticResource TextSecondary}" />
-
                                 <Border
-                                    HeightRequest="44"
-                                    Margin="0"
-                                    Padding="10,0"
+                                    HeightRequest="48"
+                                    Padding="12,0"
                                     Stroke="Transparent"
                                     StrokeThickness="1"
                                     Style="{StaticResource MedInputContainer}"
                                     x:Name="FormBorder">
                                     <Entry
-                                        FontSize="14"
+                                        FontSize="15"
                                         Placeholder="Например: Порошок, Таблетки"
                                         Text="{Binding NewMedicine.Form}" />
                                 </Border>
                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Описание / Инструкция"
                                     TextColor="{StaticResource TextSecondary}" />
-
                                 <Border
-                                    BackgroundColor="#FAFAFA"
-                                    HeightRequest="110"
+                                    BackgroundColor="#F8FAFC"
+                                    HeightRequest="120"
                                     Padding="12"
                                     Stroke="{StaticResource BorderLight}"
-                                    StrokeShape="RoundRectangle 12"
+                                    StrokeShape="RoundRectangle 16"
                                     StrokeThickness="1">
                                     <Editor
                                         AutoSize="TextChanges"
@@ -169,52 +137,56 @@
                                 </Border>
                             </VerticalStackLayout>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
-                    <!--  Блок 2  -->
-                    <Frame Padding="20" Style="{StaticResource MedCard}">
-                        <VerticalStackLayout Spacing="15">
+                    <Border
+                        BackgroundColor="White"
+                        Padding="24"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,6"
+                                Opacity="0.05"
+                                Radius="12" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="16">
                             <Label
                                 FontAttributes="Bold"
-                                FontSize="16"
+                                FontSize="18"
                                 Text="Идентификация"
                                 TextColor="{StaticResource Primary}" />
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Штрихкод (GTIN) *"
                                     TextColor="{StaticResource TextSecondary}" />
-
-                                <Grid ColumnDefinitions="*,50" ColumnSpacing="10">
-
+                                <Grid ColumnDefinitions="*, 52" ColumnSpacing="12">
                                     <Border
-                                        HeightRequest="44"
-                                        Margin="0"
-                                        Padding="10,0"
+                                        HeightRequest="48"
+                                        Padding="12,0"
                                         Stroke="Transparent"
                                         StrokeThickness="1"
                                         Style="{StaticResource MedInputContainer}"
                                         x:Name="GtinBorder">
                                         <Entry
-                                            FontSize="14"
+                                            FontSize="15"
                                             Keyboard="Numeric"
                                             Placeholder="Сканируйте или введите"
                                             Text="{Binding NewMedicine.GTIN}" />
                                     </Border>
-
-                                    <!--  Кнопка сканера: Uranium ButtonView  -->
                                     <material:ButtonView
                                         BackgroundColor="{StaticResource Surface}"
                                         Grid.Column="1"
-                                        HeightRequest="44"
+                                        HeightRequest="48"
                                         Stroke="{StaticResource BorderLight}"
-                                        StrokeShape="{RoundRectangle CornerRadius=12}"
+                                        StrokeShape="{RoundRectangle CornerRadius=14}"
                                         StrokeThickness="1"
-                                        TappedCommand="{Binding ScanBarcodeCommand}"
-                                        WidthRequest="44">
+                                        TappedCommand="{Binding ScanBarcodeCommand}">
                                         <Label
-                                            FontSize="20"
+                                            FontSize="22"
                                             HorizontalOptions="Center"
                                             Text="📷"
                                             TextColor="{StaticResource TextPrimary}"
@@ -223,88 +195,92 @@
                                 </Grid>
                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Производитель *"
                                     TextColor="{StaticResource TextSecondary}" />
-
-                                <Grid ColumnDefinitions="*,50" ColumnSpacing="10">
-
-                                    <!--  x:Name сохранён для UI-валидации  -->
+                                <Grid ColumnDefinitions="*, 52" ColumnSpacing="12">
                                     <Border
                                         BackgroundColor="#F5F7FA"
-                                        MinimumHeightRequest="50"
-                                        Padding="10,5"
+                                        HeightRequest="48"
+                                        Padding="12,0"
                                         Stroke="Transparent"
-                                        StrokeShape="RoundRectangle 8"
+                                        StrokeShape="RoundRectangle 14"
                                         StrokeThickness="1"
-                                        VerticalOptions="Fill"
                                         x:Name="ManufacturerBorder">
-
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding OpenManufacturerPickerCommand}" />
                                         </Border.GestureRecognizers>
-
                                         <Grid>
                                             <Label
-                                                FontSize="13"
-                                                LineBreakMode="WordWrap"
-                                                MaxLines="2"
+                                                FontSize="14"
+                                                LineBreakMode="TailTruncation"
                                                 Text="{Binding SelectedManufacturer.Name}"
                                                 TextColor="{StaticResource TextPrimary}"
                                                 VerticalOptions="Center" />
-
                                             <Label
                                                 FontSize="14"
                                                 IsVisible="{Binding SelectedManufacturer, Converter={StaticResource IsNullConverter}}"
                                                 Text="Выберите производителя"
                                                 TextColor="{StaticResource TextSecondary}"
                                                 VerticalOptions="Center" />
+                                            <Label
+                                                FontSize="10"
+                                                HorizontalOptions="End"
+                                                Text="▼"
+                                                TextColor="{StaticResource TextSecondary}"
+                                                VerticalOptions="Center" />
                                         </Grid>
                                     </Border>
-
-
-                                    <!--  Добавить производителя: Uranium ButtonView  -->
                                     <material:ButtonView
                                         BackgroundColor="{StaticResource Surface}"
                                         Grid.Column="1"
-                                        HeightRequest="50"
+                                        HeightRequest="48"
                                         Stroke="{StaticResource BorderLight}"
-                                        StrokeShape="{RoundRectangle CornerRadius=12}"
+                                        StrokeShape="{RoundRectangle CornerRadius=14}"
                                         StrokeThickness="1"
-                                        TappedCommand="{Binding AddManufacturerCommand}"
-                                        WidthRequest="50">
+                                        TappedCommand="{Binding AddManufacturerCommand}">
                                         <Label
-                                            FontSize="26"
+                                            FontSize="28"
                                             HorizontalOptions="Center"
+                                            HorizontalTextAlignment="Center"
                                             Text="+"
                                             TextColor="{StaticResource Primary}"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"
+                                            VerticalTextAlignment="Center" />
                                     </material:ButtonView>
                                 </Grid>
                             </VerticalStackLayout>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
-                    <!--  Блок 3  -->
-                    <Frame Padding="20" Style="{StaticResource MedCard}">
-                        <VerticalStackLayout Spacing="15">
-
-                            <Grid ColumnDefinitions="*,Auto">
+                    <Border
+                        BackgroundColor="White"
+                        Padding="24"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,6"
+                                Opacity="0.05"
+                                Radius="12" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="16">
+                            <Grid ColumnDefinitions="*, Auto">
                                 <Label
                                     FontAttributes="Bold"
-                                    FontSize="16"
+                                    FontSize="18"
                                     Text="Активные вещества"
                                     TextColor="{StaticResource Primary}"
                                     VerticalOptions="Center" />
-
                                 <Button
                                     Command="{Binding AddSubstanceCommand}"
-                                    FontSize="12"
+                                    FontSize="13"
                                     Grid.Column="1"
-                                    HeightRequest="36"
-                                    Padding="14,0"
+                                    HeightRequest="38"
+                                    Padding="16,0"
                                     Style="{StaticResource PrimaryButton}"
                                     Text="+ Добавить" />
                             </Grid>
@@ -322,18 +298,18 @@
                                         <Border
                                             BackgroundColor="#E3F2FD"
                                             Margin="0,0,8,8"
-                                            Padding="10,6"
-                                            StrokeShape="RoundRectangle 14"
+                                            Padding="12,8"
+                                            StrokeShape="RoundRectangle 16"
                                             StrokeThickness="0">
-                                            <HorizontalStackLayout Spacing="6">
+                                            <HorizontalStackLayout Spacing="8">
                                                 <Label
-                                                    FontSize="13"
+                                                    FontSize="14"
                                                     Text="{Binding Name}"
                                                     TextColor="#1565C0"
                                                     VerticalOptions="Center" />
                                                 <Label
                                                     FontAttributes="Bold"
-                                                    FontSize="12"
+                                                    FontSize="14"
                                                     Text="✕"
                                                     TextColor="#1565C0"
                                                     VerticalOptions="Center">
@@ -348,7 +324,7 @@
                             </FlexLayout>
 
                             <Label
-                                FontSize="12"
+                                FontSize="13"
                                 HorizontalOptions="Center"
                                 IsVisible="False"
                                 Opacity="0.85"
@@ -364,9 +340,8 @@
                                 </Label.Triggers>
                             </Label>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
-                    <!--  Ошибка  -->
                     <Label
                         FontSize="14"
                         HorizontalOptions="Center"
@@ -376,14 +351,15 @@
                         TextColor="{StaticResource Error}"
                         x:Name="ErrorLabel" />
 
-                    <!--  Сохранить (оставляем Clicked как у тебя)  -->
                     <Button
                         Clicked="OnSaveClicked"
+                        CornerRadius="16"
+                        FontAttributes="Bold"
                         FontSize="16"
-                        HeightRequest="50"
-                        Margin="0,0,0,30"
+                        HeightRequest="56"
+                        Margin="0,0,0,20"
                         Style="{StaticResource PrimaryButton}"
-                        Text="Сохранить лекарство" />
+                        Text="{Binding ButtonText}" />
                 </VerticalStackLayout>
             </ScrollView>
         </Grid>

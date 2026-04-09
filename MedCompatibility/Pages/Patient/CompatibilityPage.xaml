@@ -11,7 +11,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!--  фон  -->
         <controls:BackgroundBubblesView
             BottomBubbleBounds="-0.1, 0.9, 400, 400"
             RightBubbleBounds="0, 0, 0, 0"
@@ -26,47 +25,15 @@
             WidthRequest="{OnPlatform WinUI=800,
                                       MacCatalyst=800}">
 
-            <Grid
-                ColumnDefinitions="48,*,48"
+            <controls:CustomHeader
                 Grid.Row="0"
-                HeightRequest="48"
-                Margin="20,15,20,5">
+                Margin="20,20,20,15"
+                Title="Совместимость" />
 
-                <Border
-                    BackgroundColor="#FFEBEE"
-                    HeightRequest="48"
-                    Stroke="#E53935"
-                    StrokeThickness="2"
-                    Style="{StaticResource BackButton}"
-                    WidthRequest="48">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBackClicked" />
-                    </Border.GestureRecognizers>
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="26"
-                        HorizontalOptions="Center"
-                        Margin="0,0,0,2"
-                        Text="←"
-                        TextColor="#E53935"
-                        VerticalOptions="Center" />
-                </Border>
-
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="22"
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Text="Совместимость"
-                    TextColor="{StaticResource TextPrimary}"
-                    VerticalOptions="Center" />
-            </Grid>
-
-            <ScrollView Grid.Row="1" Padding="20">
+            <ScrollView Grid.Row="1" Padding="20,0,20,20">
                 <VerticalStackLayout Spacing="20">
 
                     <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
-
                         <Border
                             BackgroundColor="White"
                             Grid.Column="0"
@@ -77,7 +44,6 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding SelectMedicineACommand}" />
                             </Border.GestureRecognizers>
-
                             <VerticalStackLayout
                                 HorizontalOptions="Center"
                                 Spacing="5"
@@ -118,7 +84,6 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding SelectMedicineBCommand}" />
                             </Border.GestureRecognizers>
-
                             <VerticalStackLayout
                                 HorizontalOptions="Center"
                                 Spacing="5"
@@ -187,8 +152,8 @@
                             Text="Найденные взаимодействия:"
                             TextColor="{StaticResource TextPrimary}" />
 
-                        <CollectionView ItemsSource="{Binding FoundConflicts}">
-                            <CollectionView.ItemTemplate>
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding FoundConflicts}">
+                            <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="models:interaction">
                                     <Border
                                         BackgroundColor="White"
@@ -203,16 +168,12 @@
                                                 Opacity="0.1"
                                                 Radius="5" />
                                         </Border.Shadow>
-
                                         <VerticalStackLayout Spacing="8">
-                                            <Grid ColumnDefinitions="*, Auto">
-                                                <Label
-                                                    FontAttributes="Bold"
-                                                    FontSize="16"
-                                                    Text="{Binding RiskLevel.Name}"
-                                                    TextColor="Red" />
-                                            </Grid>
-
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                Text="{Binding RiskLevel.Name}"
+                                                TextColor="Red" />
                                             <Label>
                                                 <Label.FormattedText>
                                                     <FormattedString>
@@ -229,14 +190,11 @@
                                                     </FormattedString>
                                                 </Label.FormattedText>
                                             </Label>
-
                                             <BoxView
                                                 Color="{StaticResource Secondary}"
                                                 HeightRequest="1"
                                                 Opacity="0.3" />
-
                                             <Label Text="{Binding Description}" TextColor="{StaticResource TextPrimary}" />
-
                                             <Label Text="{Binding Recommendation, StringFormat='Рекомендация: {0}'}" TextColor="{StaticResource Primary}">
                                                 <Label.Triggers>
                                                     <DataTrigger
@@ -256,8 +214,8 @@
                                         </VerticalStackLayout>
                                     </Border>
                                 </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
 
                 </VerticalStackLayout>

@@ -4,216 +4,89 @@
     x:Class="MedCompatibility.Pages.Patient.PatientHomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
-    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <Style TargetType="material:ButtonView" x:Key="ActionTile">
-                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
-                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius=16}" />
-                <Setter Property="Stroke" Value="#E6EAF0" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Padding" Value="16" />
-                <Setter Property="Shadow">
-                    <Shadow
-                        Brush="#90A4AE"
-                        Offset="0,10"
-                        Opacity="0.15"
-                        Radius="30" />
-                </Setter>
-            </Style>
-
-            <Color x:Key="IconBgPrimary">#2600796B</Color>
-            <Color x:Key="IconBgSecondary">#260097A7</Color>
-            <Color x:Key="IconBgWarning">#26F9A825</Color>
-            <Color x:Key="IconBgNeutral">#2678909C</Color>
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
     <Grid>
-        <!--  фон  -->
         <controls:BackgroundBubblesView />
 
-        <ScrollView>
-            <VerticalStackLayout
-                HorizontalOptions="{OnPlatform WinUI=Center,
-                                               MacCatalyst=Center,
-                                               Default=Fill}"
-                MaximumWidthRequest="900"
-                Padding="20"
-                Spacing="24"
-                WidthRequest="{OnPlatform WinUI=800,
-                                          MacCatalyst=800}">
+        <Grid
+            HorizontalOptions="{OnPlatform WinUI=Center,
+                                           MacCatalyst=Center,
+                                           Default=Fill}"
+            MaximumWidthRequest="800"
+            WidthRequest="{OnPlatform WinUI=800,
+                                      MacCatalyst=800}">
 
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                    <VerticalStackLayout Spacing="4">
-                        <Label Style="{StaticResource HeaderLabel}" Text="Здравствуйте!" />
-                        <Label Style="{StaticResource SubHeaderLabel}" Text="{Binding WelcomeText}" />
-                    </VerticalStackLayout>
+            <ScrollView VerticalScrollBarVisibility="Never">
+                <VerticalStackLayout Padding="20,20,20,40" Spacing="24">
 
-                    <Button
-                        Command="{Binding LogoutCommand}"
-                        Grid.Column="1"
-                        Style="{StaticResource SecondaryButton}"
-                        Text="Выйти"
-                        VerticalOptions="Center" />
-                </Grid>
-
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="20"
-                    Margin="0,8,0,0"
-                    Text="Главное меню"
-                    TextColor="{StaticResource TextPrimary}" />
-
-                <Grid
-                    ColumnDefinitions="*,*"
-                    ColumnSpacing="15"
-                    HorizontalOptions="Fill"
-                    RowDefinitions="Auto,Auto"
-                    RowSpacing="15">
-
-                    <material:ButtonView
-                        Grid.Column="0"
-                        Grid.Row="0"
-                        HeightRequest="{OnPlatform WinUI=180,
-                                                   Default=160}"
-                        Style="{StaticResource ActionTile}"
-                        TappedCommand="{Binding GoToScanCommand}">
-                        <VerticalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Border
-                                BackgroundColor="{StaticResource IconBgPrimary}"
-                                HeightRequest="48"
-                                HorizontalOptions="Start"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                WidthRequest="48">
-                                <Label
-                                    FontSize="24"
-                                    HorizontalOptions="Center"
-                                    Text="🔍"
-                                    VerticalOptions="Center" />
-                            </Border>
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Сканер"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <Label
-                                FontSize="13"
-                                Opacity="0.9"
-                                Text="Поиск по штрихкоду"
-                                TextColor="{StaticResource TextSecondary}" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Style="{StaticResource HeaderLabel}" Text="Здравствуйте!" />
+                            <Label Style="{StaticResource SubHeaderLabel}" Text="{Binding WelcomeText}" />
                         </VerticalStackLayout>
-                    </material:ButtonView>
+                        <Button
+                            Command="{Binding LogoutCommand}"
+                            Grid.Column="1"
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Выйти"
+                            VerticalOptions="Center" />
+                    </Grid>
 
-                    <material:ButtonView
-                        Grid.Column="1"
-                        Grid.Row="0"
-                        HeightRequest="{OnPlatform WinUI=180,
-                                                   Default=160}"
-                        Style="{StaticResource ActionTile}"
-                        TappedCommand="{Binding GoToCompatibilityCommand}">
-                        <VerticalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Border
-                                BackgroundColor="{StaticResource IconBgWarning}"
-                                HeightRequest="48"
-                                HorizontalOptions="Start"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                WidthRequest="48">
-                                <Label
-                                    FontSize="24"
-                                    HorizontalOptions="Center"
-                                    Text="💊"
-                                    VerticalOptions="Center" />
-                            </Border>
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Проверка"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <Label
-                                FontSize="13"
-                                Opacity="0.9"
-                                Text="Совместимость препаратов"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </VerticalStackLayout>
-                    </material:ButtonView>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Margin="0,8,0,0"
+                        Text="Главное меню"
+                        TextColor="{StaticResource TextPrimary}" />
 
-                    <material:ButtonView
-                        Grid.Column="0"
-                        Grid.Row="1"
-                        HeightRequest="{OnPlatform WinUI=180,
-                                                   Default=160}"
-                        IsVisible="{Binding IsUser}"
-                        Style="{StaticResource ActionTile}"
-                        TappedCommand="{Binding GoToHistoryCommand}">
-                        <VerticalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Border
-                                BackgroundColor="{StaticResource IconBgSecondary}"
-                                HeightRequest="48"
-                                HorizontalOptions="Start"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                WidthRequest="48">
-                                <Label
-                                    FontSize="24"
-                                    HorizontalOptions="Center"
-                                    Text="🕒"
-                                    VerticalOptions="Center" />
-                            </Border>
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="История"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <Label
-                                FontSize="13"
-                                Opacity="0.9"
-                                Text="Ваши проверки"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </VerticalStackLayout>
-                    </material:ButtonView>
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="15"
+                        RowDefinitions="Auto,Auto"
+                        RowSpacing="15">
 
-                    <material:ButtonView
-                        Grid.Column="1"
-                        Grid.Row="1"
-                        HeightRequest="{OnPlatform WinUI=180,
-                                                   Default=160}"
-                        IsVisible="{Binding IsUser}"
-                        Style="{StaticResource ActionTile}"
-                        TappedCommand="{Binding GoToProfileCommand}">
-                        <VerticalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Border
-                                BackgroundColor="{StaticResource IconBgNeutral}"
-                                HeightRequest="48"
-                                HorizontalOptions="Start"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                WidthRequest="48">
-                                <Label
-                                    FontSize="24"
-                                    HorizontalOptions="Center"
-                                    Text="👤"
-                                    VerticalOptions="Center" />
-                            </Border>
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Профиль"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <Label
-                                FontSize="13"
-                                Opacity="0.9"
-                                Text="Настройки аккаунта"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </VerticalStackLayout>
-                    </material:ButtonView>
+                        <controls:ActionTile
+                            Command="{Binding GoToScanCommand}"
+                            Description="Поиск по штрихкоду"
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            IconBackgroundColor="#2600796B"
+                            IconText="🔍"
+                            Title="Сканер" />
 
-                </Grid>
-            </VerticalStackLayout>
-        </ScrollView>
+                        <controls:ActionTile
+                            Command="{Binding GoToCompatibilityCommand}"
+                            Description="Совместимость препаратов"
+                            Grid.Column="1"
+                            Grid.Row="0"
+                            IconBackgroundColor="#26F9A825"
+                            IconText="💊"
+                            Title="Проверка" />
+
+                        <controls:ActionTile
+                            Command="{Binding GoToHistoryCommand}"
+                            Description="Ваши проверки"
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            IconBackgroundColor="#260097A7"
+                            IconText="🕒"
+                            IsVisible="{Binding IsUser}"
+                            Title="История" />
+
+                        <controls:ActionTile
+                            Command="{Binding GoToProfileCommand}"
+                            Description="Настройки аккаунта"
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            IconBackgroundColor="#2678909C"
+                            IconText="👤"
+                            IsVisible="{Binding IsUser}"
+                            Title="Профиль" />
+
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
     </Grid>
 </ContentPage>

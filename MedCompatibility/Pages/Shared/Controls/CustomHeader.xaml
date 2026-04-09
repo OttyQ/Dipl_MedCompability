@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="MedCompatibility.Pages.Shared.Controls.CustomHeader"
+    x:Name="this"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid
+        ColumnDefinitions="80,*,80"
+        HeightRequest="54"
+        HorizontalOptions="Fill">
+
+        <Border
+            BackgroundColor="#FFEBEE"
+            Grid.Column="0"
+            HeightRequest="48"
+            HorizontalOptions="Start"
+            IsVisible="{Binding IsBackButtonVisible, Source={x:Reference this}}"
+            Stroke="#E53935"
+            StrokeThickness="2"
+            Style="{StaticResource BackButton}"
+            VerticalOptions="Center"
+            WidthRequest="48">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBackTapped" />
+            </Border.GestureRecognizers>
+            <Label
+                FontAttributes="Bold"
+                FontSize="26"
+                HorizontalOptions="Center"
+                Margin="0,0,0,2"
+                Text="←"
+                TextColor="#E53935"
+                VerticalOptions="Center" />
+        </Border>
+
+        <Label
+            FontAttributes="Bold"
+            FontSize="{OnPlatform Android=19,
+                                  iOS=19,
+                                  Default=22}"
+            Grid.Column="1"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            LineBreakMode="TailTruncation"
+            Text="{Binding Title, Source={x:Reference this}}"
+            TextColor="{StaticResource TextPrimary}"
+            VerticalOptions="Center" />
+
+        <ContentView
+            Content="{Binding RightContent, Source={x:Reference this}}"
+            Grid.Column="2"
+            HorizontalOptions="End"
+            VerticalOptions="Center" />
+    </Grid>
+</ContentView>

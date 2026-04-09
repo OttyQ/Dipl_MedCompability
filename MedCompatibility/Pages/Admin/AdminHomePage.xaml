@@ -4,281 +4,143 @@
     x:Class="MedCompatibility.Pages.Admin.AdminHomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
-    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-
-            <!--  Плитки действий  -->
-            <Style TargetType="material:ButtonView" x:Key="ActionTile">
-                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
-                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius=16}" />
-                <Setter Property="Stroke" Value="#E6EAF0" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Padding" Value="16" />
-
-                <!--  Тень как в старом дизайне  -->
-                <Setter Property="Shadow">
-                    <Shadow
-                        Brush="#90A4AE"
-                        Offset="0,10"
-                        Opacity="0.15"
-                        Radius="30" />
-                </Setter>
-            </Style>
-
-            <!--  Мягкие фоны под иконки (в стиле приложения)  -->
-            <Color x:Key="IconBgPrimary">#2600796B</Color>
-            <Color x:Key="IconBgSecondary">#260097A7</Color>
-            <Color x:Key="IconBgWarning">#26F9A825</Color>
-            <Color x:Key="IconBgNeutral">#2678909C</Color>
-
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
     <Grid>
-
-        <!--  фон  -->
         <controls:BackgroundBubblesView />
 
-        <!--  Контент  -->
-        <ScrollView>
-            <VerticalStackLayout
-                HorizontalOptions="Center"
-                MaximumWidthRequest="900"
-                Padding="20"
-                Spacing="24">
+        <Grid
+            HorizontalOptions="{OnPlatform WinUI=Center,
+                                           MacCatalyst=Center,
+                                           Default=Fill}"
+            MaximumWidthRequest="800"
+            WidthRequest="{OnPlatform WinUI=800,
+                                      MacCatalyst=800}">
 
-                <!--  Шапка  -->
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                    <VerticalStackLayout Spacing="4">
-                        <Label Style="{StaticResource HeaderLabel}" Text="Панель администратора" />
-                        <Label Style="{StaticResource SubHeaderLabel}" Text="{Binding WelcomeMessage}" />
-                    </VerticalStackLayout>
+            <ScrollView VerticalScrollBarVisibility="Never">
+                <VerticalStackLayout Padding="20,20,20,40" Spacing="24">
 
-                    <Button
-                        Command="{Binding LogoutCommand}"
-                        Grid.Column="1"
-                        Style="{StaticResource SecondaryButton}"
-                        Text="Выйти"
-                        VerticalOptions="Center" />
-                </Grid>
-
-                <!--  Статистика (в фирменных цветах приложения)  -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-
-                    <Frame
-                        BackgroundColor="{StaticResource Primary}"
-                        CornerRadius="18"
-                        HasShadow="True"
-                        Padding="18">
-                        <VerticalStackLayout Spacing="6">
-                            <Label
-                                FontSize="13"
-                                Opacity="0.85"
-                                Text="Пациенты"
-                                TextColor="White" />
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="36"
-                                Text="{Binding PatientsCount}"
-                                TextColor="White" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Style="{StaticResource HeaderLabel}" Text="Панель администратора" />
+                            <Label Style="{StaticResource SubHeaderLabel}" Text="{Binding WelcomeMessage}" />
                         </VerticalStackLayout>
-                    </Frame>
+                        <Button
+                            Command="{Binding LogoutCommand}"
+                            Grid.Column="1"
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Выйти"
+                            VerticalOptions="Center" />
+                    </Grid>
 
-                    <Frame
-                        BackgroundColor="{StaticResource Secondary}"
-                        CornerRadius="18"
-                        Grid.Column="1"
-                        HasShadow="True"
-                        Padding="18">
-                        <VerticalStackLayout Spacing="6">
-                            <Label
-                                FontSize="13"
-                                Opacity="0.85"
-                                Text="Врачи"
-                                TextColor="White" />
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="36"
-                                Text="{Binding DoctorsCount}"
-                                TextColor="White" />
-                        </VerticalStackLayout>
-                    </Frame>
-
-                </Grid>
-
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="20"
-                    Margin="0,8,0,0"
-                    Text="Быстрые действия"
-                    TextColor="{StaticResource TextPrimary}" />
-
-                <!--  Действия (сетка)  -->
-                <Grid
-                    ColumnDefinitions="*,*"
-                    ColumnSpacing="12"
-                    RowDefinitions="Auto,Auto"
-                    RowSpacing="12">
-
-                    <!--  Пользователи  -->
-                    <material:ButtonView
-                        Grid.Column="0"
-                        Grid.Row="0"
-                        Style="{StaticResource ActionTile}"
-                        TappedCommand="{Binding GoToUsersCommand}">
-                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-
-                            <Border
-                                BackgroundColor="{StaticResource IconBgPrimary}"
-                                HeightRequest="48"
-                                HorizontalOptions="Start"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                WidthRequest="48">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border
+                            BackgroundColor="{StaticResource Primary}"
+                            Padding="18"
+                            StrokeShape="RoundRectangle 18"
+                            StrokeThickness="0">
+                            <Border.Shadow>
+                                <Shadow
+                                    Brush="Black"
+                                    Offset="0,4"
+                                    Opacity="0.2"
+                                    Radius="10" />
+                            </Border.Shadow>
+                            <VerticalStackLayout Spacing="6">
                                 <Label
-                                    FontSize="24"
-                                    HorizontalOptions="Center"
-                                    Text="👤"
-                                    VerticalOptions="Center" />
-                            </Border>
-
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Grid.Row="1"
-                                Text="Пользователи"
-                                TextColor="{StaticResource TextPrimary}" />
-
-                            <Label
-                                FontSize="13"
-                                Grid.Row="2"
-                                Opacity="0.9"
-                                Text="Поиск, роли, статусы"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </Grid>
-                    </material:ButtonView>
-
-                    <!--  Препараты  -->
-                    <material:ButtonView
-                        Grid.Column="1"
-                        Grid.Row="0"
-                        Style="{StaticResource ActionTile}"
-                        TappedCommand="{Binding GoToMedicinesCommand}">
-                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-
-                            <Border
-                                BackgroundColor="{StaticResource IconBgSecondary}"
-                                HeightRequest="48"
-                                HorizontalOptions="Start"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                WidthRequest="48">
+                                    FontSize="13"
+                                    Opacity="0.85"
+                                    Text="Пациенты"
+                                    TextColor="White" />
                                 <Label
-                                    FontSize="24"
-                                    HorizontalOptions="Center"
-                                    Text="💊"
-                                    VerticalOptions="Center" />
-                            </Border>
+                                    FontAttributes="Bold"
+                                    FontSize="36"
+                                    Text="{Binding PatientsCount}"
+                                    TextColor="White" />
+                            </VerticalStackLayout>
+                        </Border>
 
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Grid.Row="1"
-                                Text="Препараты"
-                                TextColor="{StaticResource TextPrimary}" />
-
-                            <Label
-                                FontSize="13"
-                                Grid.Row="2"
-                                Opacity="0.9"
-                                Text="Каталог и производители"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </Grid>
-                    </material:ButtonView>
-
-                    <!--  Взаимодействия  -->
-                    <material:ButtonView
-                        Grid.Column="0"
-                        Grid.Row="1"
-                        Style="{StaticResource ActionTile}"
-                        TappedCommand="{Binding GoToConflictsCommand}">
-                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-
-                            <Border
-                                BackgroundColor="{StaticResource IconBgWarning}"
-                                HeightRequest="48"
-                                HorizontalOptions="Start"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                WidthRequest="48">
+                        <Border
+                            BackgroundColor="{StaticResource Secondary}"
+                            Grid.Column="1"
+                            Padding="18"
+                            StrokeShape="RoundRectangle 18"
+                            StrokeThickness="0">
+                            <Border.Shadow>
+                                <Shadow
+                                    Brush="Black"
+                                    Offset="0,4"
+                                    Opacity="0.2"
+                                    Radius="10" />
+                            </Border.Shadow>
+                            <VerticalStackLayout Spacing="6">
                                 <Label
-                                    FontSize="24"
-                                    HorizontalOptions="Center"
-                                    Text="⚠"
-                                    VerticalOptions="Center" />
-                            </Border>
-
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Grid.Row="1"
-                                Text="Взаимодействия"
-                                TextColor="{StaticResource TextPrimary}" />
-
-                            <Label
-                                FontSize="13"
-                                Grid.Row="2"
-                                Opacity="0.9"
-                                Text="Типы и уровни риска"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </Grid>
-                    </material:ButtonView>
-
-                    <!--  Система  -->
-                    <material:ButtonView
-                        Grid.Column="1"
-                        Grid.Row="1"
-                        Style="{StaticResource ActionTile}"
-                        TappedCommand="{Binding GoToSystemCommand}">
-                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-
-                            <Border
-                                BackgroundColor="{StaticResource IconBgNeutral}"
-                                HeightRequest="48"
-                                HorizontalOptions="Start"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                WidthRequest="48">
+                                    FontSize="13"
+                                    Opacity="0.85"
+                                    Text="Врачи"
+                                    TextColor="White" />
                                 <Label
-                                    FontSize="24"
-                                    HorizontalOptions="Center"
-                                    Text="🛠"
-                                    VerticalOptions="Center" />
-                            </Border>
+                                    FontAttributes="Bold"
+                                    FontSize="36"
+                                    Text="{Binding DoctorsCount}"
+                                    TextColor="White" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
 
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Grid.Row="1"
-                                Text="Система"
-                                TextColor="{StaticResource TextPrimary}" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Margin="0,8,0,0"
+                        Text="Быстрые действия"
+                        TextColor="{StaticResource TextPrimary}" />
 
-                            <Label
-                                FontSize="13"
-                                Grid.Row="2"
-                                Opacity="0.9"
-                                Text="Логи и обслуживание"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </Grid>
-                    </material:ButtonView>
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="15"
+                        RowDefinitions="Auto,Auto"
+                        RowSpacing="15">
 
-                </Grid>
+                        <controls:ActionTile
+                            Command="{Binding GoToUsersCommand}"
+                            Description="Поиск, роли, статусы"
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            IconBackgroundColor="#2600796B"
+                            IconText="👤"
+                            Title="Пользователи" />
 
-            </VerticalStackLayout>
-        </ScrollView>
+                        <controls:ActionTile
+                            Command="{Binding GoToMedicinesCommand}"
+                            Description="Каталог и производители"
+                            Grid.Column="1"
+                            Grid.Row="0"
+                            IconBackgroundColor="#260097A7"
+                            IconText="💊"
+                            Title="Препараты" />
 
+                        <controls:ActionTile
+                            Command="{Binding GoToConflictsCommand}"
+                            Description="Типы и уровни риска"
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            IconBackgroundColor="#26F9A825"
+                            IconText="⚠"
+                            Title="Взаимодействия" />
+
+                        <controls:ActionTile
+                            Command="{Binding GoToSystemCommand}"
+                            Description="Логи и обслуживание"
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            IconBackgroundColor="#2678909C"
+                            IconText="🛠"
+                            Title="Система" />
+
+                    </Grid>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
     </Grid>
 </ContentPage>

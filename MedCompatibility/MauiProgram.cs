@@ -116,7 +116,7 @@ public static class MauiProgram
         //Shared
         builder.Services.AddTransient<Pages.Shared.LoginPage>();
         builder.Services.AddTransient<Pages.Shared.RegisterPage>();
-        builder.Services.AddTransient<Pages.Shared.Controls.BackgroundBubblesView>();
+        
         //Patient & Guest
         builder.Services.AddTransient<PatientHomePage>();
         builder.Services.AddTransient<ScanPage>();

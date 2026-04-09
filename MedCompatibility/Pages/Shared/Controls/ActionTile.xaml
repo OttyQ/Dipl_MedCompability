@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="MedCompatibility.Pages.Shared.Controls.ActionTile"
+    x:Name="this"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border
+        BackgroundColor="{StaticResource Surface}"
+        HorizontalOptions="Fill"
+        MinimumHeightRequest="150"
+        Padding="16"
+        Stroke="#E6EAF0"
+        StrokeShape="RoundRectangle 16"
+        StrokeThickness="1"
+        VerticalOptions="Fill">
+
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding Command, Source={x:Reference this}}" Tapped="OnTileTapped" />
+        </Border.GestureRecognizers>
+
+        <Border.Shadow>
+            <Shadow
+                Brush="#90A4AE"
+                Offset="0,10"
+                Opacity="0.15"
+                Radius="30" />
+        </Border.Shadow>
+
+        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+            <Border
+                BackgroundColor="{Binding IconBackgroundColor, Source={x:Reference this}}"
+                HeightRequest="48"
+                HorizontalOptions="Start"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 16"
+                WidthRequest="48">
+                <Label
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="{Binding IconText, Source={x:Reference this}}"
+                    VerticalOptions="Center" />
+            </Border>
+            <Label
+                FontAttributes="Bold"
+                FontSize="16"
+                Grid.Row="1"
+                LineBreakMode="TailTruncation"
+                MaxLines="1"
+                Text="{Binding Title, Source={x:Reference this}}"
+                TextColor="{StaticResource TextPrimary}" />
+            <Label
+                FontSize="13"
+                Grid.Row="2"
+                LineBreakMode="TailTruncation"
+                MaxLines="2"
+                Opacity="0.9"
+                Text="{Binding Description, Source={x:Reference this}}"
+                TextColor="{StaticResource TextSecondary}" />
+        </Grid>
+    </Border>
+
+</ContentView>

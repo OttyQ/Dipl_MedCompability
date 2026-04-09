@@ -11,37 +11,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!--  фон  -->
         <controls:BackgroundBubblesView
             BottomBubbleBounds="0.5, -0.1, 200, 200"
             RightBubbleBounds="0.9, 0.85, 300, 300"
             TopBubbleBounds="0.1, 0.2, 250, 250" />
 
-        <Grid RowDefinitions="Auto, *">
-            <!--  1. ЗАГОЛОВОК  -->
-            <Grid
-                BackgroundColor="Transparent"
-                Grid.Row="0"
-                HeightRequest="60"
-                Padding="20,0">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="22"
-                    Text="История проверок"
-                    TextColor="{StaticResource TextPrimary}"
-                    VerticalOptions="Center" />
-            </Grid>
+        <Grid
+            HorizontalOptions="{OnPlatform WinUI=Center,
+                                           MacCatalyst=Center,
+                                           Default=Fill}"
+            MaximumWidthRequest="700"
+            RowDefinitions="Auto, *"
+            WidthRequest="{OnPlatform WinUI=700,
+                                      MacCatalyst=700}">
 
-            <!--  ВАРИАНТ ДЛЯ ПОЛЬЗОВАТЕЛЯ  -->
+            <controls:CustomHeader
+                Grid.Row="0"
+                Margin="20,20,20,15"
+                Title="История" />
+
             <RefreshView
                 Command="{Binding LoadHistoryCommand}"
                 Grid.Row="1"
                 IsRefreshing="{Binding IsBusy}"
                 IsVisible="{Binding IsUser}">
 
-                <CollectionView ItemsSource="{Binding HistoryItems}" SelectionMode="None">
+                <CollectionView
+                    ItemsSource="{Binding HistoryItems}"
+                    SelectionMode="None"
+                    VerticalScrollBarVisibility="Never">
 
-                    <!--  Заглушка, если список пуст  -->
                     <CollectionView.EmptyView>
                         <VerticalStackLayout
                             HorizontalOptions="Center"
@@ -68,7 +67,6 @@
                         <LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
                     </CollectionView.ItemsLayout>
 
-                    <!--  Отступы списка  -->
                     <CollectionView.Header>
                         <BoxView Color="Transparent" HeightRequest="10" />
                     </CollectionView.Header>
@@ -78,10 +76,9 @@
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:scan">
-                            <!--  Карточка  -->
                             <Border
                                 BackgroundColor="White"
-                                Margin="15,0,15,0"
+                                Margin="20,0,20,0"
                                 Padding="15"
                                 StrokeShape="RoundRectangle 16"
                                 StrokeThickness="0">
@@ -93,7 +90,6 @@
                                         Radius="8" />
                                 </Border.Shadow>
 
-                                <!--  ОБРАБОТЧИК НАЖАТИЯ  -->
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoryViewModel}}, Path=GoToDetailsCommand}" CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
@@ -102,7 +98,6 @@
                                     ColumnDefinitions="*, Auto"
                                     RowDefinitions="Auto, Auto"
                                     RowSpacing="5">
-                                    <!--  Название лекарства  -->
                                     <Label
                                         FontAttributes="Bold"
                                         FontSize="17"
@@ -110,7 +105,6 @@
                                         Text="{Binding Medicine.TradeName}"
                                         TextColor="{StaticResource TextPrimary}" />
 
-                                    <!--  МНН (Состав)  -->
                                     <Label
                                         FontSize="13"
                                         Grid.Row="1"
@@ -119,7 +113,6 @@
                                         Text="{Binding Medicine.INN}"
                                         TextColor="{StaticResource TextSecondary}" />
 
-                                    <!--  Дата и время (справа)  -->
                                     <VerticalStackLayout
                                         Grid.Column="1"
                                         Grid.RowSpan="2"
@@ -144,7 +137,6 @@
                 </CollectionView>
             </RefreshView>
 
-            <!--  ВАРИАНТ ДЛЯ ГОСТЯ  -->
             <Grid
                 BackgroundColor="Transparent"
                 Grid.Row="1"
@@ -169,21 +161,18 @@
                             Text="🔒"
                             VerticalOptions="Center" />
                     </Border>
-
                     <Label
                         FontAttributes="Bold"
                         FontSize="20"
                         HorizontalTextAlignment="Center"
                         Text="История недоступна"
                         TextColor="{StaticResource TextPrimary}" />
-
                     <Label
                         FontSize="15"
                         HorizontalTextAlignment="Center"
                         LineHeight="1.2"
                         Text="Войдите в аккаунт, чтобы сохранять историю проверок и иметь доступ к ней с любого устройства."
                         TextColor="{StaticResource TextSecondary}" />
-
                     <Button
                         BackgroundColor="{StaticResource Primary}"
                         Command="{Binding GoToLoginCommand}"

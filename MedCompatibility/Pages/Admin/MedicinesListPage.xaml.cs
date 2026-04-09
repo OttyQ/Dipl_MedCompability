@@ -18,9 +18,4 @@ public partial class MedicinesListPage : ContentPage
         base.OnAppearing();
         await _viewModel.InitializeAsync();
     }
-
-    private async void OnBackClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
-    }
 }
