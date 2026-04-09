@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
     Shell.NavBarIsVisible="False"
-    Shell.TabBarIsVisible="False"
     Title="{Binding PageTitle}"
     x:Class="MedCompatibility.Pages.Admin.InteractionAddPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -18,270 +18,250 @@
     </ContentPage.Resources>
 
     <Grid>
-
-        <!--  фон  -->
         <controls:BackgroundBubblesView
             BottomBubbleBounds="0.50, 0.98, 820, 820"
             RightBubbleBounds="0.92, 0.10, 520, 520"
             TopBubbleBounds="0.06, 0.42, 300, 300" />
 
-        <Grid RowDefinitions="Auto,*">
+        <Grid
+            HorizontalOptions="{OnPlatform WinUI=Center,
+                                           MacCatalyst=Center,
+                                           Default=Fill}"
+            MaximumWidthRequest="800"
+            RowDefinitions="Auto, *"
+            WidthRequest="{OnPlatform WinUI=800,
+                                      MacCatalyst=800}">
 
-            <!--  Шапка  -->
-            <Grid
-                ColumnDefinitions="48,*,48"
+            <controls:CustomHeader
                 Grid.Row="0"
-                HeightRequest="48"
-                Margin="10,5">
+                Margin="20,20,20,10"
+                Title="{Binding PageTitle}" />
 
-                <Border
-                    HeightRequest="48"
-                    Style="{StaticResource BackButton}"
-                    WidthRequest="48">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBackClicked" />
-                    </Border.GestureRecognizers>
-                    <Label
-                        FontSize="26"
-                        HorizontalOptions="Center"
-                        Margin="0,0,0,2"
-                        Text="←"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
-                </Border>
+            <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+                <VerticalStackLayout Padding="20,10,20,40" Spacing="24">
 
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="20"
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Text="{Binding PageTitle}"
-                    TextColor="{StaticResource TextPrimary}"
-                    VerticalOptions="Center" />
-            </Grid>
-
-            <!--  Форма  -->
-            <ScrollView Grid.Row="1" Padding="15">
-                <VerticalStackLayout
-                    HorizontalOptions="Center"
-                    Spacing="20"
-                    WidthRequest="{OnPlatform WinUI='800',
-                                              Default='-1'}">
-
-                    <VerticalStackLayout.HorizontalOptions>
-                        <OnPlatform x:TypeArguments="LayoutOptions">
-                            <On Platform="WinUI" Value="Center" />
-                            <On Platform="Android,iOS" Value="Fill" />
-                        </OnPlatform>
-                    </VerticalStackLayout.HorizontalOptions>
-
-                    <!--  Блок 1  -->
-                    <Frame Padding="20" Style="{StaticResource MedCard}">
-                        <VerticalStackLayout Spacing="15">
+                    <Border
+                        BackgroundColor="White"
+                        Padding="24"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,6"
+                                Opacity="0.05"
+                                Radius="12" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="16">
                             <Label
                                 FontAttributes="Bold"
-                                FontSize="16"
+                                FontSize="18"
                                 Text="Конфликтующие вещества"
                                 TextColor="{StaticResource Primary}" />
 
-                            <!--  Вещество 1  -->
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Вещество 1 *"
                                     TextColor="{StaticResource TextSecondary}" />
-
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                                    <Border
-                                        HeightRequest="44"
-                                        Margin="0"
-                                        Padding="10,0"
-                                        Style="{StaticResource MedInputContainer}">
+                                <Border
+                                    BackgroundColor="#F5F7FA"
+                                    HeightRequest="48"
+                                    Padding="12,0"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 14">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SelectSubstance1Command}" />
+                                    </Border.GestureRecognizers>
+                                    <Grid ColumnDefinitions="*, Auto">
                                         <Label
-                                            Text="{Binding Substance1.Name, TargetNullValue='Не выбрано'}"
+                                            FontSize="14"
+                                            Text="{Binding Substance1.Name, TargetNullValue='Выберите вещество'}"
                                             TextColor="{StaticResource TextPrimary}"
                                             VerticalOptions="Center" />
-                                    </Border>
-
-                                    <material:ButtonView
-                                        BackgroundColor="{StaticResource Primary}"
-                                        Grid.Column="1"
-                                        HeightRequest="44"
-                                        StrokeShape="{RoundRectangle CornerRadius=12}"
-                                        StrokeThickness="0"
-                                        TappedCommand="{Binding SelectSubstance1Command}"
-                                        WidthRequest="44">
                                         <Label
-                                            FontSize="18"
-                                            HorizontalOptions="Center"
+                                            Grid.Column="1"
+                                            Opacity="0.6"
                                             Text="🔍"
-                                            TextColor="White"
                                             VerticalOptions="Center" />
-                                    </material:ButtonView>
-                                </Grid>
+                                    </Grid>
+                                </Border>
                             </VerticalStackLayout>
 
-                            <!--  Вещество 2  -->
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Вещество 2 *"
                                     TextColor="{StaticResource TextSecondary}" />
-
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                                    <Border
-                                        HeightRequest="44"
-                                        Margin="0"
-                                        Padding="10,0"
-                                        Style="{StaticResource MedInputContainer}">
+                                <Border
+                                    BackgroundColor="#F5F7FA"
+                                    HeightRequest="48"
+                                    Padding="12,0"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 14">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SelectSubstance2Command}" />
+                                    </Border.GestureRecognizers>
+                                    <Grid ColumnDefinitions="*, Auto">
                                         <Label
-                                            Text="{Binding Substance2.Name, TargetNullValue='Не выбрано'}"
+                                            FontSize="14"
+                                            Text="{Binding Substance2.Name, TargetNullValue='Выберите вещество'}"
                                             TextColor="{StaticResource TextPrimary}"
                                             VerticalOptions="Center" />
-                                    </Border>
-
-                                    <material:ButtonView
-                                        BackgroundColor="{StaticResource Primary}"
-                                        Grid.Column="1"
-                                        HeightRequest="44"
-                                        StrokeShape="{RoundRectangle CornerRadius=12}"
-                                        StrokeThickness="0"
-                                        TappedCommand="{Binding SelectSubstance2Command}"
-                                        WidthRequest="44">
                                         <Label
-                                            FontSize="18"
-                                            HorizontalOptions="Center"
+                                            Grid.Column="1"
+                                            Opacity="0.6"
                                             Text="🔍"
-                                            TextColor="White"
                                             VerticalOptions="Center" />
-                                    </material:ButtonView>
-                                </Grid>
+                                    </Grid>
+                                </Border>
                             </VerticalStackLayout>
-
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
-                    <!--  Блок 2  -->
-                    <Frame Padding="20" Style="{StaticResource MedCard}">
-                        <VerticalStackLayout Spacing="15">
+                    <Border
+                        BackgroundColor="White"
+                        Padding="24"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,6"
+                                Opacity="0.05"
+                                Radius="12" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="16">
                             <Label
                                 FontAttributes="Bold"
-                                FontSize="16"
+                                FontSize="18"
                                 Text="Параметры риска"
                                 TextColor="{StaticResource Primary}" />
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Уровень риска *"
                                     TextColor="{StaticResource TextSecondary}" />
-
                                 <Border
-                                    Margin="0"
-                                    MinimumHeightRequest="50"
+                                    HeightRequest="48"
                                     Padding="12,0"
                                     Style="{StaticResource MedInputContainer}">
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding OpenRiskPickerCommand}" />
                                     </Border.GestureRecognizers>
-
-                                    <Label
-                                        Text="{Binding SelectedRisk.Name, TargetNullValue='Выберите риск'}"
-                                        TextColor="{StaticResource TextPrimary}"
-                                        VerticalOptions="Center" />
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label
+                                            Text="{Binding SelectedRisk.Name, TargetNullValue='Выберите риск'}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            FontSize="10"
+                                            Grid.Column="1"
+                                            Opacity="0.5"
+                                            Text="▼"
+                                            VerticalOptions="Center" />
+                                    </Grid>
                                 </Border>
                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
                                     Text="Тип взаимодействия *"
                                     TextColor="{StaticResource TextSecondary}" />
-
                                 <Border
-                                    Margin="0"
-                                    MinimumHeightRequest="50"
+                                    HeightRequest="48"
                                     Padding="12,0"
                                     Style="{StaticResource MedInputContainer}">
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding OpenTypePickerCommand}" />
                                     </Border.GestureRecognizers>
-
-                                    <Label
-                                        Text="{Binding SelectedType.Name, TargetNullValue='Выберите тип'}"
-                                        TextColor="{StaticResource TextPrimary}"
-                                        VerticalOptions="Center" />
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label
+                                            Text="{Binding SelectedType.Name, TargetNullValue='Выберите тип'}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            FontSize="10"
+                                            Grid.Column="1"
+                                            Opacity="0.5"
+                                            Text="▼"
+                                            VerticalOptions="Center" />
+                                    </Grid>
                                 </Border>
                             </VerticalStackLayout>
-
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
-                    <!--  Блок 3  -->
-                    <Frame Padding="20" Style="{StaticResource MedCard}">
-                        <VerticalStackLayout Spacing="15">
+                    <Border
+                        BackgroundColor="White"
+                        Padding="24"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0">
+                        <Border.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Offset="0,6"
+                                Opacity="0.05"
+                                Radius="12" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="16">
                             <Label
                                 FontAttributes="Bold"
-                                FontSize="16"
+                                FontSize="18"
                                 Text="Описание"
                                 TextColor="{StaticResource Primary}" />
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
-                                    Text="Описание эффекта *"
+                                    Text="Эффект взаимодействия *"
                                     TextColor="{StaticResource TextSecondary}" />
-
                                 <Border
-                                    BackgroundColor="#FAFAFA"
+                                    BackgroundColor="#F8FAFC"
                                     HeightRequest="110"
-                                    Padding="12"
+                                    Padding="10"
                                     Stroke="{StaticResource BorderLight}"
-                                    StrokeShape="RoundRectangle 12"
-                                    StrokeThickness="1">
+                                    StrokeShape="RoundRectangle 12">
                                     <Editor
                                         AutoSize="TextChanges"
-                                        BackgroundColor="Transparent"
-                                        Placeholder="Что произойдет при смешивании?"
+                                        Placeholder="Что произойдет?"
                                         Text="{Binding CurrentInteraction.Description}" />
                                 </Border>
                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Spacing="5">
+                            <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
-                                    Text="Рекомендация врача"
+                                    Text="Рекомендация"
                                     TextColor="{StaticResource TextSecondary}" />
-
                                 <Border
-                                    BackgroundColor="#FAFAFA"
+                                    BackgroundColor="#F8FAFC"
                                     HeightRequest="90"
-                                    Padding="12"
+                                    Padding="10"
                                     Stroke="{StaticResource BorderLight}"
-                                    StrokeShape="RoundRectangle 12"
-                                    StrokeThickness="1">
+                                    StrokeShape="RoundRectangle 12">
                                     <Editor
                                         AutoSize="TextChanges"
-                                        BackgroundColor="Transparent"
-                                        Placeholder="Что делать пациенту?"
+                                        Placeholder="Что делать?"
                                         Text="{Binding CurrentInteraction.Recommendation}" />
                                 </Border>
                             </VerticalStackLayout>
-
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
-                    <!--  Save  -->
                     <Button
                         Command="{Binding SaveCommand}"
-                        HeightRequest="50"
-                        Margin="0,10,0,30"
+                        CornerRadius="16"
+                        FontAttributes="Bold"
+                        HeightRequest="56"
+                        Margin="0,0,0,20"
                         Style="{StaticResource PrimaryButton}"
                         Text="{Binding ButtonText}" />
 
                 </VerticalStackLayout>
             </ScrollView>
-
         </Grid>
     </Grid>
 </ContentPage>
