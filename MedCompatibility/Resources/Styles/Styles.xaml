@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -440,6 +440,12 @@
     <Style TargetType="ContentPage">
         <Setter Property="BackgroundColor" Value="{StaticResource MedCompBackground}" />
         <Setter Property="Padding" Value="20" />
+    </Style>
+
+    <!--  Универсальный контейнер для центрирования на десктопе  -->
+    <Style TargetType="Grid" x:Key="PageContentGrid">
+        <Setter Property="MaximumWidthRequest" Value="800" />
+        <Setter Property="HorizontalOptions" Value="{OnPlatform WinUI=Center, MacCatalyst=Center, Default=Fill}" />
     </Style>
 
     <!--  Заголовок формы  -->

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Services.Interfaces;
 
@@ -22,7 +22,7 @@ public partial class ProfileViewModel : ObservableObject
     private bool isUser;
     
     [ObservableProperty]
-    private bool isDoctor;
+    private bool showBackButton;
 
     // --- Поля для редактирования ---
     [ObservableProperty]
@@ -51,17 +51,17 @@ public partial class ProfileViewModel : ObservableObject
     {
         IsGuest = _sessionService.IsGuest;
         IsUser = !IsGuest;
-        
-        // Определяем, врач ли это, для показа кнопки "Назад"
-        var currentRole = _sessionService.CurrentUser?.Role?.Name;
-        IsDoctor = string.Equals(currentRole, "doctor", StringComparison.OrdinalIgnoreCase);
-        
+    
+        // Показываем кнопку "Назад", если мы перешли на профиль из другой страницы (в стеке есть история)
+        // Если профиль открыт из нижнего таб-бара (Shell), кнопка "Назад" не нужна
+        ShowBackButton = Shell.Current.Navigation.NavigationStack.Count > 1;
+    
         IsEditing = false;
 
         if (IsUser && _sessionService.CurrentUser != null)
         {
             var user = _sessionService.CurrentUser;
-            
+        
             FullName = $"{user.LastName} {user.FirstName} {user.MiddleName}".Trim();
             RoleName = user.Role?.Description ?? "Пользователь";
 
@@ -73,7 +73,6 @@ public partial class ProfileViewModel : ObservableObject
         {
             FullName = "Гость";
             RoleName = "Ограниченный доступ";
-            IsDoctor = false;
         }
     }
 
@@ -145,7 +144,6 @@ public partial class ProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task GoBackAsync()
     {
-        // Возвращаемся в корень навигации врача
-        await Shell.Current.GoToAsync("//Doctor");
+        await Shell.Current.GoToAsync("..");
     }
 }

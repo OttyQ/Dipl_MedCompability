@@ -122,16 +122,18 @@ public partial class MedicinesListViewModel : ObservableObject
     // Вспомогательный метод для загрузки и конвертации
     private async Task LoadManufacturersForFilterAsync()
     {
-        // Получаем объекты
+        // 1. Запоминаем текущий выбор (до обновления коллекции)
+        var currentSelection = SelectedManufacturer;
+
         var manObjects = await _medicineService.GetAllManufacturersAsync();
-        
-        // Превращаем в список имен
         var names = manObjects.Select(m => m.Name).ToList();
-        
-        // Добавляем "Все" в начало
         names.Insert(0, "Все");
-        
+
+        // 2. Обновляем саму коллекцию
         Manufacturers = new ObservableCollection<string>(names);
+
+        // 3. Жестко восстанавливаем выбор. Если старого значения в новом списке нет - ставим "Все"
+        SelectedManufacturer = Manufacturers.Contains(currentSelection) ? currentSelection : "Все";
     }
     
     [RelayCommand]

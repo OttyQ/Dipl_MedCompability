@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     Shell.NavBarIsVisible="False"
     Title="Конфликты лекарств"
@@ -25,40 +25,12 @@
             RightBubbleBounds="0.08, 0.98, 760, 760"
             TopBubbleBounds="0.52, 0.08, 280, 280" />
 
-        <Grid RowDefinitions="Auto,*">
+        <Grid Style="{StaticResource PageContentGrid}" RowDefinitions="Auto, *, Auto">
 
             <!--  1) Шапка  -->
-            <Grid
-                ColumnDefinitions="48,*,48"
-                Grid.Row="0"
-                HeightRequest="48"
-                Margin="10,10,10,5">
-
-                <Border
-                    HeightRequest="48"
-                    Style="{StaticResource BackButton}"
-                    WidthRequest="48">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBackClicked" />
-                    </Border.GestureRecognizers>
-                    <Label
-                        FontSize="26"
-                        HorizontalOptions="Center"
-                        Margin="0,0,0,2"
-                        Text="←"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
-                </Border>
-
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="20"
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Text="Взаимодействия"
-                    TextColor="{StaticResource TextPrimary}"
-                    VerticalOptions="Center" />
-            </Grid>
+            <controls:CustomHeader
+                Margin="10,10,10,5"
+                Title="Взаимодействия" />
 
             <!--  2) Список  -->
             <RefreshView
@@ -67,27 +39,18 @@
                 IsRefreshing="{Binding IsBusy}">
 
                 <CollectionView
-                    HorizontalOptions="Center"
                     ItemsSource="{Binding Interactions}"
-                    MaximumWidthRequest="800"
-                    SelectionMode="None"
-                    WidthRequest="{OnPlatform Android='-1',
-                                              WinUI='800'}">
-
-                    <CollectionView.Margin>
-                        <OnPlatform x:TypeArguments="Thickness">
-                            <On Platform="WinUI" Value="0,20" />
-                            <On Platform="Android,iOS" Value="10,10" />
-                        </OnPlatform>
-                    </CollectionView.Margin>
+                    SelectionMode="None">
 
                     <CollectionView.EmptyView>
-                        <Label
-                            HorizontalOptions="Center"
-                            Text="Список взаимодействий пуст"
-                            TextColor="{StaticResource TextSecondary}"
-                            VerticalOptions="Center" />
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="Список взаимодействий пуст." TextColor="{StaticResource TextSecondary}" />
+                        </VerticalStackLayout>
                     </CollectionView.EmptyView>
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="15" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:interaction">
@@ -211,26 +174,28 @@
                 </CollectionView>
             </RefreshView>
 
-            <!--  FAB через UraniumUI (без CornerRadius-свойства)  -->
-            <material:ButtonView
-                BackgroundColor="{StaticResource Primary}"
-                Grid.Row="1"
-                HeightRequest="56"
-                HorizontalOptions="End"
-                Margin="20"
-                StrokeShape="{RoundRectangle CornerRadius=28}"
-                StrokeThickness="0"
-                TappedCommand="{Binding GoToAddInteractionCommand}"
-                VerticalOptions="End"
-                WidthRequest="56">
-                <Label
+            <Grid Grid.Row="2" Padding="0,10,0,10">
+                <Button
+                    Command="{Binding GoToAddInteractionCommand}"
+                    CornerRadius="28"
                     FontSize="30"
+                    HeightRequest="56"
                     HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Padding="0"
+                    Style="{StaticResource PrimaryButton}"
                     Text="+"
                     TextColor="White"
-                    VerticalOptions="Center" />
-            </material:ButtonView>
-
+                    WidthRequest="56">
+                    <Button.Shadow>
+                        <Shadow
+                            Brush="{StaticResource Primary}"
+                            Offset="0,4"
+                            Opacity="0.3"
+                            Radius="8" />
+                    </Button.Shadow>
+                </Button>
+            </Grid>
         </Grid>
     </Grid>
 </ContentPage>

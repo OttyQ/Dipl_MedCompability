@@ -12,10 +12,7 @@ public partial class MedicineAddPage : ContentPage
         BindingContext = _viewModel = vm;
     }
 
-    private async void OnBackClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
-    }
+    // OnBackClicked удален, так как CustomHeader обрабатывает возврат сам!
 
     private void OnSaveClicked(object sender, EventArgs e)
     {

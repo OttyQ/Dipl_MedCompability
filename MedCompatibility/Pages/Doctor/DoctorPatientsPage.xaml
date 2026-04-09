@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     BackgroundColor="{StaticResource AppBackground}"
     Shell.NavBarIsVisible="False"
@@ -20,60 +20,11 @@
         <!--  фон  -->
         <controls:BackgroundBubblesView />
 
-        <Grid RowDefinitions="Auto,*">
-            <!--  Шапка  -->
-            <Grid
-                ColumnDefinitions="48,*"
-                Grid.Row="0"
-                HeightRequest="80"
-                Padding="16,10">
-                <!--  Кнопка Назад  -->
-                <Border
-                    BackgroundColor="{StaticResource Surface}"
-                    HeightRequest="42"
-                    StrokeShape="RoundRectangle 12"
-                    StrokeThickness="0"
-                    VerticalOptions="Start"
-                    WidthRequest="42">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
-                    </Border.GestureRecognizers>
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Offset="0,2"
-                            Opacity="0.1"
-                            Radius="4" />
-                    </Border.Shadow>
-                    <Label
-                        FontSize="26"
-                        HorizontalOptions="Center"
-                        Margin="0,0,0,4"
-                        Text="‹"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
-                </Border>
-
-                <!--  Заголовки  -->
-                <VerticalStackLayout
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Margin="-48,0,0,0"
-                    Spacing="0"
-                    VerticalOptions="Center">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="20"
-                        HorizontalOptions="Center"
-                        Text="Мои пациенты"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <Label
-                        FontSize="13"
-                        HorizontalOptions="Center"
-                        Text="Список наблюдения"
-                        TextColor="{StaticResource TextSecondary}" />
-                </VerticalStackLayout>
-            </Grid>
+        <Grid Style="{StaticResource PageContentGrid}" RowDefinitions="Auto,*">
+                <!--  Шапка  -->
+                <controls:CustomHeader
+                    Margin="0,0,0,5"
+                    Title="Мои пациенты" />
 
             <!--  Контент  -->
             <ScrollView Grid.Row="1" Padding="16,0">
@@ -108,6 +59,9 @@
                         HorizontalOptions="Fill"
                         ItemsSource="{Binding Patients}"
                         SelectionMode="None">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout ItemSpacing="15" Orientation="Vertical" />
+                        </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:user">
                                 <Border
