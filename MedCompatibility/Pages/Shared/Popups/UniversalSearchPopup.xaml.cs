@@ -54,6 +54,9 @@ public partial class UniversalSearchPopup : Popup
     // Показывать ли чип (вместо вкладок)
     public bool   IsHistoryChipVisible => _showHistoryTab && _mode == SearchMode.Лекарство;
 
+    public bool   IsScannerButtonVisible => _mode == SearchMode.Лекарство && 
+                                            (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS);
+
     private bool _isHistoryFilterActive;
     public bool IsHistoryFilterActive
     {

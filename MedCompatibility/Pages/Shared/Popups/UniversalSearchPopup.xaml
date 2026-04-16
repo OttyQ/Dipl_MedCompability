@@ -87,14 +87,13 @@
                 </Border>
 
                 <!--
-                    Кнопка-сканер: ТОЛЬКО Android/iOS.
-                    На Windows/WinUI — полностью скрыта (IsVisible=False).
+                    Кнопка-сканер: ТОЛЬКО Android/iOS и только для Лекарств
                 -->
                 <Border
                     BackgroundColor="{StaticResource Primary}"
                     Grid.Column="1"
                     HeightRequest="44"
-                    IsVisible="{OnPlatform Android=True, iOS=True, WinUI=False, Default=False}"
+                    IsVisible="{Binding IsScannerButtonVisible}"
                     StrokeShape="RoundRectangle 10"
                     StrokeThickness="0"
                     WidthRequest="44"
@@ -221,15 +220,11 @@
                 Виден только когда:
                   • _showAddSection = true
                   • поиск не дал результатов
-                  • не активна вкладка «История»
+                  • не активна история
                 Подпись динамически задаётся из code-behind через CreateHintLabel.Text
             -->
-            <VerticalStackLayout
-                Grid.Row="4"
-                IsVisible="False"
-                Margin="0,4,0,0"
-                Spacing="8"
-                x:Name="CreateBlock">
+            <ScrollView Grid.Row="4" IsVisible="False" x:Name="CreateBlock">
+                <VerticalStackLayout Margin="0,4,0,0" Spacing="8">
 
                 <BoxView
                     Color="{StaticResource Primary}"
@@ -280,12 +275,12 @@
                             стрелка справа, Picker (прозрачный) перехватывает тапы.
                         -->
                         <Grid>
-                            <!-- Текст выбранной страны -->
+                            <!-- Текст выбранной страны (изначально как Placeholder) -->
                             <Label
                                 FontSize="14"
                                 HorizontalOptions="FillAndExpand"
                                 Text="Выберите страну"
-                                TextColor="{StaticResource TextPrimary}"
+                                TextColor="{StaticResource TextSecondary}"
                                 VerticalOptions="Center"
                                 x:Name="SelectedCountryLabel" />
                             <!-- Иконка стрелки -->
@@ -365,6 +360,7 @@
                 </Border>
 
             </VerticalStackLayout>
+            </ScrollView>
 
             <!-- ═══ Row 5: Кнопки «Отмена» и «Создать» в одну строку ═══ -->
             <!--
