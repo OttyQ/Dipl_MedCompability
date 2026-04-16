@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using MedCompatibility.Configuration;
 using MedCompatibility.Models;
 using MedCompatibility.Services;
@@ -90,6 +90,7 @@ public static class MauiProgram
 
         // 5) ViewModels
         builder.Services.AddTransient<PatientSearchPopup>();
+        builder.Services.AddTransient<UniversalSearchPopup>();
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddTransient<PatientHomePageViewModel>();

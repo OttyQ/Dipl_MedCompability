@@ -1,11 +1,11 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
 using MedCompatibility.Pages.Shared;
-using MedCompatibility.Pages.Shared.Popups; // Для nameof(CodeScannerPage)
+using MedCompatibility.Pages.Shared.Popups;
 
 namespace MedCompatibility.ViewModels.Patient;
 
@@ -14,9 +14,13 @@ public partial class CompatibilityViewModel : ObservableObject, IQueryAttributab
     private readonly IInteractionService _interactionService;
     private readonly IMedicineService _medicineService;
     private readonly IScanService _scanService;
+    private readonly IUserSessionService _session;
 
     // Флаг, чтобы понимать, в какой слот (А или Б) мы сейчас выбираем лекарство
-    private bool _isSelectingA; 
+    private bool _isSelectingA;
+
+    // Труе — пациент, видит вкладку «История»; False — врач
+    private bool _showHistoryTab;
 
     [ObservableProperty]
     private medicine? medicineA;
@@ -36,11 +40,22 @@ public partial class CompatibilityViewModel : ObservableObject, IQueryAttributab
     [ObservableProperty]
     private string statusMessage = "Выберите два лекарства для проверки";
 
-    public CompatibilityViewModel(IInteractionService interactionService, IMedicineService medicineService, IScanService scanService)
+    public CompatibilityViewModel(
+        IInteractionService interactionService,
+        IMedicineService medicineService,
+        IScanService scanService,
+        IUserSessionService session)
     {
         _interactionService = interactionService;
         _medicineService = medicineService;
         _scanService = scanService;
+        _session = session;
+
+        // Пациент видит историю; врач / гость — нет
+        var role = _session?.CurrentUser?.Role?.Name ?? string.Empty;
+        _showHistoryTab = role.Equals("Пациент", StringComparison.OrdinalIgnoreCase)
+                       || role.Equals("patient", StringComparison.OrdinalIgnoreCase)
+                       || string.IsNullOrEmpty(role); // гость (не авторизован) тоже видит историю
     }
 
     // --- Обработка результата от сканера ---
@@ -98,27 +113,26 @@ public partial class CompatibilityViewModel : ObservableObject, IQueryAttributab
 
     private async Task OpenSelectionMenuAsync()
     {
-        // Создаем попап, передавая сервисы
-        var popup = new MedicineSelectionPopup(_medicineService, _scanService);
-        
-        // Показываем и ждем результат
+        var popup = new UniversalSearchPopup(
+            _medicineService,
+            _scanService,
+            mode: SearchMode.Лекарство,
+            showAddSection: false,
+            showHistoryTab: _showHistoryTab);
+
         var result = await Shell.Current.ShowPopupAsync(popup);
 
         if (result is string action && action == "SCAN")
         {
-            // Пользователь выбрал сканер внутри попапа
+            // Пользователь выбрал сканер — открываем страницу сканирования
             await Shell.Current.GoToAsync(nameof(CodeScannerPage));
         }
         else if (result is medicine selectedMed)
         {
-            // Пользователь выбрал лекарство из списка
             if (_isSelectingA) MedicineA = selectedMed;
             else MedicineB = selectedMed;
-            
+
             StatusMessage = "Лекарство добавлено. Выберите второе.";
-            
-            // Если оба выбраны - можно сразу проверить (опционально)
-            // if (MedicineA != null && MedicineB != null) await CheckAsync();
         }
     }
 

@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -211,9 +211,16 @@ public class MedicineService : IMedicineService
     
     public async Task<List<medicine>> SearchMedicinesAsync(string query)
     {
-        if (string.IsNullOrWhiteSpace(query)) return new List<medicine>();
-
         using var context = await _contextFactory.CreateDbContextAsync();
+
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return await context.medicines
+                .Include(m => m.Manufacturer)
+                .OrderBy(m => m.TradeName)
+                .Take(50)
+                .ToListAsync();
+        }
     
         // Ищем по GTIN (полное совпадение) или по Названию (частичное)
         return await context.medicines

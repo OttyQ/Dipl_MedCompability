@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Models;
@@ -106,9 +106,16 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
     [RelayCommand]
     private async Task PickMedicineAsync()
     {
-        var popup = new MedicineSelectionPopup(_medicineService, _scanService);
+        // Врач выбирает лекарство — история скрыта (showHistoryTab: false)
+        var popup = new UniversalSearchPopup(
+            _medicineService,
+            _scanService,
+            SearchMode.Лекарство,
+            showAddSection: false,
+            showHistoryTab: false);
+
         var result = await Shell.Current.ShowPopupAsync(popup);
-        
+
         if (result is string action && action == "SCAN")
         {
             await Shell.Current.GoToAsync(nameof(CodeScannerPage));

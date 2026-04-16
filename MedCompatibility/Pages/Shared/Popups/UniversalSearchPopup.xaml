@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.UniversalSearchPopup"
+    x:Name="_root"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--
+        Адаптивный контейнер:
+        - MaximumWidthRequest=600 + HorizontalOptions=Center → аккуратный диалог на ПК
+        - HeightRequest=520 → фиксированная высота, CollectionView получает реальное место
+    -->
+    <Border
+        BackgroundColor="{StaticResource Surface}"
+        HeightRequest="520"
+        HorizontalOptions="Center"
+        Margin="0,60,0,0"
+        MaximumWidthRequest="600"
+        Padding="20"
+        Shadow="{Shadow Brush={StaticResource Primary},
+                        Offset='0,4',
+                        Radius=10,
+                        Opacity=0.2}"
+        Stroke="{StaticResource Primary}"
+        StrokeShape="RoundRectangle 20"
+        StrokeThickness="1"
+        VerticalOptions="Start"
+        WidthRequest="560">
+
+        <!--
+            Строгая сетка:
+            Row 0 – заголовок           (Auto)
+            Row 1 – строка поиска       (Auto)
+            Row 2 – чипы фильтров       (Auto)
+            Row 3 – список результатов  (*) ← тянется, скролл работает внутри
+            Row 4 – блок создания       (Auto)
+            Row 5 – кнопки              (Auto)
+        -->
+        <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto" RowSpacing="0">
+
+            <!-- ═══ Row 0: Заголовок ═══ -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="16"
+                Grid.Row="0"
+                HorizontalOptions="Center"
+                Margin="0,0,0,14"
+                Text="{Binding PopupTitle}"
+                TextColor="{StaticResource TextPrimary}" />
+
+            <!-- ═══ Row 1: Строка поиска + кнопка сканера ═══ -->
+            <Grid
+                ColumnDefinitions="*, Auto"
+                ColumnSpacing="8"
+                Grid.Row="1"
+                Margin="0,0,0,10"
+                x:Name="SearchRow">
+
+                <!-- Поле ввода с кнопкой очистки -->
+                <Border
+                    BackgroundColor="{StaticResource AppBackground}"
+                    HeightRequest="44"
+                    Padding="10,0"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Entry
+                            Placeholder="Начните вводить..."
+                            PlaceholderColor="{StaticResource TextSecondary}"
+                            TextChanged="OnSearchTextChanged"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalOptions="Center"
+                            x:Name="SearchEntry" />
+                        <Button
+                            BackgroundColor="Transparent"
+                            Clicked="OnClearSearchClicked"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            Padding="0"
+                            Text="✕"
+                            TextColor="{StaticResource TextSecondary}"
+                            WidthRequest="36" />
+                    </Grid>
+                </Border>
+
+                <!--
+                    Кнопка-сканер: ТОЛЬКО Android/iOS.
+                    На Windows/WinUI — полностью скрыта (IsVisible=False).
+                -->
+                <Border
+                    BackgroundColor="{StaticResource Primary}"
+                    Grid.Column="1"
+                    HeightRequest="44"
+                    IsVisible="{OnPlatform Android=True, iOS=True, WinUI=False, Default=False}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0"
+                    WidthRequest="44"
+                    x:Name="ScanButton">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnScanTapped" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="📷"
+                        VerticalOptions="Center" />
+                </Border>
+            </Grid>
+
+            <!-- ═══ Row 2: Чипы фильтров (Отображается только при IsHistoryChipVisible) ═══ -->
+            <HorizontalStackLayout
+                Grid.Row="2"
+                HorizontalOptions="Start"
+                IsVisible="{Binding IsHistoryChipVisible}"
+                Margin="0,0,0,10"
+                MaximumWidthRequest="600"
+                Spacing="8">
+                
+                <Border
+                    BackgroundColor="{Binding HistoryChipColor}"
+                    HeightRequest="32"
+                    Padding="12,0"
+                    StrokeShape="RoundRectangle 16"
+                    StrokeThickness="1"
+                    Stroke="{StaticResource BorderLight}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnHistoryChipTapped" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Label
+                            IsVisible="{Binding IsHistoryFilterActive}"
+                            Text="✓"
+                            TextColor="{Binding HistoryChipTextColor}"
+                            FontAttributes="Bold"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontSize="13"
+                            Text="Из истории"
+                            TextColor="{Binding HistoryChipTextColor}"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+            </HorizontalStackLayout>
+
+            <!-- ═══ Row 3: Индикатор загрузки + Список результатов ═══ -->
+            <Grid Grid.Row="3">
+
+                <!-- Лоадер (перекрывает список пока идёт загрузка) -->
+                <ActivityIndicator
+                    Color="{StaticResource Primary}"
+                    HeightRequest="32"
+                    IsRunning="False"
+                    IsVisible="False"
+                    VerticalOptions="Center"
+                    x:Name="LoadingIndicator" />
+
+                <!--
+                    CollectionView — занимает всё доступное место (Height="*" у родительской строки).
+                    Внутренний скролл работает корректно.
+                -->
+                <CollectionView
+                    IsVisible="False"
+                    SelectionChanged="OnItemSelected"
+                    SelectionMode="Single"
+                    x:Name="ResultsList">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="2" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                BackgroundColor="Transparent"
+                                Padding="12,10"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="0">
+                                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="8">
+                                    <Label
+                                        FontSize="14"
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding DisplayName}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontSize="12"
+                                        Grid.Column="1"
+                                        LineBreakMode="TailTruncation"
+                                        MaximumWidthRequest="120"
+                                        Text="{Binding SubText}"
+                                        TextColor="{StaticResource TextSecondary}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#E3F2FD" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <Label
+                            HorizontalOptions="Center"
+                            Margin="0,24"
+                            Text="Ничего не найдено"
+                            TextColor="{StaticResource TextSecondary}"
+                            VerticalOptions="Center" />
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </Grid>
+
+            <!-- ═══ Row 4: Блок создания новой сущности ═══ -->
+            <!--
+                Виден только когда:
+                  • _showAddSection = true
+                  • поиск не дал результатов
+                  • не активна вкладка «История»
+                Подпись динамически задаётся из code-behind через CreateHintLabel.Text
+            -->
+            <VerticalStackLayout
+                Grid.Row="4"
+                IsVisible="False"
+                Margin="0,4,0,0"
+                Spacing="8"
+                x:Name="CreateBlock">
+
+                <BoxView
+                    Color="{StaticResource Primary}"
+                    HeightRequest="1"
+                    Opacity="0.25" />
+
+                <!-- Подсказка (текст меняется в code-behind) -->
+                <Label
+                    FontSize="12"
+                    HorizontalOptions="Center"
+                    Text="Не найдено. Создать новый элемент?"
+                    TextColor="{StaticResource Secondary}"
+                    x:Name="CreateHintLabel" />
+
+                <!-- Поле: Название (общее для Производителя и Вещества) -->
+                <Border
+                    BackgroundColor="{StaticResource AppBackground}"
+                    HeightRequest="46"
+                    Padding="12,0"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0">
+                    <Entry
+                        BackgroundColor="Transparent"
+                        FontSize="14"
+                        Placeholder="Название *"
+                        PlaceholderColor="{StaticResource TextSecondary}"
+                        TextChanged="OnCreateNameChanged"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Center"
+                        x:Name="NewNameEntry" />
+                </Border>
+
+                <!--
+                    Блок для ПРОИЗВОДИТЕЛЯ: Страна + Город
+                    Видимость управляется из code-behind
+                -->
+                <VerticalStackLayout Spacing="8" x:Name="ManufacturerFields">
+
+                    <!-- Страна: Label-заглушка + невидимый Picker поверх -->
+                    <Border
+                        BackgroundColor="{StaticResource AppBackground}"
+                        HeightRequest="46"
+                        Padding="12,0"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="0">
+                        <!--
+                            Абсолютный стек: Label снизу (отображает выбор),
+                            стрелка справа, Picker (прозрачный) перехватывает тапы.
+                        -->
+                        <Grid>
+                            <!-- Текст выбранной страны -->
+                            <Label
+                                FontSize="14"
+                                HorizontalOptions="FillAndExpand"
+                                Text="Выберите страну"
+                                TextColor="{StaticResource TextPrimary}"
+                                VerticalOptions="Center"
+                                x:Name="SelectedCountryLabel" />
+                            <!-- Иконка стрелки -->
+                            <Label
+                                FontSize="11"
+                                HorizontalOptions="End"
+                                Text="▼"
+                                TextColor="{StaticResource TextSecondary}"
+                                VerticalOptions="Center" />
+                            <!--
+                                Прозрачный Picker на весь Grid — перехватывает нажатия.
+                                Opacity=0.01 (не 0!) чтобы был хитабельным на Windows.
+                            -->
+                            <Picker
+                                HorizontalOptions="Fill"
+                                Opacity="0.01"
+                                SelectedIndexChanged="OnCountryPickerChanged"
+                                Title="Выберите страну"
+                                VerticalOptions="Fill"
+                                x:Name="CountryPicker">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Республика Беларусь</x:String>
+                                        <x:String>Россия</x:String>
+                                        <x:String>Германия</x:String>
+                                        <x:String>Индия</x:String>
+                                        <x:String>Китай</x:String>
+                                        <x:String>США</x:String>
+                                        <x:String>Франция</x:String>
+                                        <x:String>Польша</x:String>
+                                        <x:String>Венгрия</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </Grid>
+                    </Border>
+
+                    <!-- Город: обычный Entry, IsEnabled=True -->
+                    <Border
+                        BackgroundColor="{StaticResource AppBackground}"
+                        HeightRequest="46"
+                        Padding="12,0"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="0">
+                        <Entry
+                            BackgroundColor="Transparent"
+                            FontSize="14"
+                            IsEnabled="True"
+                            Placeholder="Город"
+                            PlaceholderColor="{StaticResource TextSecondary}"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalOptions="Center"
+                            x:Name="NewCityEntry" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!--
+                    Блок для ВЕЩЕСТВА: Описание (необязательно)
+                    Видимость управляется из code-behind
+                -->
+                <Border
+                    BackgroundColor="{StaticResource AppBackground}"
+                    HeightRequest="72"
+                    IsVisible="False"
+                    Padding="12,8"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0"
+                    x:Name="SubstanceDescBorder">
+                    <Editor
+                        AutoSize="TextChanges"
+                        BackgroundColor="Transparent"
+                        FontSize="14"
+                        Placeholder="Описание (необязательно)"
+                        PlaceholderColor="{StaticResource TextSecondary}"
+                        TextColor="{StaticResource TextPrimary}"
+                        x:Name="NewDescEntry" />
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- ═══ Row 5: Кнопки «Отмена» и «Создать» в одну строку ═══ -->
+            <!--
+                Grid с двумя равными колонками — кнопки НИКОГДА не накладываются.
+                «Создать» всегда в колонке 1, «Отмена» в колонке 0.
+            -->
+            <Grid
+                ColumnDefinitions="*, *"
+                ColumnSpacing="15"
+                Grid.Row="5"
+                Margin="0,12,0,0">
+
+                <Button
+                    BackgroundColor="Transparent"
+                    BorderColor="{StaticResource TextSecondary}"
+                    BorderWidth="1"
+                    Clicked="OnCancelClicked"
+                    CornerRadius="10"
+                    FontSize="14"
+                    Grid.Column="0"
+                    HeightRequest="44"
+                    Text="Отмена"
+                    TextColor="{StaticResource TextSecondary}" />
+
+                <Button
+                    Clicked="OnSaveNewClicked"
+                    CornerRadius="10"
+                    FontAttributes="Bold"
+                    FontSize="14"
+                    Grid.Column="1"
+                    HeightRequest="44"
+                    IsEnabled="False"
+                    IsVisible="False"
+                    Opacity="0.5"
+                    Style="{StaticResource PrimaryButton}"
+                    Text="Создать"
+                    x:Name="SaveNewBtn" />
+            </Grid>
+
+        </Grid>
+    </Border>
+</toolkit:Popup>
