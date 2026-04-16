@@ -63,7 +63,10 @@
                                 Text="Производитель"
                                 TextColor="{StaticResource TextSecondary}" />
                             <Border HeightRequest="44" Style="{StaticResource MedInputContainer}">
-                                <Grid>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SelectManufacturerCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="0">
                                     <Label
                                         FontSize="14"
                                         HorizontalOptions="Start"
@@ -71,25 +74,14 @@
                                         Text="{Binding SelectedManufacturer}"
                                         TextColor="{StaticResource TextPrimary}"
                                         VerticalOptions="Center" />
-
                                     <Label
                                         FontSize="12"
+                                        Grid.Column="1"
                                         HorizontalOptions="End"
                                         Margin="0,0,15,0"
                                         Text="▼"
                                         TextColor="{StaticResource TextSecondary}"
                                         VerticalOptions="Center" />
-
-                                    <Picker
-                                        BackgroundColor="Transparent"
-                                        FontSize="14"
-                                        HorizontalOptions="Fill"
-                                        ItemsSource="{Binding Manufacturers}"
-                                        Opacity="0.01"
-                                        SelectedItem="{Binding SelectedManufacturer}"
-                                        Title="Выберите производителя"
-                                        VerticalOptions="Fill"
-                                        ZIndex="1" />
                                 </Grid>
                             </Border>
                         </VerticalStackLayout>

@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -89,7 +89,7 @@ public partial class InteractionAddViewModel : ObservableObject, IQueryAttributa
     [RelayCommand]
     private async Task SelectSubstance1Async()
     {
-        var popup = new SelectSubstancePopup(_medicineService);
+        var popup = new UniversalSearchPopup(_medicineService, null, SearchMode.Вещество, showAddSection: true, showHistoryTab: false);
         var result = await Shell.Current.ShowPopupAsync(popup);
         if (result is activesubstance sub) Substance1 = sub;
     }
@@ -97,7 +97,7 @@ public partial class InteractionAddViewModel : ObservableObject, IQueryAttributa
     [RelayCommand]
     private async Task SelectSubstance2Async()
     {
-        var popup = new SelectSubstancePopup(_medicineService);
+        var popup = new UniversalSearchPopup(_medicineService, null, SearchMode.Вещество, showAddSection: true, showHistoryTab: false);
         var result = await Shell.Current.ShowPopupAsync(popup);
         if (result is activesubstance sub) Substance2 = sub;
     }

@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Models;
@@ -114,33 +114,19 @@ public partial class MedicineAddViewModel : ObservableObject, IQueryAttributable
     [RelayCommand]
     private async Task AddManufacturerAsync()
     {
-        var popup = new AddManufacturerPopup();
-        var result = await Shell.Current.ShowPopupAsync(popup);
-
-        if (result is manufacturer manResult)
-        {
-            try
-            {
-                var newMan = await _medicineService.CreateManufacturerAsync(
-                    manResult.Name,
-                    manResult.Country,
-                    manResult.City,
-                    manResult.Description);
-
-                Manufacturers.Add(newMan);
-                SelectedManufacturer = newMan;
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
-            }
-        }
+        // Теперь не используется — вызов производится через OpenManufacturerPickerAsync
     }
 
     [RelayCommand]
     private async Task AddSubstanceAsync()
     {
-        var popup = new SelectSubstancePopup(_medicineService);
+        var popup = new UniversalSearchPopup(
+            _medicineService,
+            scanService: null,
+            mode: SearchMode.Вещество,
+            showAddSection: true,
+            showHistoryTab: false);
+
         var result = await Shell.Current.ShowPopupAsync(popup);
 
         if (result is activesubstance subResult)
@@ -246,13 +232,21 @@ public partial class MedicineAddViewModel : ObservableObject, IQueryAttributable
     [RelayCommand]
     private async Task OpenManufacturerPickerAsync()
     {
-        var popup = new SelectFromListPopup(
-            "Выбор производителя",
-            Manufacturers.Cast<object>(),
-            o => ((manufacturer)o).Name);
+        // Открываем UniversalSearchPopup в режиме «Производитель» с разрешением создания
+        var popup = new UniversalSearchPopup(
+            _medicineService,
+            scanService: null,
+            mode: SearchMode.Производитель,
+            showAddSection: true,
+            showHistoryTab: false);
 
         var result = await Shell.Current.ShowPopupAsync(popup);
         if (result is manufacturer m)
-            SelectedManufacturer = m;
+        {
+            // Если производитель новый — добавь в кеш и выбери
+            if (!Manufacturers.Any(x => x.ManufacturerId == m.ManufacturerId))
+                Manufacturers.Add(m);
+            SelectedManufacturer = Manufacturers.FirstOrDefault(x => x.ManufacturerId == m.ManufacturerId) ?? m;
+        }
     }
 }

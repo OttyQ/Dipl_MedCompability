@@ -1,8 +1,10 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
+using MedCompatibility.Pages.Shared.Popups;
 
 namespace MedCompatibility.ViewModels.Admin;
 
@@ -144,4 +146,22 @@ public partial class MedicinesListViewModel : ObservableObject
 
     // Реакция на изменение фильтра
     partial void OnSelectedManufacturerChanged(string value) => LoadDataCommand.Execute(null);
+
+    // Выбор производителя через UniversalSearchPopup
+    [RelayCommand]
+    private async Task SelectManufacturerAsync()
+    {
+        var popup = new UniversalSearchPopup(
+            _medicineService,
+            scanService: null,
+            mode: SearchMode.Производитель,
+            showAddSection: false,
+            showHistoryTab: false);
+
+        var result = await Shell.Current.ShowPopupAsync(popup);
+        if (result is manufacturer m)
+        {
+            SelectedManufacturer = m.Name;
+        }
+    }
 }
