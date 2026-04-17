@@ -19,9 +19,67 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
     private int _patientId;
     private int? _prescriptionId;
 
+    private string _startDate = "";
+    public string StartDate
+    {
+        get => _startDate;
+        set
+        {
+            if (SetProperty(ref _startDate, value))
+            {
+                if (DateTime.TryParseExact(value, new[] { "dd.MM.yyyy", "d.M.yyyy", "dd.M.yyyy", "d.MM.yyyy", "dd.MM.yy" }, null, System.Globalization.DateTimeStyles.None, out var d))
+                {
+                    _startDatePickerBackup = d;
+                    OnPropertyChanged(nameof(StartDatePickerValue));
+                }
+            }
+        }
+    }
+
+    private string _endDate = "";
+    public string EndDate
+    {
+        get => _endDate;
+        set
+        {
+            if (SetProperty(ref _endDate, value))
+            {
+                if (DateTime.TryParseExact(value, new[] { "dd.MM.yyyy", "d.M.yyyy", "dd.M.yyyy", "d.MM.yyyy", "dd.MM.yy" }, null, System.Globalization.DateTimeStyles.None, out var d))
+                {
+                    _endDatePickerBackup = d;
+                    OnPropertyChanged(nameof(EndDatePickerValue));
+                }
+            }
+        }
+    }
+
+    private DateTime _startDatePickerBackup = DateTime.Today;
+    public DateTime StartDatePickerValue
+    {
+        get => _startDatePickerBackup;
+        set
+        {
+            if (SetProperty(ref _startDatePickerBackup, value))
+            {
+                StartDate = value.ToString("dd.MM.yyyy");
+            }
+        }
+    }
+
+    private DateTime _endDatePickerBackup = DateTime.Today;
+    public DateTime EndDatePickerValue
+    {
+        get => _endDatePickerBackup;
+        set
+        {
+            if (SetProperty(ref _endDatePickerBackup, value))
+            {
+                EndDate = value.ToString("dd.MM.yyyy");
+            }
+        }
+    }
+
     [ObservableProperty] private medicine? selectedMedicine;
-    [ObservableProperty] private DateTime startDate = DateTime.Today;
-    [ObservableProperty] private DateTime endDate = DateTime.Today;
     [ObservableProperty] private string dosage = "";
     [ObservableProperty] private string? notes;
 
@@ -97,8 +155,8 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         }
 
         SelectedMedicine = p.Medicine;
-        StartDate = p.StartDate;
-        EndDate = p.EndDate;
+        StartDate = p.StartDate.ToString("dd.MM.yyyy");
+        EndDate = p.EndDate.ToString("dd.MM.yyyy");
         Dosage = p.Dosage ?? "";
         Notes = p.Notes;
     }
@@ -137,7 +195,15 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         if (string.IsNullOrWhiteSpace(Dosage))
             return Fail("Укажите дозировку.");
 
-        if (StartDate.Date > EndDate.Date)
+        var formats = new[] { "dd.MM.yyyy", "d.M.yyyy", "dd.M.yyyy", "d.MM.yyyy", "dd.MM.yy" };
+
+        if (!DateTime.TryParseExact(StartDate, formats, null, System.Globalization.DateTimeStyles.None, out var sDate))
+            return Fail("Введите корректную дату начала (ДД.ММ.ГГГГ).");
+
+        if (!DateTime.TryParseExact(EndDate, formats, null, System.Globalization.DateTimeStyles.None, out var eDate))
+            return Fail("Введите корректную дату окончания (ДД.ММ.ГГГГ).");
+
+        if (sDate.Date > eDate.Date)
             return Fail("Дата начала не может быть позже даты окончания.");
 
         return true;
@@ -199,14 +265,18 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
 
         try
         {
+            var formats = new[] { "dd.MM.yyyy", "d.M.yyyy", "dd.M.yyyy", "d.MM.yyyy", "dd.MM.yy" };
+            var parsedStart = DateTime.ParseExact(StartDate, formats, null, System.Globalization.DateTimeStyles.None);
+            var parsedEnd = DateTime.ParseExact(EndDate, formats, null, System.Globalization.DateTimeStyles.None);
+
             if (!IsEditMode)
             {
                 await _prescriptionService.CreateAsync(
                     _patientId,
                     doctor.UserId,
                     SelectedMedicine!.MedicineId,
-                    StartDate,
-                    EndDate,
+                    parsedStart,
+                    parsedEnd,
                     Dosage.Trim(),
                     string.IsNullOrWhiteSpace(Notes) ? null : Notes.Trim());
             }
@@ -216,8 +286,8 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
                     _prescriptionId!.Value,
                     doctor.UserId,
                     SelectedMedicine!.MedicineId,
-                    StartDate,
-                    EndDate,
+                    parsedStart,
+                    parsedEnd,
                     Dosage.Trim(),
                     string.IsNullOrWhiteSpace(Notes) ? null : Notes.Trim());
             }
