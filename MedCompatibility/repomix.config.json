@@ -1,0 +1,35 @@
+﻿{
+  "output": {
+    "filePath": "repomix-context.md",
+    "style": "markdown",
+    "removeComments": false,
+    "removeEmptyLines": true
+  },
+  "include": [
+    "**/*.cs",
+    "**/*.xaml",
+    "**/*.csproj",
+    "*.sln",
+    "**/*.md",
+    "**/appsettings*.json"
+  ],
+  "ignore": {
+    "useGitignore": true,
+    "customPatterns": [
+      "**/bin/**",
+      "**/obj/**",
+      "**/.vs/**",
+      "**/.idea/**",
+      "**/.mac/**",
+      "**/packages/**",
+      "**/*.user",
+      "**/*.{png,jpg,jpeg,gif,svg,ico,webp}",
+      "**/*.{ttf,woff,woff2,eot}",
+      "**/*.mp4",
+      "**/*.sqlite",
+      "**/*.db",
+      "**/*.db3",
+      "**/*.log"
+    ]
+  }
+}

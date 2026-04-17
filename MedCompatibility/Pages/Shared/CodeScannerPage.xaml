@@ -1,51 +1,100 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:controls="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-             x:Class="MedCompatibility.Pages.Shared.CodeScannerPage"
-             Title="Сканер"
-             Shell.TabBarIsVisible="False"
-             BackgroundColor="Black">
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    BackgroundColor="Black"
+    NavigationPage.HasNavigationBar="False"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    x:Class="MedCompatibility.Pages.Shared.CodeScannerPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
-        <!-- Камера (на весь экран) -->
-        <controls:CameraBarcodeReaderView 
-            x:Name="BarcodeReader"
+        <controls:CameraBarcodeReaderView
             BarcodesDetected="BarcodeReader_BarcodesDetected"
             IsDetecting="True"
-            IsTorchOn="False" 
-            Options="{Binding BarcodeOptions}"/>
+            IsTorchOn="{Binding IsFlashlightOn}"
+            Options="{Binding BarcodeOptions}"
+            x:Name="BarcodeReader" />
 
-        <!-- UI Наложения (Прицел) -->
-        <Grid RowDefinitions="*, 300, *" ColumnDefinitions="*, 300, *">
-            <!-- Полупрозрачное затемнение -->
-            <BoxView Grid.Row="0" Grid.ColumnSpan="3" Color="#80000000"/>
-            <BoxView Grid.Row="2" Grid.ColumnSpan="3" Color="#80000000"/>
-            <BoxView Grid.Row="1" Grid.Column="0" Color="#80000000"/>
-            <BoxView Grid.Row="1" Grid.Column="2" Color="#80000000"/>
-            
-            <!-- Рамка сканирования (Активная зона) -->
-            <Border Grid.Row="1" Grid.Column="1" 
-                    Stroke="{StaticResource Primary}" 
-                    StrokeThickness="3"
-                    BackgroundColor="Transparent"
-                    StrokeShape="RoundRectangle 20"/>
+        <Grid ColumnDefinitions="*, 300, *" RowDefinitions="*, 300, *">
+            <BoxView
+                Color="#80000000"
+                Grid.ColumnSpan="3"
+                Grid.Row="0" />
+            <BoxView
+                Color="#80000000"
+                Grid.ColumnSpan="3"
+                Grid.Row="2" />
+            <BoxView
+                Color="#80000000"
+                Grid.Column="0"
+                Grid.Row="1" />
+            <BoxView
+                Color="#80000000"
+                Grid.Column="2"
+                Grid.Row="1" />
 
-            <!-- Подсказка сверху -->
-            <Label Grid.Row="0" Grid.ColumnSpan="3" 
-                   Text="Наведите камеру на штрихкод" 
-                   TextColor="White" FontSize="16"
-                   HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,0,30"/>
-            
-            <!-- Кнопка Отмена снизу -->
-            <Button Grid.Row="2" Grid.ColumnSpan="3"
-                    Text="Отмена"
-                    Clicked="OnCancelClicked"
-                    VerticalOptions="Start" HorizontalOptions="Center" 
-                    Margin="0,30,0,0"
-                    BackgroundColor="{StaticResource Surface}" 
-                    TextColor="{StaticResource TextPrimary}"
-                    CornerRadius="20" HeightRequest="50" WidthRequest="150"/>
+            <Border
+                BackgroundColor="Transparent"
+                Grid.Column="1"
+                Grid.Row="1"
+                Stroke="{StaticResource Primary}"
+                StrokeShape="RoundRectangle 20"
+                StrokeThickness="3" />
+
+            <Label
+                FontSize="16"
+                Grid.ColumnSpan="3"
+                Grid.Row="0"
+                HorizontalOptions="Center"
+                Margin="0,0,0,30"
+                Text="Наведите камеру на штрихкод"
+                TextColor="White"
+                VerticalOptions="End" />
+        </Grid>
+
+        <Grid Margin="16,40,16,16" RowDefinitions="Auto, *, Auto">
+
+            <Grid ColumnDefinitions="Auto, *, Auto" Grid.Row="0">
+                <Border
+                    Grid.Column="0"
+                    HeightRequest="44"
+                    IsVisible="{Binding IsFlashlightSupported}"
+                    StrokeShape="RoundRectangle 22"
+                    StrokeThickness="0"
+                    WidthRequest="44"
+                    x:Name="FlashlightBorder">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnToggleFlashlightClicked" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="💡"
+                        VerticalOptions="Center"
+                        x:Name="FlashlightIcon" />
+                </Border>
+
+                <Border
+                    BackgroundColor="#80000000"
+                    Grid.Column="2"
+                    HeightRequest="44"
+                    StrokeShape="RoundRectangle 22"
+                    StrokeThickness="0"
+                    WidthRequest="44">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnCancelClicked" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="✕"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </ContentPage>
