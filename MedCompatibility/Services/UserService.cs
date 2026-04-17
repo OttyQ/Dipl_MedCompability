@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -228,6 +228,20 @@ public class UserService : IUserService
                 u.Login.ToLower().Contains(term))
             .OrderBy(u => u.LastName).ThenBy(u => u.FirstName)
             .ToListAsync();
+    }
+
+    public async Task RemovePatientFromDoctorListAsync(int doctorId, int patientId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var link = await context.doctor_patient
+            .FirstOrDefaultAsync(dp => dp.DoctorId == doctorId && dp.PatientId == patientId);
+
+        if (link != null)
+        {
+            context.doctor_patient.Remove(link);
+            await context.SaveChangesAsync();
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +16,18 @@ public class PrescriptionService : IPrescriptionService
     public async Task<List<prescription>> GetPatientPrescriptionsAsync(int patientId)
     {
         await using var ctx = await _contextFactory.CreateDbContextAsync();
+
+        var today = DateTime.Now.Date;
+        var expired = await ctx.prescriptions
+            .Where(p => p.PatientId == patientId && p.EndDate < today)
+            .ToListAsync();
+
+        if (expired.Any())
+        {
+            ctx.prescriptions.RemoveRange(expired);
+            await ctx.SaveChangesAsync();
+        }
+
         return await ctx.prescriptions
             .AsNoTracking()
             .Where(p => p.PatientId == patientId)

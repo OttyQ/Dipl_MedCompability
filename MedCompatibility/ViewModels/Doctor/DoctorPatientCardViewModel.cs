@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -17,6 +17,7 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
     private readonly IMedicineService _medicineService;
     private readonly IScanService _scanService;
     private readonly IUserSessionService _session;
+    private readonly IUserService _userService;
 
     [ObservableProperty] private user? patient;
     [ObservableProperty] private ObservableCollection<prescription> prescriptions = new();
@@ -32,13 +33,15 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
         IInteractionService interactionService,
         IMedicineService medicineService,
         IScanService scanService,
-        IUserSessionService session)
+        IUserSessionService session,
+        IUserService userService)
     {
         _prescriptionService = prescriptionService;
         _interactionService = interactionService;
         _medicineService = medicineService;
         _scanService = scanService;
         _session = session;
+        _userService = userService;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -87,6 +90,36 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
         {
             ["PatientId"] = Patient.UserId
         });
+    }
+
+    /// <summary>
+    /// Удаление (отвязка) пациента из списка врача прямо из карточки
+    /// </summary>
+    [RelayCommand]
+    private async Task DeletePatientAsync()
+    {
+        if (Patient == null) return;
+
+        var doctor = _session.CurrentUser;
+        if (doctor == null) return;
+
+        var confirm = await Shell.Current.DisplayAlert(
+            "Подтверждение",
+            $"Удалить пациента {Patient.LastName} {Patient.FirstName} из вашего списка?",
+            "Удалить",
+            "Отмена");
+
+        if (!confirm) return;
+
+        try
+        {
+            await _userService.RemovePatientFromDoctorListAsync(doctor.UserId, Patient.UserId);
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
     }
 
     [RelayCommand]

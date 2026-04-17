@@ -12,7 +12,8 @@ public enum SearchMode
 {
     Лекарство,
     Производитель,
-    Вещество
+    Вещество,
+    Пациент
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -38,6 +39,8 @@ public partial class UniversalSearchPopup : Popup
     // ── Сервисы ──────────────────────────────────────────────────────────────
     private readonly IMedicineService _medicineService;
     private readonly IScanService?    _scanService;
+    private readonly IUserService?    _userService;
+    private readonly IUserSessionService? _sessionService;
 
     // ── Конфигурация ─────────────────────────────────────────────────────────
     private readonly SearchMode _mode;
@@ -56,6 +59,7 @@ public partial class UniversalSearchPopup : Popup
 
     public bool   IsScannerButtonVisible => _mode == SearchMode.Лекарство && 
                                             (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS);
+
 
     private bool _isHistoryFilterActive;
     public bool IsHistoryFilterActive
@@ -87,13 +91,17 @@ public partial class UniversalSearchPopup : Popup
         IScanService?    scanService,
         SearchMode       mode,
         bool             showAddSection = false,
-        bool             showHistoryTab = false)
+        bool             showHistoryTab = false,
+        IUserService?    userService    = null,
+        IUserSessionService? sessionService = null)
     {
         _medicineService = medicineService;
         _scanService     = scanService;
         _mode            = mode;
         _showAddSection  = showAddSection;
         _showHistoryTab  = showHistoryTab;
+        _userService     = userService;
+        _sessionService  = sessionService;
 
         InitializeComponent();
         BindingContext = this;
@@ -104,6 +112,7 @@ public partial class UniversalSearchPopup : Popup
             SearchMode.Лекарство     => "Выбор лекарства",
             SearchMode.Производитель => "Выбор производителя",
             SearchMode.Вещество      => "Выбор вещества",
+            SearchMode.Пациент       => "Выбор пациента",
             _                        => "Поиск"
         };
 
@@ -140,7 +149,7 @@ public partial class UniversalSearchPopup : Popup
         }
         else
         {
-            // Для лекарств создание не поддерживается
+            // Для лекарств и пациентов создание не поддерживается
             ManufacturerFields.IsVisible  = false;
             SubstanceDescBorder.IsVisible = false;
         }
@@ -182,6 +191,7 @@ public partial class UniversalSearchPopup : Popup
         SearchMode.Лекарство     => FetchMedicinesAsync(),
         SearchMode.Производитель => FetchManufacturersAsync(),
         SearchMode.Вещество      => FetchSubstancesAsync(),
+        SearchMode.Пациент       => FetchPatientsAsync(),
         _                        => Task.FromResult(new List<SearchItemVm>())
     };
 
@@ -234,6 +244,24 @@ public partial class UniversalSearchPopup : Popup
                 SubText     = m.Manufacturer?.Name ?? string.Empty
             })
             .ToList();
+    }
+
+    // Загрузка пациентов (режим Пациент)
+    private async Task<List<SearchItemVm>> FetchPatientsAsync()
+    {
+        if (_userService == null || _sessionService == null)
+            return new List<SearchItemVm>();
+
+        var doctor = _sessionService.CurrentUser;
+        if (doctor == null) return new List<SearchItemVm>();
+
+        var list = await _userService.SearchNewPatientsAsync(string.Empty, doctor.UserId);
+        return list.Select(u => new SearchItemVm
+        {
+            Original    = u,
+            DisplayName = $"{u.LastName} {u.FirstName} {u.MiddleName}".Trim(),
+            SubText     = $"@{u.Login}"
+        }).ToList();
     }
 
     // ─────────────────────────────────────────────────────────────────────────

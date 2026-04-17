@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 
 namespace MedCompatibility.Services.Interfaces;
 
@@ -25,4 +25,7 @@ public interface IUserService
 
 // Поиск пациентов, КОТОРЫХ ЕЩЕ НЕТ у этого врача (для добавления)
     Task<List<user>> SearchNewPatientsAsync(string query, int excludeDoctorId);
+
+// Удалить (отвязать) пациента от врача
+    Task RemovePatientFromDoctorListAsync(int doctorId, int patientId);
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     BackgroundColor="{StaticResource AppBackground}"
     Shell.NavBarIsVisible="False"
@@ -14,64 +14,17 @@
         <!--  фон  -->
         <controls:BackgroundBubblesView BottomBubbleBounds="0, 0, 0, 0" />
 
-        <Grid RowDefinitions="Auto,*">
+        <Grid Style="{StaticResource PageContentGrid}" WidthRequest="{OnPlatform WinUI=800, MacCatalyst=800}" RowDefinitions="Auto,*">
             <!--  Шапка  -->
-            <Grid
-                ColumnDefinitions="48,*"
+            <controls:CustomHeader
                 Grid.Row="0"
-                HeightRequest="80"
-                Padding="16,10">
-                <Border
-                    BackgroundColor="{StaticResource Surface}"
-                    HeightRequest="42"
-                    StrokeShape="RoundRectangle 12"
-                    StrokeThickness="0"
-                    VerticalOptions="Start"
-                    WidthRequest="42">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
-                    </Border.GestureRecognizers>
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Offset="0,2"
-                            Opacity="0.1"
-                            Radius="4" />
-                    </Border.Shadow>
-                    <Label
-                        FontSize="26"
-                        HorizontalOptions="Center"
-                        Margin="0,0,0,4"
-                        Text="‹"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
-                </Border>
-
-                <VerticalStackLayout
-                    Grid.Column="1"
-                    HorizontalOptions="Center"
-                    Margin="-48,0,0,0"
-                    Spacing="0"
-                    VerticalOptions="Center">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="20"
-                        HorizontalOptions="Center"
-                        Text="Карта пациента"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <Label
-                        FontSize="13"
-                        HorizontalOptions="Center"
-                        Text="Назначения и совместимость"
-                        TextColor="{StaticResource TextSecondary}" />
-                </VerticalStackLayout>
-            </Grid>
+                Margin="20,20,20,10"
+                Title="{Binding PatientFullName}" />
 
             <!--  Контент  -->
-            <ScrollView Grid.Row="1" Padding="16,0">
+            <ScrollView Grid.Row="1" Padding="20,0">
                 <VerticalStackLayout
                     HorizontalOptions="Fill"
-                    MaximumWidthRequest="800"
                     Spacing="16">
 
                     <!--  Инфо о пациенте  -->
@@ -145,11 +98,14 @@
                         ItemsSource="{Binding Prescriptions}"
                         SelectionMode="None">
 
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
+                        </CollectionView.ItemsLayout>
+
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:prescription">
                                 <Border
                                     BackgroundColor="{StaticResource Surface}"
-                                    Margin="0,0,0,12"
                                     Padding="16"
                                     StrokeShape="RoundRectangle 16"
                                     StrokeThickness="0">
@@ -189,8 +145,15 @@
                                                 <Label
                                                     FontAttributes="Bold"
                                                     FontSize="11"
-                                                    Text="{Binding PrescribedAt, StringFormat='{0:dd.MM.yy}'}"
-                                                    TextColor="#2E7D32" />
+                                                    TextColor="#2E7D32">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="{Binding StartDate, StringFormat='{0:dd.MM.yy}'}" />
+                                                            <Span Text=" - " />
+                                                            <Span Text="{Binding EndDate, StringFormat='{0:dd.MM.yy}'}" />
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
                                             </Border>
                                         </Grid>
 
@@ -213,6 +176,19 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+
+                    <!--  Кнопка удаления пациента из списка  -->
+                    <Button
+                        BackgroundColor="Transparent"
+                        BorderColor="#E53935"
+                        BorderWidth="1.5"
+                        Command="{Binding DeletePatientCommand}"
+                        CornerRadius="14"
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        HeightRequest="50"
+                        Text="🗑 Удалить из моих пациентов"
+                        TextColor="#E53935" />
 
                     <BoxView HeightRequest="40" />
                 </VerticalStackLayout>
