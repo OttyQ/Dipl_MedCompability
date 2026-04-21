@@ -33,5 +33,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(HistoryPage), typeof(Pages.Patient.HistoryPage));
         //Routing.RegisterRoute(nameof(CompatibilityPage), typeof(Pages.Patient.CompatibilityPage));
         //Routing.RegisterRoute(nameof(ProfilePage), typeof(Pages.Patient.ProfilePage));
+        Routing.RegisterRoute(nameof(DoctorCrossAnalysisPage), typeof(DoctorCrossAnalysisPage));
     }
 }
