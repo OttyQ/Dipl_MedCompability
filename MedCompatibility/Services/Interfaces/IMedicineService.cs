@@ -24,5 +24,7 @@ public interface IMedicineService
     Task UpdateMedicineAsync(medicine med, List<int> substanceIds);
     Task<medicine?> GetMedicineByIdAsync(int id);
     Task<List<medicine>> SearchMedicinesAsync(string query);
+    
+    Task<List<CrossAnalysisResult>> AnalyzePolypharmacyAsync(List<int> medicineIds);
 
 }
