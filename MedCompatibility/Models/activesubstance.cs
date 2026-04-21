@@ -16,4 +16,7 @@ public partial class activesubstance
     public virtual ICollection<interaction> interactionSubstanceId2Navigations { get; set; } = new List<interaction>();
 
     public virtual ICollection<medicine> Medicines { get; set; } = new List<medicine>();
+    
+    // Обратная навигационная коллекция для EF Core
+    public virtual ICollection<user> AllergicUsers { get; set; } = new List<user>();
 }

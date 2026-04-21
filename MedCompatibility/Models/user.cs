@@ -34,4 +34,7 @@ public partial class user
     public virtual ICollection<prescription> prescriptionPatients { get; set; } = new List<prescription>();
 
     public virtual ICollection<scan> scans { get; set; } = new List<scan>();
+    
+    // Добавляем навигационное свойство для связи "Многие-ко-многим" с веществами (аллергиями)
+    public virtual ICollection<activesubstance> Allergies { get; set; } = new List<activesubstance>();
 }
