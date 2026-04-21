@@ -1,6 +1,10 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Maui.Views; 
 using MedCompatibility.Services.Interfaces;
+using MedCompatibility.Models;
+using MedCompatibility.Pages.Shared.Popups; 
 
 namespace MedCompatibility.ViewModels.Patient;
 
@@ -8,6 +12,7 @@ public partial class ProfileViewModel : ObservableObject
 {
     private readonly IUserSessionService _sessionService;
     private readonly IUserService _userService;
+    private readonly IMedicineService _medicineService; // Добавлено для поиска веществ
 
     [ObservableProperty]
     private string fullName;
@@ -37,13 +42,25 @@ public partial class ProfileViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotEditing))]
     private bool isEditing;
-
+    
     public bool IsNotEditing => !IsEditing;
 
-    public ProfileViewModel(IUserSessionService sessionService, IUserService userService)
+    // --- Блок полей для аллергий ---
+    
+    [ObservableProperty]
+    private ObservableCollection<activesubstance> _allergies = new();
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddAllergyCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RemoveAllergyCommand))]
+    private bool _isPatient;
+
+    // Обновленный конструктор с IMedicineService
+    public ProfileViewModel(IUserSessionService sessionService, IUserService userService, IMedicineService medicineService)
     {
         _sessionService = sessionService;
         _userService = userService;
+        _medicineService = medicineService;
     }
 
     [RelayCommand]
@@ -52,10 +69,7 @@ public partial class ProfileViewModel : ObservableObject
         IsGuest = _sessionService.IsGuest;
         IsUser = !IsGuest;
     
-        // Показываем кнопку "Назад", если мы перешли на профиль из другой страницы (в стеке есть история)
-        // Если профиль открыт из нижнего таб-бара (Shell), кнопка "Назад" не нужна
         ShowBackButton = Shell.Current.Navigation.NavigationStack.Count > 1;
-    
         IsEditing = false;
 
         if (IsUser && _sessionService.CurrentUser != null)
@@ -68,13 +82,76 @@ public partial class ProfileViewModel : ObservableObject
             EditFirstName = user.FirstName;
             EditLastName = user.LastName;
             EditMiddleName = user.MiddleName;
+
+            // Определяем, является ли пользователь пациентом 
+            // (Замените "Patient" на системное имя роли пациента в вашей БД)
+            IsPatient = user.Role?.Name?.ToLower() == "patient";
+
+            // Если это пациент, асинхронно подгружаем его аллергии
+            if (IsPatient)
+            {
+                _ = LoadAllergiesAsync();
+            }
         }
         else
         {
             FullName = "Гость";
             RoleName = "Ограниченный доступ";
+            IsPatient = false;
+            Allergies?.Clear();
         }
     }
+
+    // --- Логика аллергий ---
+
+    private async Task LoadAllergiesAsync()
+    {
+        if (!IsPatient || _sessionService.CurrentUser == null) return;
+
+        var list = await _userService.GetUserAllergiesAsync(_sessionService.CurrentUser.UserId);
+        
+        // Обновляем UI в главном потоке на всякий случай
+        MainThread.BeginInvokeOnMainThread(() => 
+        {
+            Allergies = new ObservableCollection<activesubstance>(list);
+        });
+    }
+
+    [RelayCommand(CanExecute = nameof(IsPatient))]
+    private async Task AddAllergyAsync()
+    {
+        if (!IsPatient || _sessionService.CurrentUser == null) return;
+
+        var popup = new UniversalSearchPopup(_medicineService, null, SearchMode.Вещество, showAddSection: false, showHistoryTab: false);
+        var result = await Shell.Current.ShowPopupAsync(popup);
+
+        if (result is activesubstance selectedSubstance)
+        {
+            if (!Allergies.Any(a => a.SubstanceId == selectedSubstance.SubstanceId))
+            {
+                await _userService.AddUserAllergyAsync(_sessionService.CurrentUser.UserId, selectedSubstance.SubstanceId);
+                Allergies.Add(selectedSubstance);
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Внимание", "Это вещество уже есть в списке непереносимости.", "OK");
+            }
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(IsPatient))]
+    private async Task RemoveAllergyAsync(activesubstance item)
+    {
+        if (!IsPatient || item == null || _sessionService.CurrentUser == null) return;
+
+        bool confirm = await Shell.Current.DisplayAlert("Удаление", $"Удалить {item.Name} из списка непереносимости?", "Да", "Нет");
+        if (!confirm) return;
+
+        await _userService.RemoveUserAllergyAsync(_sessionService.CurrentUser.UserId, item.SubstanceId);
+        Allergies.Remove(item);
+    }
+
+    // --- Существующие команды ---
 
     [RelayCommand]
     private void StartEditing()
@@ -104,15 +181,12 @@ public partial class ProfileViewModel : ObservableObject
             var currentUser = _sessionService.CurrentUser;
             if (currentUser == null) return;
 
-            // 1. Сохраняем в БД
             await _userService.UpdateUserProfileAsync(currentUser.UserId, EditFirstName, EditLastName, EditMiddleName);
 
-            // 2. Обновляем локальную сессию
             currentUser.FirstName = EditFirstName;
             currentUser.LastName = EditLastName;
             currentUser.MiddleName = EditMiddleName;
             
-            // 3. Обновляем UI
             LoadProfile();
             
             await Shell.Current.DisplayAlert("Успех", "Данные обновлены", "OK");
@@ -131,7 +205,6 @@ public partial class ProfileViewModel : ObservableObject
 
         _sessionService.EndSession();
         Application.Current.MainPage = new AppShell();
-        // Используем абсолютный путь, чтобы сбросить навигационный стек
         await Shell.Current.GoToAsync("//Login");
     }
     

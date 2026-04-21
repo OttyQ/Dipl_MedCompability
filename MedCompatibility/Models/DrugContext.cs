@@ -285,32 +285,52 @@ public partial class DrugContext : DbContext
         });
 
         modelBuilder.Entity<user>(entity =>
-        {
-            entity.HasKey(e => e.UserId).HasName("PRIMARY");
+{
+    entity.HasKey(e => e.UserId).HasName("PRIMARY");
 
-            entity.ToTable("user");
+    entity.ToTable("user");
 
-            entity.HasIndex(e => e.RoleId, "FK_User_Role");
+    entity.HasIndex(e => e.RoleId, "FK_User_Role");
+    entity.HasIndex(e => e.Login, "IX_User_Login").IsUnique();
+    entity.HasIndex(e => new { e.LastName, e.FirstName, e.MiddleName }, "IX_User_Name");
 
-            entity.HasIndex(e => e.Login, "IX_User_Login").IsUnique();
+    entity.Property(e => e.CreatedAt)
+        .HasDefaultValueSql("CURRENT_TIMESTAMP")
+        .HasColumnType("datetime");
+    entity.Property(e => e.FirstName).HasMaxLength(50);
+    entity.Property(e => e.IsApproved).HasDefaultValueSql("'0'");
+    entity.Property(e => e.LastName).HasMaxLength(50);
+    entity.Property(e => e.Login).HasMaxLength(50);
+    entity.Property(e => e.MiddleName).HasMaxLength(50);
+    entity.Property(e => e.PasswordHash).HasMaxLength(255);
 
-            entity.HasIndex(e => new { e.LastName, e.FirstName, e.MiddleName }, "IX_User_Name");
+    entity.HasOne(d => d.Role).WithMany(p => p.users)
+        .HasForeignKey(d => d.RoleId)
+        .OnDelete(DeleteBehavior.ClientSetNull)
+        .HasConstraintName("FK_User_Role");
 
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
-            entity.Property(e => e.FirstName).HasMaxLength(50);
-            entity.Property(e => e.IsApproved).HasDefaultValueSql("'0'");
-            entity.Property(e => e.LastName).HasMaxLength(50);
-            entity.Property(e => e.Login).HasMaxLength(50);
-            entity.Property(e => e.MiddleName).HasMaxLength(50);
-            entity.Property(e => e.PasswordHash).HasMaxLength(255);
-
-            entity.HasOne(d => d.Role).WithMany(p => p.users)
-                .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_User_Role");
-        });
+    // ==========================================================
+    // НОВАЯ СЕКЦИЯ: АЛЛЕРГИИ (МНОГИЕ-КО-МНОГИМ)
+    // ==========================================================
+    entity.HasMany(d => d.Allergies)
+        .WithMany(p => p.AllergicUsers)
+        .UsingEntity<Dictionary<string, object>>(
+            "user_allergy", 
+            r => r.HasOne<activesubstance>().WithMany()
+                .HasForeignKey("SubstanceId")
+                .OnDelete(DeleteBehavior.Cascade) // Явное каскадное удаление, как в SQL
+                .HasConstraintName("FK_UA_Substance"),
+            l => l.HasOne<user>().WithMany()
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Cascade) // Явное каскадное удаление, как в SQL
+                .HasConstraintName("FK_UA_User"),
+            j =>
+            {
+                j.HasKey("UserId", "SubstanceId");
+                j.ToTable("user_allergy");
+                j.HasIndex(new[] { "SubstanceId" }, "FK_UA_Substance");
+            });
+});
         
         // ==========================================================
         // НОВАЯ СЕКЦИЯ DOCTOR_PATIENT (МНОГИЕ-КО-МНОГИМ)
@@ -339,6 +359,7 @@ public partial class DrugContext : DbContext
         //фильтры для удаления
         modelBuilder.Entity<user>().HasQueryFilter(u => !u.IsDeleted);
         modelBuilder.Entity<medicine>().HasQueryFilter(m => !m.IsDeleted);
+        
         
         OnModelCreatingPartial(modelBuilder);
     }

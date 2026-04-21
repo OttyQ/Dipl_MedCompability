@@ -15,6 +15,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
     private readonly IMedicineService _medicineService;
     private readonly IScanService _scanService;
     private readonly IUserSessionService _session;
+    private readonly IUserService _userService;
 
     private int _patientId;
     private int? _prescriptionId;
@@ -94,13 +95,15 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         IInteractionService interactionService,
         IMedicineService medicineService,
         IScanService scanService,
-        IUserSessionService session)
+        IUserSessionService session,
+        IUserService userService) 
     {
         _prescriptionService = prescriptionService;
         _interactionService = interactionService;
         _medicineService = medicineService;
         _scanService = scanService;
         _session = session;
+        _userService = userService;
     }
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -111,7 +114,15 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         if (query.TryGetValue("PrescriptionId", out var prObj) && prObj is int prid)
             _prescriptionId = prid;
 
-        // Возврат из CodeScannerPage: { "ScannedCode" : "..." } [file:58]
+        // Обработка перехода с выбранным лекарством из карточки пациента (добавлено)
+        if (query.TryGetValue("MedicineId", out var mObj) && mObj is int mid)
+        {
+            var med = await _medicineService.GetMedicineByIdAsync(mid);
+            if (med != null)
+                await TryApplyMedicineAsync(med);
+        }
+
+        // Возврат из CodeScannerPage
         if (query.TryGetValue("ScannedCode", out var scObj))
         {
             var code = scObj?.ToString();
@@ -119,9 +130,14 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
             {
                 var med = await _medicineService.GetMedicineByGtinAsync(code);
                 if (med != null)
-                    SelectedMedicine = med;
+                {
+                    // 3. ДОБАВЛЕНО: Проверяем аллергию даже после сканирования
+                    await TryApplyMedicineAsync(med); 
+                }
                 else
+                {
                     await Shell.Current.DisplayAlert("Не найдено", $"Препарат по коду {code} не найден.", "OK");
+                }
             }
         }
 
@@ -132,6 +148,39 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
 
         OnPropertyChanged(nameof(IsEditMode));
         OnPropertyChanged(nameof(PageTitle));
+    }
+    
+    private async Task TryApplyMedicineAsync(medicine med)
+    {
+        if (med == null) return;
+
+        // Убеждаемся, что у лекарства подгружен состав
+        var medWithSubstances = await _medicineService.GetMedicineByIdAsync(med.MedicineId);
+        
+        // Получаем аллергии пациента
+        var patientAllergies = await _userService.GetUserAllergiesAsync(_patientId);
+        
+        // Ищем пересечения
+        if (medWithSubstances?.Substances != null && patientAllergies.Any())
+        {
+            var intersectingSubstances = medWithSubstances.Substances
+                .Where(s => patientAllergies.Any(a => a.SubstanceId == s.SubstanceId))
+                .ToList();
+
+            if (intersectingSubstances.Any())
+            {
+                var conflictNames = string.Join(", ", intersectingSubstances.Select(s => s.Name));
+                await Shell.Current.DisplayAlert(
+                    "Аллергическая реакция!", 
+                    $"Препарат «{med.TradeName}» нельзя назначить.\nОн содержит непереносимые пациентом вещества:\n\n{conflictNames}", 
+                    "Отмена");
+                
+                return; // Блокируем назначение
+            }
+        }
+
+        // Если аллергий нет - применяем
+        SelectedMedicine = medWithSubstances ?? med;
     }
 
     private async Task LoadForEditAsync()
@@ -160,7 +209,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         Dosage = p.Dosage ?? "";
         Notes = p.Notes;
     }
-
+    
     [RelayCommand]
     private async Task PickMedicineAsync()
     {
@@ -181,7 +230,10 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         }
 
         if (result is medicine med)
-            SelectedMedicine = med;
+        {
+            // ИСПОЛЬЗУЕМ НАШ МЕТОД ПРОВЕРКИ АЛЛЕРГИИ ВМЕСТО ПРЯМОГО ПРИСВОЕНИЯ
+            await TryApplyMedicineAsync(med);
+        }
     }
 
     private bool Validate()

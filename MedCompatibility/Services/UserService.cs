@@ -243,5 +243,46 @@ public class UserService : IUserService
             await context.SaveChangesAsync();
         }
     }
+    
+    public async Task<List<activesubstance>> GetUserAllergiesAsync(int userId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        var user = await context.users
+            .Include(u => u.Allergies) // Явная подгрузка коллекции аллергий
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.UserId == userId);
+
+        return user?.Allergies.ToList() ?? new List<activesubstance>();
+    }
+    
+    public async Task AddUserAllergyAsync(int userId, int substanceId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        // Загружаем пользователя вместе с его текущими аллергиями для корректного трекинга EF
+        var user = await context.users.Include(u => u.Allergies).FirstOrDefaultAsync(u => u.UserId == userId);
+        var substance = await context.activesubstances.FindAsync(substanceId);
+
+        if (user != null && substance != null && !user.Allergies.Any(a => a.SubstanceId == substanceId))
+        {
+            user.Allergies.Add(substance);
+            await context.SaveChangesAsync();
+        }
+    }
+    
+    public async Task RemoveUserAllergyAsync(int userId, int substanceId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        var user = await context.users.Include(u => u.Allergies).FirstOrDefaultAsync(u => u.UserId == userId);
+    
+        if (user != null)
+        {
+            var allergyToRemove = user.Allergies.FirstOrDefault(a => a.SubstanceId == substanceId);
+            if (allergyToRemove != null)
+            {
+                user.Allergies.Remove(allergyToRemove);
+                await context.SaveChangesAsync();
+            }
+        }
+    }
 
 }
