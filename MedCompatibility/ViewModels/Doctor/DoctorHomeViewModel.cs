@@ -93,4 +93,10 @@ public partial class DoctorHomeViewModel : ObservableObject
     [RelayCommand] private Task GoToMedicinesAsync() => Shell.Current.GoToAsync(nameof(MedicinesListPage));
     [RelayCommand] private Task GoToInteractionsAsync() => Shell.Current.GoToAsync(nameof(InteractionsListPage));
     [RelayCommand] private Task GoToProfileAsync() => Shell.Current.GoToAsync(nameof(ProfilePage));
+    
+    [RelayCommand]
+    private async Task GoToCrossAnalysisAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(DoctorCrossAnalysisPage));
+    }
 }
