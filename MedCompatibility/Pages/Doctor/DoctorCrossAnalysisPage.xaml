@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
+    x:Class="MedCompatibility.Pages.Doctor.DoctorCrossAnalysisPage"
+    x:DataType="viewModels:DoctorCrossAnalysisViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewModels="clr-namespace:MedCompatibility.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+
+            <Style TargetType="Border" x:Key="InteractionTypeBadgeStyle">
+                <Setter Property="StrokeThickness" Value="1.5" />
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <Style TargetType="Border" x:Key="RiskBadgeBorderStyle">
+                <Setter Property="Margin" Value="0,0,8,8" />
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="BackgroundColor" Value="#EEEEEE" />
+                <Style.Triggers>
+                    <DataTrigger
+                        Binding="{Binding Interaction.RiskLevel.Name}"
+                        TargetType="Border"
+                        Value="low">
+                        <Setter Property="BackgroundColor" Value="#E3F2FD" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding Interaction.RiskLevel.Name}"
+                        TargetType="Border"
+                        Value="medium">
+                        <Setter Property="BackgroundColor" Value="#FFF3E0" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding Interaction.RiskLevel.Name}"
+                        TargetType="Border"
+                        Value="high">
+                        <Setter Property="BackgroundColor" Value="#FFEBEE" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="Label" x:Key="RiskLevelLabelStyle">
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="TextColor" Value="#424242" />
+                <Style.Triggers>
+                    <DataTrigger
+                        Binding="{Binding Interaction.RiskLevel.Name}"
+                        TargetType="Label"
+                        Value="low">
+                        <Setter Property="TextColor" Value="#1565C0" />
+                        <Setter Property="Text" Value="Низкий риск" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding Interaction.RiskLevel.Name}"
+                        TargetType="Label"
+                        Value="medium">
+                        <Setter Property="TextColor" Value="#EF6C00" />
+                        <Setter Property="Text" Value="Средний риск" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding Interaction.RiskLevel.Name}"
+                        TargetType="Label"
+                        Value="high">
+                        <Setter Property="TextColor" Value="#C62828" />
+                        <Setter Property="Text" Value="Высокий риск" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <controls:BackgroundBubblesView />
+
+        <Grid
+            HorizontalOptions="Center"
+            MaximumWidthRequest="800"
+            RowDefinitions="Auto, *, Auto"
+            Style="{StaticResource PageContentGrid}">
+
+            <controls:CustomHeader
+                Grid.Row="0"
+                Margin="20,20,20,10"
+                Title="Перекрестный анализ" />
+
+            <ScrollView
+                Grid.Row="1"
+                Padding="20,0"
+                VerticalScrollBarVisibility="Never">
+                <VerticalStackLayout Spacing="16">
+
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Slots}" Spacing="12">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:MedicineSlot">
+                                <Border
+                                    BackgroundColor="{StaticResource Surface}"
+                                    Padding="16"
+                                    StrokeShape="RoundRectangle 16"
+                                    StrokeThickness="0">
+                                    <Border.Shadow>
+                                        <Shadow
+                                            Brush="Black"
+                                            Offset="0,4"
+                                            Opacity="0.05"
+                                            Radius="8" />
+                                    </Border.Shadow>
+                                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                            <VerticalStackLayout.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:DoctorCrossAnalysisViewModel}}, Path=SelectMedicineForSlotCommand}" CommandParameter="{Binding .}" />
+                                            </VerticalStackLayout.GestureRecognizers>
+                                            <Label
+                                                FontAttributes="Italic"
+                                                FontSize="15"
+                                                IsVisible="{Binding IsPlaceholderVisible}"
+                                                Text="{Binding DisplayName}"
+                                                TextColor="{StaticResource TextSecondary}" />
+                                            <VerticalStackLayout IsVisible="{Binding HasMedicine}" Spacing="2">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    LineBreakMode="WordWrap"
+                                                    Text="{Binding DisplayName}"
+                                                    TextColor="{StaticResource TextPrimary}" />
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="12"
+                                                    Text="{Binding InnMunText}"
+                                                    TextColor="{StaticResource Primary}" />
+                                            </VerticalStackLayout>
+                                        </VerticalStackLayout>
+                                        <Border
+                                            BackgroundColor="#FFEBEE"
+                                            Grid.Column="1"
+                                            HeightRequest="40"
+                                            StrokeShape="RoundRectangle 10"
+                                            WidthRequest="40">
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:DoctorCrossAnalysisViewModel}}, Path=RemoveSlotCommand}" CommandParameter="{Binding .}" />
+                                            </Border.GestureRecognizers>
+                                            <Label
+                                                FontSize="16"
+                                                HorizontalOptions="Center"
+                                                Text="🗑"
+                                                TextColor="#E53935"
+                                                VerticalOptions="Center" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout
+                        IsVisible="{Binding IsAnalysisDone}"
+                        Margin="0,10,0,0"
+                        Spacing="16">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Клинический отчет"
+                            TextColor="{StaticResource TextPrimary}" />
+
+                        <Border
+                            BackgroundColor="{StaticResource Surface}"
+                            Padding="20"
+                            StrokeShape="RoundRectangle 20"
+                            StrokeThickness="0">
+                            <VerticalStackLayout Spacing="20">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    HorizontalOptions="Center"
+                                    Text="Сводный клинический отчет"
+                                    TextColor="{StaticResource Primary}" />
+                                <BoxView
+                                    Color="{StaticResource Primary}"
+                                    HeightRequest="1"
+                                    Opacity="0.1" />
+
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding AnalysisReport}" Spacing="24">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="viewModels:CrossInteractionReport">
+                                            <VerticalStackLayout Spacing="12">
+                                                <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
+                                                    <VerticalStackLayout Grid.Column="0">
+                                                        <Label
+                                                            FontAttributes="Bold"
+                                                            FontSize="13"
+                                                            HorizontalTextAlignment="Center"
+                                                            LineBreakMode="WordWrap"
+                                                            Text="{Binding Medicine1.TradeName}"
+                                                            TextColor="{StaticResource TextPrimary}" />
+                                                        <Label
+                                                            FontAttributes="Italic"
+                                                            FontSize="10"
+                                                            HorizontalTextAlignment="Center"
+                                                            Text="{Binding Med1Substances}"
+                                                            TextColor="{StaticResource TextSecondary}" />
+                                                    </VerticalStackLayout>
+
+                                                    <Label
+                                                        FontSize="20"
+                                                        Grid.Column="1"
+                                                        HorizontalOptions="Center"
+                                                        IsVisible="{Binding IsConflict}"
+                                                        Text="⚡"
+                                                        TextColor="#E53935" />
+                                                    <Label
+                                                        FontSize="20"
+                                                        Grid.Column="1"
+                                                        HorizontalOptions="Center"
+                                                        IsVisible="{Binding IsConflict, Converter={StaticResource InvertedBoolConverter}}"
+                                                        Text="✅"
+                                                        TextColor="#389E0D" />
+
+                                                    <VerticalStackLayout Grid.Column="2">
+                                                        <Label
+                                                            FontAttributes="Bold"
+                                                            FontSize="13"
+                                                            HorizontalTextAlignment="Center"
+                                                            LineBreakMode="WordWrap"
+                                                            Text="{Binding Medicine2.TradeName}"
+                                                            TextColor="{StaticResource TextPrimary}" />
+                                                        <Label
+                                                            FontAttributes="Italic"
+                                                            FontSize="10"
+                                                            HorizontalTextAlignment="Center"
+                                                            Text="{Binding Med2Substances}"
+                                                            TextColor="{StaticResource TextSecondary}" />
+                                                    </VerticalStackLayout>
+                                                </Grid>
+
+                                                <VerticalStackLayout IsVisible="{Binding IsConflict}" Spacing="10">
+                                                    <FlexLayout Direction="Row" Wrap="Wrap">
+                                                        <Border Style="{StaticResource RiskBadgeBorderStyle}">
+                                                            <Label Style="{StaticResource RiskLevelLabelStyle}" />
+                                                        </Border>
+
+                                                        <Border Margin="0,0,0,8" Style="{StaticResource InteractionTypeBadgeStyle}">
+                                                            <Label
+                                                                FontAttributes="Bold"
+                                                                FontSize="11"
+                                                                Text="{Binding Interaction.InteractionType.Name}"
+                                                                TextColor="{StaticResource Primary}" />
+                                                        </Border>
+                                                    </FlexLayout>
+
+                                                    <Label
+                                                        FontSize="13"
+                                                        LineBreakMode="WordWrap"
+                                                        Text="{Binding Interaction.Description}"
+                                                        TextColor="{StaticResource TextPrimary}" />
+
+                                                    <Border
+                                                        BackgroundColor="#F0F7F7"
+                                                        Padding="12"
+                                                        StrokeShape="RoundRectangle 10">
+                                                        <Label
+                                                            FontAttributes="Italic"
+                                                            FontSize="13"
+                                                            LineBreakMode="WordWrap"
+                                                            Text="{Binding Interaction.Recommendation}"
+                                                            TextColor="{StaticResource Primary}" />
+                                                    </Border>
+                                                </VerticalStackLayout>
+
+                                                <Border
+                                                    BackgroundColor="#F6FFED"
+                                                    IsVisible="{Binding IsConflict, Converter={StaticResource InvertedBoolConverter}}"
+                                                    Padding="15"
+                                                    Stroke="#B7EB8F"
+                                                    StrokeShape="RoundRectangle 12">
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        FontSize="13"
+                                                        HorizontalOptions="Center"
+                                                        Text="{Binding SuccessMessage}"
+                                                        TextColor="#389E0D" />
+                                                </Border>
+
+                                                <BoxView
+                                                    Color="{StaticResource TextSecondary}"
+                                                    HeightRequest="1"
+                                                    Margin="0,15,0,0"
+                                                    Opacity="0.1" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <VerticalStackLayout
+                Grid.Row="2"
+                Padding="20,10,20,20"
+                Spacing="10">
+                <Button
+                    BackgroundColor="#E0F2F1"
+                    Command="{Binding AddSlotCommand}"
+                    CornerRadius="14"
+                    FontAttributes="Bold"
+                    HeightRequest="54"
+                    Text="+ Добавить препарат"
+                    TextColor="#00695C" />
+                <Button
+                    Command="{Binding AnalyzeCommand}"
+                    CornerRadius="14"
+                    FontAttributes="Bold"
+                    HeightRequest="54"
+                    Style="{StaticResource PrimaryButton}"
+                    Text="Проверить совместимость" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>

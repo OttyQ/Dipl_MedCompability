@@ -231,5 +231,76 @@ public class MedicineService : IMedicineService
             .Take(20) // Ограничиваем список, чтобы не грузить базу
             .ToListAsync();
     }
+    
+    public async Task<List<CrossAnalysisResult>> AnalyzePolypharmacyAsync(List<int> medicineIds)
+    {
+        var results = new List<CrossAnalysisResult>();
+
+        if (medicineIds == null || medicineIds.Count < 2)
+            return results;
+
+        // Создаем контекст через фабрику, как и в остальных твоих методах
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        // 1. Загружаем все выбранные препараты вместе с их веществами
+        var medicines = await context.medicines
+            .Include(m => m.Substances)
+            .Where(m => medicineIds.Contains(m.MedicineId))
+            .ToListAsync();
+
+        // 2. Извлекаем все уникальные ID веществ из этих препаратов
+        var allSubstanceIds = medicines
+            .SelectMany(m => m.Substances.Select(s => s.SubstanceId))
+            .Distinct()
+            .ToList();
+
+        // 3. Загружаем потенциальные взаимодействия только для этих веществ
+        // ПРИМЕЧАНИЕ: проверь точное имя DbSet для взаимодействий в твоем DrugContext. 
+        // Я предполагаю, что он называется interactions (по аналогии с medicines)
+        var interactions = await context.interactions
+            .Include(i => i.InteractionType)
+            .Include(i => i.RiskLevel)
+            .Where(i => allSubstanceIds.Contains(i.SubstanceId1) && allSubstanceIds.Contains(i.SubstanceId2))
+            .ToListAsync();
+
+        // 4. Попарно сравниваем препараты
+        for (int i = 0; i < medicines.Count; i++)
+        {
+            for (int j = i + 1; j < medicines.Count; j++)
+            {
+                var med1 = medicines[i];
+                var med2 = medicines[j];
+
+                var med1Substances = med1.Substances.Select(s => s.SubstanceId).ToList();
+                var med2Substances = med2.Substances.Select(s => s.SubstanceId).ToList();
+
+                // Ищем пересечения веществ между med1 и med2
+                var crossInteractions = interactions.Where(inter =>
+                    (med1Substances.Contains(inter.SubstanceId1) && med2Substances.Contains(inter.SubstanceId2)) ||
+                    (med1Substances.Contains(inter.SubstanceId2) && med2Substances.Contains(inter.SubstanceId1))
+                ).ToList();
+
+                foreach (var interaction in crossInteractions)
+                {
+                    results.Add(new CrossAnalysisResult
+                    {
+                        Medicine1 = med1,
+                        Medicine2 = med2,
+                        InteractionDetails = interaction
+                    });
+                }
+            }
+        }
+
+        // 5. Исключаем дубликаты (имена свойств анонимного типа теперь заданы явно: Med1Id, Med2Id)
+        return results
+            .DistinctBy(r => new 
+            { 
+                Med1Id = r.Medicine1.MedicineId, 
+                Med2Id = r.Medicine2.MedicineId, 
+                InteractionId = r.InteractionDetails.InteractionId 
+            })
+            .ToList();
+    }
 
 }

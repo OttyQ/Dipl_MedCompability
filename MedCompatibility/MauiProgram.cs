@@ -10,6 +10,7 @@ using CommunityToolkit.Maui;
 using MedCompatibility.Pages.Doctor;
 using MedCompatibility.Pages.Patient;
 using MedCompatibility.Pages.Shared.Popups;
+using MedCompatibility.ViewModels;
 using MedCompatibility.ViewModels.Admin;
 using MedCompatibility.ViewModels.Doctor;
 using MedCompatibility.ViewModels.Patient;
@@ -139,6 +140,8 @@ public static class MauiProgram
         builder.Services.AddTransient<DoctorPatientCardViewModel>();
         builder.Services.AddTransient<DoctorPatientCardPage>();
         builder.Services.AddTransient<PrescriptionEditPage>();
+        builder.Services.AddTransient<DoctorCrossAnalysisViewModel>();
+        builder.Services.AddTransient<DoctorCrossAnalysisPage>();
         
 
         // 7) UI handlers (Entry borderless)

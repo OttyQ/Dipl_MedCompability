@@ -102,7 +102,7 @@
                     <Grid
                         ColumnDefinitions="*,*"
                         ColumnSpacing="15"
-                        RowDefinitions="Auto,Auto"
+                        RowDefinitions="Auto,Auto,Auto"
                         RowSpacing="15">
 
                         <controls:ActionTile
@@ -140,6 +140,16 @@
                             IconBackgroundColor="#2678909C"
                             IconText="👤"
                             Title="Профиль" />
+
+                        <controls:ActionTile
+                            Command="{Binding GoToCrossAnalysisCommand}"
+                            Description="Перекрестная проверка списка препаратов"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Grid.Row="2"
+                            IconBackgroundColor="#26673AB7"
+                            IconText="🔬"
+                            Title="Анализ совместимости" />
 
                     </Grid>
                 </VerticalStackLayout>
