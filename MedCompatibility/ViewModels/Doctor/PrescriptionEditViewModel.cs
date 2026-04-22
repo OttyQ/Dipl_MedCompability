@@ -16,6 +16,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
     private readonly IScanService _scanService;
     private readonly IUserSessionService _session;
     private readonly IUserService _userService;
+    private readonly ILoadingService _loadingService;
 
     private int _patientId;
     private int? _prescriptionId;
@@ -96,7 +97,8 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         IMedicineService medicineService,
         IScanService scanService,
         IUserSessionService session,
-        IUserService userService) 
+        IUserService userService,
+        ILoadingService loadingService) 
     {
         _prescriptionService = prescriptionService;
         _interactionService = interactionService;
@@ -104,6 +106,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         _scanService = scanService;
         _session = session;
         _userService = userService;
+        _loadingService = loadingService;
     }
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -195,26 +198,38 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         var doctor = _session.CurrentUser;
         if (doctor == null) return;
 
-        var p = await _prescriptionService.GetByIdAsync(_prescriptionId!.Value);
-        if (p == null)
+        try
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Назначение не найдено.", "OK");
-            await Shell.Current.GoToAsync("..");
-            return;
-        }
+            _loadingService.Show();
+            var p = await _prescriptionService.GetByIdAsync(_prescriptionId!.Value);
+            if (p == null)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", "Назначение не найдено.", "OK");
+                await Shell.Current.GoToAsync("..");
+                return;
+            }
 
-        if (p.DoctorId != doctor.UserId)
+            if (p.DoctorId != doctor.UserId)
+            {
+                await Shell.Current.DisplayAlert("Доступ запрещён", "Редактировать может только автор назначения.", "OK");
+                await Shell.Current.GoToAsync("..");
+                return;
+            }
+
+            SelectedMedicine = p.Medicine;
+            StartDate = p.StartDate.ToString("dd.MM.yyyy");
+            EndDate = p.EndDate.ToString("dd.MM.yyyy");
+            Dosage = p.Dosage ?? "";
+            Notes = p.Notes;
+        }
+        catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Доступ запрещён", "Редактировать может только автор назначения.", "OK");
-            await Shell.Current.GoToAsync("..");
-            return;
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
-
-        SelectedMedicine = p.Medicine;
-        StartDate = p.StartDate.ToString("dd.MM.yyyy");
-        EndDate = p.EndDate.ToString("dd.MM.yyyy");
-        Dosage = p.Dosage ?? "";
-        Notes = p.Notes;
+        finally
+        {
+            _loadingService.Hide();
+        }
     }
     
     [RelayCommand]
@@ -277,37 +292,76 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
 
     private async Task<bool> ConfirmIfConflictsAsync(int selectedMedicineId)
     {
-        var current = await _prescriptionService.GetPatientPrescriptionsAsync(_patientId); 
+        List<interaction> allConflicts = new();
+        bool isCritical = false;
 
-        // Если редактируем — исключаем текущее назначение из сравнения
-        if (IsEditMode)
-            current = current.Where(p => p.PrescriptionId != _prescriptionId!.Value).ToList();
-
-        var allConflicts = new List<interaction>();
-
-        foreach (var p in current)
+        try
         {
-            if (p.MedicineId == selectedMedicineId) continue;
+            _loadingService.Show();
+            var allPrescriptions = await _prescriptionService.GetPatientPrescriptionsAsync(_patientId); 
+            var today = DateTime.Today;
 
-            var conflicts = await _interactionService.CheckInteractionAsync(p.MedicineId, selectedMedicineId); // [file:58]
-            if (conflicts != null && conflicts.Count > 0)
-                allConflicts.AddRange(conflicts);
+            // 1. Проверка на дублирование терапии (тот же препарат уже активен)
+            var duplicate = allPrescriptions.FirstOrDefault(p => 
+                p.MedicineId == selectedMedicineId && 
+                p.EndDate >= today && 
+                (!IsEditMode || p.PrescriptionId != _prescriptionId));
+
+            if (duplicate != null)
+            {
+                _loadingService.Hide();
+
+                var dupResult = await Shell.Current.ShowPopupAsync(new ConfirmPopup(
+                    "Дублирование терапии",
+                    $"Препарат «{duplicate.Medicine?.TradeName ?? "этот препарат"}» уже назначен и активен до {duplicate.EndDate:dd.MM.yyyy}.\n\nВы уверены, что хотите создать еще одно идентичное назначение?",
+                    "Продолжить",
+                    "Отмена"));
+                
+                if (dupResult is not bool dupOk || !dupOk) return false;
+                _loadingService.Show();
+            }
+
+            var windowStart = today.AddDays(-14);
+            var current = allPrescriptions.Where(p => p.EndDate >= windowStart).ToList();
+            if (IsEditMode)
+                current = current.Where(p => p.PrescriptionId != _prescriptionId!.Value).ToList();
+
+            foreach (var p in current)
+            {
+                if (p.MedicineId == selectedMedicineId) continue;
+
+                var conflicts = await _interactionService.CheckInteractionAsync(p.MedicineId, selectedMedicineId);
+                if (conflicts != null && conflicts.Count > 0)
+                {
+                    if (p.EndDate < today)
+                    {
+                        var daysAgo = (today - p.EndDate).Days;
+                        foreach (var c in conflicts)
+                        {
+                            c.Description = $"Конфликт с «{p.Medicine?.TradeName ?? "препаратом"}» из прошлого назначения (прием завершен {daysAgo} дн. назад). {c.Description}";
+                        }
+                    }
+                    allConflicts.AddRange(conflicts);
+                }
+            }
+
+            allConflicts = allConflicts.GroupBy(x => x.InteractionId).Select(g => g.First()).ToList();
+            if (!allConflicts.Any()) return true;
+
+            isCritical = allConflicts.Any(c => (c.RiskLevel?.Severity ?? 0) >= 3);
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            return false;
+        }
+        finally
+        {
+            _loadingService.Hide();
         }
 
-        // Чтобы не дублировать одинаковые interaction, если прилетели повторно
-        allConflicts = allConflicts
-            .GroupBy(x => x.InteractionId)
-            .Select(g => g.First())
-            .ToList();
-
-        if (!allConflicts.Any())
-            return true;
-
-        var isCritical = allConflicts.Any(c => (c.RiskLevel?.Severity ?? 0) >= 3); 
-
-        var result = await Shell.Current.ShowPopupAsync(
-            new InteractionsDetailsPopup(allConflicts, isCritical));
-
+        // Показываем попап ПОСЛЕ того, как лоадер скрыт
+        var result = await Shell.Current.ShowPopupAsync(new InteractionsDetailsPopup(allConflicts, isCritical));
         return result is bool ok && ok;
     }
 
@@ -324,6 +378,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
 
         try
         {
+            _loadingService.Show();
             var formats = new[] { "dd.MM.yyyy", "d.M.yyyy", "dd.M.yyyy", "d.MM.yyyy", "dd.MM.yy" };
             var parsedStart = DateTime.ParseExact(StartDate, formats, null, System.Globalization.DateTimeStyles.None);
             var parsedEnd = DateTime.ParseExact(EndDate, formats, null, System.Globalization.DateTimeStyles.None);
@@ -357,6 +412,10 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         {
             await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
+        finally
+        {
+            _loadingService.Hide();
+        }
     }
 
     [RelayCommand]
@@ -372,12 +431,17 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
 
         try
         {
+            _loadingService.Show();
             await _prescriptionService.DeleteAsync(_prescriptionId!.Value, doctor.UserId);
             await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            _loadingService.Hide();
         }
     }
 

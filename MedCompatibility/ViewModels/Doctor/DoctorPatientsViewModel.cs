@@ -14,15 +14,17 @@ public partial class DoctorPatientsViewModel : ObservableObject
     private readonly IUserService _userService;
     private readonly IUserSessionService _session;
     private readonly IMedicineService _medicineService;
+    private readonly ILoadingService _loadingService;
 
     [ObservableProperty] private ObservableCollection<user> patients = new();
     [ObservableProperty] private bool isLoading;
 
-    public DoctorPatientsViewModel(IUserService userService, IUserSessionService session, IMedicineService medicineService)
+    public DoctorPatientsViewModel(IUserService userService, IUserSessionService session, IMedicineService medicineService, ILoadingService loadingService)
     {
         _userService = userService;
         _session = session;
         _medicineService = medicineService;
+        _loadingService = loadingService;
     }
 
     [RelayCommand]
@@ -33,6 +35,7 @@ public partial class DoctorPatientsViewModel : ObservableObject
         try
         {
             IsLoading = true;
+            _loadingService.Show();
 
             var doctor = _session.CurrentUser;
             if (doctor == null)
@@ -52,6 +55,7 @@ public partial class DoctorPatientsViewModel : ObservableObject
         finally
         {
             IsLoading = false;
+            _loadingService.Hide();
             OnPropertyChanged(nameof(IsEmpty));
         }
     }
@@ -79,8 +83,20 @@ public partial class DoctorPatientsViewModel : ObservableObject
 
         if (result is not user selectedPatient) return;
 
-        await _userService.AddPatientToDoctorListAsync(doctor.UserId, selectedPatient.UserId);
-        await LoadDataAsync();
+        try
+        {
+            _loadingService.Show();
+            await _userService.AddPatientToDoctorListAsync(doctor.UserId, selectedPatient.UserId);
+            await LoadDataAsync();
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            _loadingService.Hide();
+        }
     }
 
     /// <summary>
@@ -104,12 +120,17 @@ public partial class DoctorPatientsViewModel : ObservableObject
 
         try
         {
+            _loadingService.Show();
             await _userService.RemovePatientFromDoctorListAsync(doctor.UserId, patient.UserId);
             await LoadDataAsync();
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            _loadingService.Hide();
         }
     }
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <toolkit:Popup
     CanBeDismissedByTappingOutsideOfPopup="True"
     Color="Transparent"
@@ -8,11 +8,107 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <toolkit:Popup.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Border" x:Key="InteractionTypeBadgeStyle">
+                <Setter Property="StrokeThickness" Value="1.5" />
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <Style TargetType="Border" x:Key="RiskBadgeBorderStyle">
+                <Setter Property="Margin" Value="0,0,8,8" />
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="BackgroundColor" Value="#EEEEEE" />
+                <Style.Triggers>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Border"
+                        Value="1">
+                        <Setter Property="BackgroundColor" Value="#E8F5E9" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Border"
+                        Value="2">
+                        <Setter Property="BackgroundColor" Value="#FFF3E0" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Border"
+                        Value="3">
+                        <Setter Property="BackgroundColor" Value="#FFF3E0" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Border"
+                        Value="4">
+                        <Setter Property="BackgroundColor" Value="#FFEBEE" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Border"
+                        Value="5">
+                        <Setter Property="BackgroundColor" Value="#FFEBEE" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="Label" x:Key="RiskLevelLabelStyle">
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="TextColor" Value="#424242" />
+                <Style.Triggers>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Label"
+                        Value="1">
+                        <Setter Property="TextColor" Value="#2E7D32" />
+                        <Setter Property="Text" Value="🟢 Незначительный риск" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Label"
+                        Value="2">
+                        <Setter Property="TextColor" Value="#F9A825" />
+                        <Setter Property="Text" Value="🟡 Умеренный риск" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Label"
+                        Value="3">
+                        <Setter Property="TextColor" Value="#EF6C00" />
+                        <Setter Property="Text" Value="🟠 Значительный риск" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Label"
+                        Value="4">
+                        <Setter Property="TextColor" Value="#D84315" />
+                        <Setter Property="Text" Value="🔴 Высокий риск" />
+                    </DataTrigger>
+                    <DataTrigger
+                        Binding="{Binding RiskLevel.Severity}"
+                        TargetType="Label"
+                        Value="5">
+                        <Setter Property="TextColor" Value="#C62828" />
+                        <Setter Property="Text" Value="🔴 Критический риск" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </toolkit:Popup.Resources>
+
     <Border
         BackgroundColor="{StaticResource Surface}"
         HorizontalOptions="Center"
-        MaximumHeightRequest="600"
-        MaximumWidthRequest="450"
+        MaximumHeightRequest="700"
+        MaximumWidthRequest="500"
         Padding="20"
         Stroke="{StaticResource Primary}"
         StrokeShape="RoundRectangle 20"
@@ -40,7 +136,7 @@
                 <Label
                     FontSize="14"
                     HorizontalOptions="Center"
-                    Text="Найдено 3 взаимодействия"
+                    Text="Найдено взаимодействий"
                     TextColor="{StaticResource TextSecondary}"
                     x:Name="SubtitleLabel" />
             </VerticalStackLayout>
@@ -52,142 +148,86 @@
                 HeightRequest="1" />
 
             <!--  Список взаимодействий  -->
-            <ScrollView Grid.Row="2">
+            <ScrollView Grid.Row="2" VerticalScrollBarVisibility="Never">
                 <CollectionView SelectionMode="None" x:Name="InteractionsList">
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
+                        <LinearItemsLayout ItemSpacing="16" Orientation="Vertical" />
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:interaction">
-                            <Border
-                                BackgroundColor="#F5F7FA"
-                                Padding="12"
-                                StrokeShape="RoundRectangle 12"
-                                StrokeThickness="0">
-
-                                <VerticalStackLayout Spacing="8">
-
-                                    <!--  Препараты  -->
-                                    <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="8">
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontSize="13"
-                                            Grid.Column="0"
-                                            HorizontalTextAlignment="End"
-                                            LineBreakMode="TailTruncation"
-                                            Text="{Binding SubstanceId1Navigation.Name}"
-                                            TextColor="{StaticResource Primary}" />
-                                        <Label
-                                            FontSize="16"
-                                            Grid.Column="1"
-                                            Text="↔"
-                                            TextColor="{StaticResource TextSecondary}" />
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontSize="13"
-                                            Grid.Column="2"
-                                            LineBreakMode="TailTruncation"
-                                            Text="{Binding SubstanceId2Navigation.Name}"
-                                            TextColor="{StaticResource Primary}" />
-                                    </Grid>
-
-                                    <!--  Уровень риска  -->
-                                    <Border
-                                        HorizontalOptions="Start"
-                                        Padding="8,4"
-                                        StrokeShape="RoundRectangle 8">
-                                        <Border.Triggers>
-                                            <DataTrigger
-                                                Binding="{Binding RiskLevel.Severity}"
-                                                TargetType="Border"
-                                                Value="1">
-                                                <Setter Property="BackgroundColor" Value="#E8F5E9" />
-                                            </DataTrigger>
-                                            <DataTrigger
-                                                Binding="{Binding RiskLevel.Severity}"
-                                                TargetType="Border"
-                                                Value="2">
-                                                <Setter Property="BackgroundColor" Value="#FFF9C4" />
-                                            </DataTrigger>
-                                            <DataTrigger
-                                                Binding="{Binding RiskLevel.Severity}"
-                                                TargetType="Border"
-                                                Value="3">
-                                                <Setter Property="BackgroundColor" Value="#FFE0B2" />
-                                            </DataTrigger>
-                                            <DataTrigger
-                                                Binding="{Binding RiskLevel.Severity}"
-                                                TargetType="Border"
-                                                Value="4">
-                                                <Setter Property="BackgroundColor" Value="#FFCCBC" />
-                                            </DataTrigger>
-                                            <DataTrigger
-                                                Binding="{Binding RiskLevel.Severity}"
-                                                TargetType="Border"
-                                                Value="5">
-                                                <Setter Property="BackgroundColor" Value="#FFCDD2" />
-                                            </DataTrigger>
-                                        </Border.Triggers>
-
-                                        <Label FontAttributes="Bold" FontSize="11">
-                                            <Label.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding RiskLevel.Severity}"
-                                                    TargetType="Label"
-                                                    Value="1">
-                                                    <Setter Property="TextColor" Value="#2E7D32" />
-                                                    <Setter Property="Text" Value="🟢 Незначительный риск" />
-                                                </DataTrigger>
-                                                <DataTrigger
-                                                    Binding="{Binding RiskLevel.Severity}"
-                                                    TargetType="Label"
-                                                    Value="2">
-                                                    <Setter Property="TextColor" Value="#F9A825" />
-                                                    <Setter Property="Text" Value="🟡 Умеренный риск" />
-                                                </DataTrigger>
-                                                <DataTrigger
-                                                    Binding="{Binding RiskLevel.Severity}"
-                                                    TargetType="Label"
-                                                    Value="3">
-                                                    <Setter Property="TextColor" Value="#EF6C00" />
-                                                    <Setter Property="Text" Value="🟠 Значительный риск" />
-                                                </DataTrigger>
-                                                <DataTrigger
-                                                    Binding="{Binding RiskLevel.Severity}"
-                                                    TargetType="Label"
-                                                    Value="4">
-                                                    <Setter Property="TextColor" Value="#D84315" />
-                                                    <Setter Property="Text" Value="🔴 Высокий риск" />
-                                                </DataTrigger>
-                                                <DataTrigger
-                                                    Binding="{Binding RiskLevel.Severity}"
-                                                    TargetType="Label"
-                                                    Value="5">
-                                                    <Setter Property="TextColor" Value="#C62828" />
-                                                    <Setter Property="Text" Value="🔴 Критический риск" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                    </Border>
-
-                                    <!--  Описание  -->
+                            <VerticalStackLayout Spacing="12">
+                                <!--  Верхняя часть: Препараты  -->
+                                <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
                                     <Label
-                                        FontSize="12"
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        Grid.Column="0"
+                                        HorizontalTextAlignment="Center"
                                         LineBreakMode="WordWrap"
-                                        Text="{Binding Description}"
+                                        Text="{Binding SubstanceId1Navigation.Name}"
                                         TextColor="{StaticResource TextPrimary}" />
 
-                                    <!--  Рекомендация  -->
                                     <Label
-                                        FontSize="11"
-                                        IsVisible="{Binding Recommendation, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                                        FontSize="20"
+                                        Grid.Column="1"
+                                        HorizontalOptions="Center"
+                                        Text="⚡"
+                                        TextColor="#E53935" />
+
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        Grid.Column="2"
+                                        HorizontalTextAlignment="Center"
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding SubstanceId2Navigation.Name}"
+                                        TextColor="{StaticResource TextPrimary}" />
+                                </Grid>
+
+                                <!--  Инфо-плашки  -->
+                                <FlexLayout Direction="Row" Wrap="Wrap">
+                                    <Border Style="{StaticResource RiskBadgeBorderStyle}">
+                                        <Label Style="{StaticResource RiskLevelLabelStyle}" />
+                                    </Border>
+
+                                    <Border Margin="0,0,0,8" Style="{StaticResource InteractionTypeBadgeStyle}">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="11"
+                                            Text="{Binding InteractionType.Name}"
+                                            TextColor="{StaticResource Primary}" />
+                                    </Border>
+                                </FlexLayout>
+
+                                <!--  Описание  -->
+                                <Label
+                                    FontSize="13"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding Description}"
+                                    TextColor="{StaticResource TextPrimary}" />
+
+                                <!--  Рекомендация (оформлена как в отчете)  -->
+                                <Border
+                                    BackgroundColor="#F0F7F7"
+                                    IsVisible="{Binding Recommendation, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 10">
+                                    <Label
+                                        FontAttributes="Italic"
+                                        FontSize="13"
                                         LineBreakMode="WordWrap"
                                         Text="{Binding Recommendation}"
-                                        TextColor="{StaticResource TextSecondary}" />
+                                        TextColor="{StaticResource Primary}" />
+                                </Border>
 
-                                </VerticalStackLayout>
-                            </Border>
+                                <!--  Разделитель между карточками  -->
+                                <BoxView
+                                    Color="{StaticResource TextSecondary}"
+                                    HeightRequest="1"
+                                    Margin="0,5,0,0"
+                                    Opacity="0.1" />
+                            </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

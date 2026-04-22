@@ -87,6 +87,62 @@
                         </Button.Shadow>
                     </Button>
 
+                    <!-- Переключатель Актуальные / Архив -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button 
+                            Command="{Binding SetActualCommand}"
+                            CornerRadius="10"
+                            FontSize="14"
+                            HeightRequest="40"
+                            Padding="0"
+                            Text="Актуальные">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource PrimaryButton}" TargetType="Button">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                    <Setter Property="TextColor" Value="White" />
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsArchiveView}"
+                                            TargetType="Button"
+                                            Value="True">
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                            <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                                            <Setter Property="BorderColor" Value="{StaticResource TextSecondary}" />
+                                            <Setter Property="BorderWidth" Value="1" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button 
+                            Command="{Binding SetArchiveCommand}"
+                            CornerRadius="10"
+                            FontSize="14"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            Padding="0"
+                            Text="Архив">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource PrimaryButton}" TargetType="Button">
+                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                    <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                                    <Setter Property="BorderColor" Value="{StaticResource TextSecondary}" />
+                                    <Setter Property="BorderWidth" Value="1" />
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsArchiveView}"
+                                            TargetType="Button"
+                                            Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                            <Setter Property="TextColor" Value="White" />
+                                            <Setter Property="BorderWidth" Value="0" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+
                     <BoxView Color="Transparent" HeightRequest="4" />
 
                     <!--  Заглушка "Нет данных" (для Android)  -->
@@ -167,10 +223,28 @@
                                                 Padding="8,4"
                                                 StrokeShape="RoundRectangle 6"
                                                 StrokeThickness="0">
+                                                <Border.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding Source={x:Reference RootPage}, Path=BindingContext.IsArchiveView}"
+                                                        TargetType="Border"
+                                                        Value="True">
+                                                        <Setter Property="BackgroundColor" Value="#FFFDE7" />
+                                                        <Setter Property="Stroke" Value="#FBC02D" />
+                                                        <Setter Property="StrokeThickness" Value="1" />
+                                                    </DataTrigger>
+                                                </Border.Triggers>
                                                 <Label
                                                     FontAttributes="Bold"
                                                     FontSize="11"
                                                     TextColor="#2E7D32">
+                                                    <Label.Triggers>
+                                                        <DataTrigger
+                                                            Binding="{Binding Source={x:Reference RootPage}, Path=BindingContext.IsArchiveView}"
+                                                            TargetType="Label"
+                                                            Value="True">
+                                                            <Setter Property="TextColor" Value="#F9A825" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
                                                     <Label.FormattedText>
                                                         <FormattedString>
                                                             <Span Text="{Binding StartDate, StringFormat='{0:dd.MM.yy}'}" />
