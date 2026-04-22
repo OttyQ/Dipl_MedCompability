@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 
 namespace MedCompatibility.Services.Interfaces;
 
@@ -8,6 +8,7 @@ public interface IUserSessionService
     bool IsAuthenticated { get; }
     bool IsGuest { get; }
     
-    void StartSession(user user);
+    Task StartSessionAsync(user user);
     void EndSession();
+    Task<bool> RestoreSessionAsync();
 }
