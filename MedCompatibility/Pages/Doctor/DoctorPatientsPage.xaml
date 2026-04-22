@@ -20,17 +20,16 @@
         <!--  фон  -->
         <controls:BackgroundBubblesView />
 
-        <Grid Style="{StaticResource PageContentGrid}" WidthRequest="{OnPlatform WinUI=800, MacCatalyst=800}" RowDefinitions="Auto,*">
-                <!--  Шапка  -->
-                <controls:CustomHeader
-                    Margin="20,20,20,10"
-                    Title="Мои пациенты" />
+        <Grid RowDefinitions="Auto,Auto,*" Style="{StaticResource PageContentGrid}" WidthRequest="{OnPlatform WinUI=800, MacCatalyst=800}">
+            <!--  Шапка  -->
+            <controls:CustomHeader
+                Grid.Row="0"
+                Margin="20,20,20,10"
+                Title="Мои пациенты" />
 
             <!--  Контент  -->
             <ScrollView Grid.Row="1" Padding="20,0">
-                <VerticalStackLayout
-                    HorizontalOptions="Fill"
-                    Spacing="16">
+                <VerticalStackLayout HorizontalOptions="Fill" Spacing="16">
 
                     <!--  Кнопка добавить  -->
                     <Button
@@ -52,13 +51,41 @@
 
                     <BoxView Color="Transparent" HeightRequest="4" />
 
+                    <!--  Заглушка "Нет данных" (для Android)  -->
+                    <VerticalStackLayout
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding IsEmpty}"
+                        Padding="0,50"
+                        Spacing="10"
+                        VerticalOptions="Center">
+                        <Label
+                            FontSize="40"
+                            HorizontalOptions="Center"
+                            Opacity="0.5"
+                            Text="👥" />
+                        <Label
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Нет пациентов"
+                            TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+
                     <!--  Список  -->
                     <CollectionView
-                        EmptyView="Нет пациентов"
                         HorizontalOptions="Fill"
                         ItemsSource="{Binding Patients}"
                         SelectionMode="None">
+                        <CollectionView.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsEmpty}"
+                                TargetType="CollectionView"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </CollectionView.Triggers>
                         <CollectionView.ItemsLayout>
+
+
                             <LinearItemsLayout ItemSpacing="15" Orientation="Vertical" />
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
@@ -129,9 +156,7 @@
                                                 StrokeThickness="0"
                                                 WidthRequest="36">
                                                 <Border.GestureRecognizers>
-                                                    <TapGestureRecognizer
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeletePatientCommand}"
-                                                        CommandParameter="{Binding .}" />
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeletePatientCommand}" CommandParameter="{Binding .}" />
                                                 </Border.GestureRecognizers>
                                                 <Label
                                                     FontSize="16"
@@ -156,5 +181,6 @@
                 </VerticalStackLayout>
             </ScrollView>
         </Grid>
+
     </Grid>
 </ContentPage>

@@ -14,7 +14,7 @@
         <!--  фон  -->
         <controls:BackgroundBubblesView BottomBubbleBounds="0, 0, 0, 0" />
 
-        <Grid Style="{StaticResource PageContentGrid}" WidthRequest="{OnPlatform WinUI=800, MacCatalyst=800}" RowDefinitions="Auto,*">
+        <Grid RowDefinitions="Auto,*" Style="{StaticResource PageContentGrid}" WidthRequest="{OnPlatform WinUI=800, MacCatalyst=800}">
             <!--  Шапка  -->
             <controls:CustomHeader
                 Grid.Row="0"
@@ -23,9 +23,7 @@
 
             <!--  Контент  -->
             <ScrollView Grid.Row="1" Padding="20,0">
-                <VerticalStackLayout
-                    HorizontalOptions="Fill"
-                    Spacing="16">
+                <VerticalStackLayout HorizontalOptions="Fill" Spacing="16">
 
                     <!--  Инфо о пациенте  -->
                     <Border
@@ -91,14 +89,41 @@
 
                     <BoxView Color="Transparent" HeightRequest="4" />
 
+                    <!--  Заглушка "Нет данных" (для Android)  -->
+                    <VerticalStackLayout
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding IsEmpty}"
+                        Padding="0,50"
+                        Spacing="10"
+                        VerticalOptions="Center">
+                        <Label
+                            FontSize="40"
+                            HorizontalOptions="Center"
+                            Opacity="0.5"
+                            Text="💊" />
+                        <Label
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Нет назначений"
+                            TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+
                     <!--  Список назначений  -->
                     <CollectionView
-                        EmptyView="Нет назначений"
                         HorizontalOptions="Fill"
                         ItemsSource="{Binding Prescriptions}"
                         SelectionMode="None">
+                        <CollectionView.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsEmpty}"
+                                TargetType="CollectionView"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </CollectionView.Triggers>
 
                         <CollectionView.ItemsLayout>
+
                             <LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
                         </CollectionView.ItemsLayout>
 
@@ -194,5 +219,7 @@
                 </VerticalStackLayout>
             </ScrollView>
         </Grid>
+
+
     </Grid>
 </ContentPage>

@@ -84,7 +84,14 @@
                                             TextChanged="OnDateEntryTextChanged" />
                                             
                                         <Label Grid.Column="1" Text="📅" VerticalOptions="Center" Margin="5,0"/>
-                                        <DatePicker Grid.Column="1" Date="{Binding StartDatePickerValue}" Opacity="0.01" WidthRequest="40" BackgroundColor="Transparent"/>
+                                        <DatePicker
+                                            BackgroundColor="Transparent"
+                                            Date="{Binding StartDatePickerValue}"
+                                            DateSelected="OnStartDateSelected"
+                                            Grid.Column="1"
+                                            Opacity="0.01"
+                                            WidthRequest="40" />
+
                                     </Grid>
                                 </Border>
                             </VerticalStackLayout>
@@ -106,7 +113,14 @@
                                             TextChanged="OnDateEntryTextChanged" />
                                             
                                         <Label Grid.Column="1" Text="📅" VerticalOptions="Center" Margin="5,0"/>
-                                        <DatePicker Grid.Column="1" Date="{Binding EndDatePickerValue}" Opacity="0.01" WidthRequest="40" BackgroundColor="Transparent"/>
+                                        <DatePicker
+                                            BackgroundColor="Transparent"
+                                            Date="{Binding EndDatePickerValue}"
+                                            DateSelected="OnEndDateSelected"
+                                            Grid.Column="1"
+                                            Opacity="0.01"
+                                            WidthRequest="40" />
+
                                     </Grid>
                                 </Border>
                             </VerticalStackLayout>
