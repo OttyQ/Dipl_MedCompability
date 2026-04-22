@@ -53,20 +53,13 @@ public partial class LoginViewModel : ObservableObject
 
     public async Task OnAppearingAsync()
     {
-        try
-        {
-            _loading.Show();
+        // Убрали try-finally и блокирующий лоадер
+        // Проверка проходит абсолютно незаметно для пользователя
+        await _dbHealth.CheckAsync();
 
-            await _dbHealth.CheckAsync();
-
-            IsDbAvailable = _dbHealth.IsAvailable;
-            IsDbWarningVisible = !_dbHealth.IsAvailable;
-            DbWarningText = _dbHealth.LastErrorShort;
-        }
-        finally
-        {
-            _loading.Hide();
-        }
+        IsDbAvailable = _dbHealth.IsAvailable;
+        IsDbWarningVisible = !_dbHealth.IsAvailable;
+        DbWarningText = _dbHealth.LastErrorShort;
     }
 
     [RelayCommand]
