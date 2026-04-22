@@ -12,6 +12,7 @@
         <!--  HEADER  -->
         <controls:CustomHeader
             Grid.Row="0"
+            IsBackButtonVisible="False"
             Margin="20,20,20,10"
             Title="{Binding PageTitle}" />
 

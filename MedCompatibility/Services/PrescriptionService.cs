@@ -17,17 +17,6 @@ public class PrescriptionService : IPrescriptionService
     {
         await using var ctx = await _contextFactory.CreateDbContextAsync();
 
-        var today = DateTime.Now.Date;
-        var expired = await ctx.prescriptions
-            .Where(p => p.PatientId == patientId && p.EndDate < today)
-            .ToListAsync();
-
-        if (expired.Any())
-        {
-            ctx.prescriptions.RemoveRange(expired);
-            await ctx.SaveChangesAsync();
-        }
-
         return await ctx.prescriptions
             .AsNoTracking()
             .Where(p => p.PatientId == patientId)
