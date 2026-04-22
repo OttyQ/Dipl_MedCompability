@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     Shell.NavBarIsVisible="False"
     x:Class="MedCompatibility.Pages.Shared.LoginPage"
@@ -198,5 +198,29 @@
             </VerticalStackLayout>
         </ScrollView>
 
+        <Button
+            BackgroundColor="{StaticResource Surface}"
+            BorderColor="{StaticResource Primary}"
+            BorderWidth="1"
+            Command="{Binding OpenDebugPopupCommand}"
+            CornerRadius="22"
+            HeightRequest="44"
+            HorizontalOptions="End"
+            IsVisible="{Binding IsDebugMode}"
+            Margin="20"
+            Padding="0"
+            Text="🛠️"
+            VerticalOptions="End"
+            WidthRequest="44">
+            <Button.Shadow>
+                <Shadow
+                    Brush="Black"
+                    Offset="0,2"
+                    Opacity="0.2"
+                    Radius="5" />
+            </Button.Shadow>
+        </Button>
+
     </Grid>
 </ContentPage>
+
