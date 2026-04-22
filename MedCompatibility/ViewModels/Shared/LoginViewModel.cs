@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Pages.Shared.Popups;
@@ -29,6 +29,15 @@ public partial class LoginViewModel : ObservableObject
     [ObservableProperty] private bool isPasswordHidden = true;
     [ObservableProperty] private string eyeIconText = "🙈";
     [ObservableProperty] private bool isAuthInProgress;
+
+    public bool IsDebugMode =>
+#if DEBUG && (ANDROID || WINDOWS)
+        true;
+#else
+        false;
+#endif
+
+
 
     public LoginViewModel(
         IAuthService authService,
@@ -130,7 +139,33 @@ public partial class LoginViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task OpenDebugPopupAsync()
+    {
+        var result = await Shell.Current.ShowPopupAsync(new DebugLoginPopup());
+        if (result is string role)
+        {
+            switch (role)
+            {
+                case "Admin":
+                    Login = "admin";
+                    Password = "admin123";
+                    break;
+                case "Doctor":
+                    Login = "doctest";
+                    Password = "doctest";
+                    break;
+                case "Patient":
+                    Login = "123";
+                    Password = "12345";
+                    break;
+            }
+            await LoginAsync();
+        }
+    }
+
+    [RelayCommand]
     private async Task LoginAsync()
+
     {
         try
         {
