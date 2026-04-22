@@ -47,8 +47,6 @@ public partial class DoctorHomeViewModel : ObservableObject
 
         try
         {
-            loading.Show();
-
             var stats = await statsService.GetDoctorStatsAsync(doctor.UserId);
             PatientsCount = stats.Patients;
             PrescriptionsCount = stats.Prescriptions;
@@ -56,10 +54,6 @@ public partial class DoctorHomeViewModel : ObservableObject
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
-        }
-        finally
-        {
-            loading.Hide();
         }
     }
 

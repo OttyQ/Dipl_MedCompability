@@ -22,7 +22,6 @@ public partial class AdminHomeViewModel : ObservableObject
     {
         try
         {
-            _loading.Show();
             var patientsTask = _userService.GetPatientsCountAsync();
             var doctorsTask = _userService.GetActiveDoctorsCountAsync();
             await Task.WhenAll(patientsTask, doctorsTask);
@@ -35,10 +34,6 @@ public partial class AdminHomeViewModel : ObservableObject
                 "Ошибка",
                 "Не удалось загрузить статистику: " + ex.Message,
                 "OK");
-        }
-        finally
-        {
-            _loading.Hide();
         }
     }
     [RelayCommand]
