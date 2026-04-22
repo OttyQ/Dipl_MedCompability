@@ -18,10 +18,14 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
     private readonly IScanService _scanService;
     private readonly IUserSessionService _session;
     private readonly IUserService _userService;
+    private readonly ILoadingService _loadingService;
 
     [ObservableProperty] private user? patient;
+    [ObservableProperty] private bool isArchiveView;
     [ObservableProperty] private ObservableCollection<prescription> prescriptions = new();
     [ObservableProperty] private bool isBusy;
+
+    private List<prescription> _allPrescriptions = new();
 
     public string PatientFullName =>
         Patient == null ? "" : $"{Patient.LastName} {Patient.FirstName} {Patient.MiddleName}".Trim();
@@ -34,7 +38,8 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
         IMedicineService medicineService,
         IScanService scanService,
         IUserSessionService session,
-        IUserService userService)
+        IUserService userService,
+        ILoadingService loadingService)
     {
         _prescriptionService = prescriptionService;
         _interactionService = interactionService;
@@ -42,6 +47,7 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
         _scanService = scanService;
         _session = session;
         _userService = userService;
+        _loadingService = loadingService;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -69,15 +75,47 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
         try
         {
             IsBusy = true;
-            var list = await _prescriptionService.GetPatientPrescriptionsAsync(Patient.UserId);
-            Prescriptions = new ObservableCollection<prescription>(list);
-            OnPropertyChanged(nameof(IsEmpty));
+            _loadingService.Show();
+            _allPrescriptions = await _prescriptionService.GetPatientPrescriptionsAsync(Patient.UserId);
+            FilterPrescriptions();
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
         finally
         {
             IsBusy = false;
+            _loadingService.Hide();
             OnPropertyChanged(nameof(IsEmpty));
         }
+    }
+
+    partial void OnIsArchiveViewChanged(bool value)
+    {
+        try
+        {
+            _loadingService.Show();
+            FilterPrescriptions();
+        }
+        finally
+        {
+            _loadingService.Hide();
+        }
+    }
+
+    private void FilterPrescriptions()
+    {
+        var today = DateTime.Today;
+        IEnumerable<prescription> filtered;
+        
+        if (IsArchiveView)
+            filtered = _allPrescriptions.Where(p => p.EndDate < today);
+        else
+            filtered = _allPrescriptions.Where(p => p.EndDate >= today);
+
+        Prescriptions = new ObservableCollection<prescription>(filtered);
+        OnPropertyChanged(nameof(IsEmpty));
     }
 
     public bool IsEmpty => Prescriptions == null || Prescriptions.Count == 0;
@@ -126,6 +164,12 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
             await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
     }
+
+    [RelayCommand]
+    private void SetActual() => IsArchiveView = false;
+
+    [RelayCommand]
+    private void SetArchive() => IsArchiveView = true;
 
     [RelayCommand]
     private async Task GoBackAsync()
