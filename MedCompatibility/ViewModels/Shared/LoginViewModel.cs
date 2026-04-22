@@ -196,7 +196,7 @@ public partial class LoginViewModel : ObservableObject
             if (await HandleNotApprovedAsync(user))
                 return;
 
-            _sessionService.StartSession(user);
+            await _sessionService.StartSessionAsync(user);
 
             await NavigateByRoleAsync(user.Role?.Name);
 
@@ -322,7 +322,7 @@ private async Task GoogleLoginAsync()
             return;
         }
 
-        _sessionService.StartSession(user);
+        await _sessionService.StartSessionAsync(user);
         await NavigateByRoleAsync(user.Role?.Name);
     }
     catch (OperationCanceledException)
