@@ -17,20 +17,22 @@ public class MedicineService : IMedicineService
     {
         using var context = await _contextFactory.CreateDbContextAsync();
         
-        // Include обязательно нужен, чтобы показать имя производителя
+        // Include обязательно нужен, чтобы показать имя производителя и состав
         var query = context.medicines
                            .Include(m => m.Manufacturer) 
+                           .Include(m => m.Substances)
                            .AsNoTracking()
                            .AsQueryable();
 
-        // 1. Поиск (Название, INN или Штрихкод)
+        // 1. Поиск (Название, INN, Штрихкод или Активные вещества)
         if (!string.IsNullOrWhiteSpace(searchText))
         {
             string lowerSearch = searchText.ToLower();
             query = query.Where(m => 
                 m.TradeName.ToLower().Contains(lowerSearch) ||
                 m.GTIN.Contains(lowerSearch) || 
-                (m.INN != null && m.INN.ToLower().Contains(lowerSearch)));
+                (m.INN != null && m.INN.ToLower().Contains(lowerSearch)) ||
+                m.Substances.Any(s => s.Name.ToLower().Contains(lowerSearch)));
         }
 
         // 2. Фильтр по производителю
