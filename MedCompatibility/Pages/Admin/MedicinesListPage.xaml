@@ -169,38 +169,55 @@
                                                 VerticalOptions="Center" />
                                         </Border>
 
-                                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2">
                                             <Label
                                                 FontAttributes="Bold"
                                                 FontSize="16"
                                                 LineBreakMode="TailTruncation"
                                                 Text="{Binding TradeName}"
                                                 TextColor="{StaticResource TextPrimary}" />
+
                                             <Label
+                                                FontAttributes="Italic"
                                                 FontSize="13"
-                                                LineBreakMode="TailTruncation"
-                                                TextColor="{StaticResource TextSecondary}">
-                                                <Label.FormattedText>
-                                                    <FormattedString>
-                                                        <Span Text="{Binding INN}" />
-                                                        <Span Text=", " />
-                                                        <Span Text="{Binding Form}" />
-                                                    </FormattedString>
-                                                </Label.FormattedText>
-                                            </Label>
+                                                IsVisible="{Binding INN, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                                                Text="{Binding INN}"
+                                                TextColor="#546E7A" />
+
+                                            <Border
+                                                BackgroundColor="#F0F4F8"
+                                                HorizontalOptions="Start"
+                                                Margin="0,2"
+                                                Padding="8,4"
+                                                StrokeShape="RoundRectangle 6"
+                                                StrokeThickness="0">
+                                                <Label
+                                                    FontSize="11"
+                                                    LineBreakMode="TailTruncation"
+                                                    MaxLines="1"
+                                                    Text="{Binding SubstancesText}"
+                                                    TextColor="#455A64" />
+                                            </Border>
+
                                             <Label
                                                 FontSize="11"
-                                                Opacity="0.85"
+                                                Opacity="0.8"
                                                 TextColor="{StaticResource TextSecondary}">
                                                 <Label.FormattedText>
                                                     <FormattedString>
-                                                        <Span Text="GTIN: " />
+                                                        <Span Text="{Binding Form}" />
+                                                        <Span Text=" • GTIN: " />
                                                         <Span Text="{Binding GTIN}" />
-                                                        <Span Text=" • " />
-                                                        <Span Text="{Binding Manufacturer.Name}" />
                                                     </FormattedString>
                                                 </Label.FormattedText>
                                             </Label>
+
+                                            <Label
+                                                FontSize="10"
+                                                Margin="0,2,0,0"
+                                                Opacity="0.6"
+                                                Text="{Binding Manufacturer.Name}"
+                                                TextColor="{StaticResource TextSecondary}" />
                                         </VerticalStackLayout>
 
                                         <Button
