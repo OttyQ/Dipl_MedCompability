@@ -71,12 +71,17 @@ public partial class DoctorPatientCardViewModel : ObservableObject, IQueryAttrib
             IsBusy = true;
             var list = await _prescriptionService.GetPatientPrescriptionsAsync(Patient.UserId);
             Prescriptions = new ObservableCollection<prescription>(list);
+            OnPropertyChanged(nameof(IsEmpty));
         }
         finally
         {
             IsBusy = false;
+            OnPropertyChanged(nameof(IsEmpty));
         }
     }
+
+    public bool IsEmpty => Prescriptions == null || Prescriptions.Count == 0;
+
     
     [RelayCommand]
     private async Task AddMedicineAsync()

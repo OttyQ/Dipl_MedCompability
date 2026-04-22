@@ -43,6 +43,7 @@ public partial class DoctorPatientsViewModel : ObservableObject
             
             var list = await _userService.GetDoctorPatientsAsync(doctor.UserId);
             Patients = new ObservableCollection<user>(list);
+            OnPropertyChanged(nameof(IsEmpty));
         }
         catch (Exception ex)
         {
@@ -51,8 +52,12 @@ public partial class DoctorPatientsViewModel : ObservableObject
         finally
         {
             IsLoading = false;
+            OnPropertyChanged(nameof(IsEmpty));
         }
     }
+
+    public bool IsEmpty => Patients == null || Patients.Count == 0;
+
 
     [RelayCommand]
     private async Task AddPatientAsync()

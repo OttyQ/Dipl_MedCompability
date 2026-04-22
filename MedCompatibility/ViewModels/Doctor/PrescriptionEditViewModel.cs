@@ -145,10 +145,17 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
 
         if (IsEditMode)
             await LoadForEditAsync();
+        else
+        {
+            // Устанавливаем даты по умолчанию для нового назначения
+            StartDate = DateTime.Today.ToString("dd.MM.yyyy");
+            EndDate = DateTime.Today.AddDays(7).ToString("dd.MM.yyyy");
+        }
 
         OnPropertyChanged(nameof(IsEditMode));
         OnPropertyChanged(nameof(PageTitle));
     }
+
     
     private async Task TryApplyMedicineAsync(medicine med)
     {

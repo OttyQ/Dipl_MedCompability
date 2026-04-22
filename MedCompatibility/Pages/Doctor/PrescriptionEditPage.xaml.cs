@@ -61,4 +61,20 @@ public partial class PrescriptionEditPage : ContentPage
             _isFormatting = false;
         });
     }
-}
+
+    private void OnStartDateSelected(object? sender, DateChangedEventArgs e)
+    {
+        if (BindingContext is PrescriptionEditViewModel vm)
+        {
+            vm.StartDate = e.NewDate.ToString("dd.MM.yyyy");
+        }
+    }
+
+    private void OnEndDateSelected(object? sender, DateChangedEventArgs e)
+    {
+        if (BindingContext is PrescriptionEditViewModel vm)
+        {
+            vm.EndDate = e.NewDate.ToString("dd.MM.yyyy");
+        }
+    }
+}
