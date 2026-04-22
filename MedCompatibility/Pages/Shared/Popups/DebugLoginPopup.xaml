@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent"
+    x:Class="MedCompatibility.Pages.Shared.Popups.DebugLoginPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border
+        BackgroundColor="White"
+        HorizontalOptions="Center"
+        Padding="20"
+        StrokeShape="RoundRectangle 16"
+        VerticalOptions="Center"
+        WidthRequest="320">
+
+        <VerticalStackLayout Spacing="16">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                HorizontalTextAlignment="Center"
+                Text="Debug Quick Login"
+                TextColor="{StaticResource TextPrimary}" />
+
+            <Label
+                FontSize="12"
+                HorizontalTextAlignment="Center"
+                Text="Выберите роль для быстрой авторизации"
+                TextColor="{StaticResource TextSecondary}" />
+
+            <Button
+                Clicked="OnAdminClicked"
+                Style="{StaticResource PrimaryButton}"
+                Text="Администратор" />
+
+            <Button
+                Clicked="OnDoctorClicked"
+                Style="{StaticResource SecondaryButton}"
+                Text="Врач" />
+
+            <Button
+                Clicked="OnPatientClicked"
+                Style="{StaticResource SecondaryButton}"
+                Text="Пациент" />
+
+            <Button
+                Clicked="OnCancelClicked"
+                Style="{StaticResource TextButton}"
+                Text="Отмена" />
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>
