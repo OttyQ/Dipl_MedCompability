@@ -235,18 +235,31 @@
 
             <!--  Кнопки  -->
             <Grid
-                ColumnDefinitions="*, *"
+                ColumnDefinitions="Auto, *, *"
                 ColumnSpacing="12"
                 Grid.Row="3">
                 <Button
-                    Clicked="OnCancelClicked"
+                    Command="{Binding ShareReportCommand}"
                     Grid.Column="0"
+                    BackgroundColor="#E3F2FD"
+                    TextColor="{StaticResource Primary}"
+                    Text="📄 PDF"
+                    FontAttributes="Bold"
+                    FontSize="14"
+                    HeightRequest="48"
+                    CornerRadius="12"
+                    Padding="12,0"
+                    VerticalOptions="Center"
+                    ToolTipProperties.Text="Сформировать PDF" />
+                <Button
+                    Clicked="OnCancelClicked"
+                    Grid.Column="1"
                     Style="{StaticResource SecondaryButton}"
                     Text="Отмена"
                     x:Name="CancelButton" />
                 <Button
                     Clicked="OnContinueClicked"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Style="{StaticResource PrimaryButton}"
                     Text="Продолжить"
                     x:Name="ContinueButton" />

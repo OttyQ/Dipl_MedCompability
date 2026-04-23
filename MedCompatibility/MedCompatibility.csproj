@@ -34,6 +34,7 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+        <UseShortFileNames Condition="'$(TargetFramework)' == 'net8.0-android'">True</UseShortFileNames>
     </PropertyGroup>
 
     <ItemGroup>
@@ -56,11 +57,14 @@
 
     <ItemGroup>
         <EmbeddedResource Include="appsettings.json" CopyToOutputDirectory="Always" />
+        <EmbeddedResource Include="Resources\Fonts\OpenSans-Regular.ttf" />
         <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
         <PackageReference Include="Plugin.LocalNotification" Version="11.1.4" />
+        <PackageReference Include="itext7" Version="8.0.5" />
+        <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.5" />
         <PackageReference Include="UraniumUI.Material" Version="2.12.1" />
         <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
     </ItemGroup>
