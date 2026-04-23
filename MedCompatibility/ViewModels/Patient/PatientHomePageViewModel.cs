@@ -14,6 +14,7 @@ public partial class PatientHomePageViewModel : ObservableObject
     private readonly IUserSessionService _sessionService;
     private readonly IPrescriptionService _prescriptionService;
     private readonly INotificationService _notificationService;
+    private bool _isRemindersScheduled = false;
 
     [ObservableProperty]
     private string _welcomeText;
@@ -27,6 +28,9 @@ public partial class PatientHomePageViewModel : ObservableObject
     [ObservableProperty]
     private bool _hasNewPrescriptions;
 
+    [ObservableProperty]
+    private bool _isDebug;
+
     public PatientHomePageViewModel(
         IUserSessionService sessionService,
         IPrescriptionService prescriptionService,
@@ -35,6 +39,12 @@ public partial class PatientHomePageViewModel : ObservableObject
         _sessionService = sessionService;
         _prescriptionService = prescriptionService;
         _notificationService = notificationService;
+        
+#if DEBUG
+        IsDebug = true;
+#else
+        IsDebug = false;
+#endif
     }
 
     public async Task OnAppearingAsync()
@@ -65,13 +75,15 @@ public partial class PatientHomePageViewModel : ObservableObject
 
             // Логика напоминаний
             bool hasActive = prescriptions.Any(p => p.EndDate.Date >= DateTime.Today);
-            if (hasActive)
+            if (hasActive && !_isRemindersScheduled)
             {
                 await _notificationService.ScheduleDailyRemindersAsync();
+                _isRemindersScheduled = true;
             }
-            else
+            else if (!hasActive)
             {
                 await _notificationService.CancelAllRemindersAsync();
+                _isRemindersScheduled = false;
             }
 
             var withDate = prescriptions
