@@ -376,6 +376,7 @@
             <local:StringFirstCharConverter x:Key="StringFirstCharConverter" />
             <local:DateToDayNameConverter x:Key="DateToDayNameConverter" />
             <local:IsEqualToTodayConverter x:Key="IsEqualToTodayConverter" />
+            <local:DayTypeToColorConverter x:Key="DayTypeToColorConverter" />
 
 
 

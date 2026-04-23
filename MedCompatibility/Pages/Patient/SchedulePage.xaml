@@ -7,6 +7,7 @@
     xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid>
@@ -104,7 +105,7 @@
                             <LinearItemsLayout ItemSpacing="{OnPlatform WinUI=16, Default=2}" Orientation="Horizontal" />
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="sys:DateTime">
+                            <DataTemplate x:DataType="models:CalendarDayItem">
                                 <Grid
                                     HeightRequest="68"
                                     HorizontalOptions="Center"
@@ -113,14 +114,24 @@
                                                               Default=44}">
                                     <Border
                                         BackgroundColor="Transparent"
+                                        Stroke="#BDBDBD"
                                         StrokeShape="RoundRectangle 10"
                                         StrokeThickness="0">
                                         <Border.Triggers>
+                                            <!-- Выделение выбранного дня (серая обводка) -->
                                             <DataTrigger
-                                                Binding="{Binding Converter={StaticResource IsEqualToTodayConverter}}"
+                                                Binding="{Binding IsSelected}"
+                                                TargetType="Border"
+                                                Value="True">
+                                                <Setter Property="StrokeThickness" Value="1.5" />
+                                            </DataTrigger>
+                                            <!-- Подсветка сегодня (зеленый фон) -->
+                                            <DataTrigger
+                                                Binding="{Binding Date, Converter={StaticResource IsEqualToTodayConverter}}"
                                                 TargetType="Border"
                                                 Value="True">
                                                 <Setter Property="BackgroundColor" Value="#00796B" />
+                                                <Setter Property="StrokeThickness" Value="0" />
                                             </DataTrigger>
                                         </Border.Triggers>
                                     </Border>
@@ -135,8 +146,13 @@
                                             HorizontalOptions="Center"
                                             TextColor="{StaticResource TextSecondary}">
                                             <Label.Text>
-                                                <Binding Converter="{StaticResource DateToDayNameConverter}" />
+                                                <Binding Path="Date" Converter="{StaticResource DateToDayNameConverter}" />
                                             </Label.Text>
+                                            <Label.Triggers>
+                                                <DataTrigger Binding="{Binding Date, Converter={StaticResource IsEqualToTodayConverter}}" TargetType="Label" Value="True">
+                                                    <Setter Property="TextColor" Value="White" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
                                         </Label>
 
                                         <Label
@@ -145,12 +161,17 @@
                                             HorizontalOptions="Center"
                                             TextColor="{StaticResource TextPrimary}">
                                             <Label.Text>
-                                                <Binding StringFormat="{}{0:%d}" />
+                                                <Binding Path="Date" StringFormat="{}{0:%d}" />
                                             </Label.Text>
+                                            <Label.Triggers>
+                                                <DataTrigger Binding="{Binding Date, Converter={StaticResource IsEqualToTodayConverter}}" TargetType="Label" Value="True">
+                                                    <Setter Property="TextColor" Value="White" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
                                         </Label>
 
                                         <Ellipse
-                                            Fill="Transparent"
+                                            Fill="{Binding Type, Converter={StaticResource DayTypeToColorConverter}}"
                                             HeightRequest="5"
                                             HorizontalOptions="Center"
                                             WidthRequest="5" />
