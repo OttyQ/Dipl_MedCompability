@@ -108,6 +108,14 @@
                             ZIndex="10" />
 
                     </Grid>
+
+                    <Button 
+                        Text="Тест уведомлений (5 сек)" 
+                        Command="{Binding SendTestNotificationCommand}" 
+                        Margin="0,10"
+                        Style="{StaticResource SecondaryButton}"
+                        IsVisible="{Binding IsUser}" />
+
                 </VerticalStackLayout>
             </ScrollView>
         </Grid>

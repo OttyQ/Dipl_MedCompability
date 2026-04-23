@@ -13,6 +13,7 @@ public partial class PatientHomePageViewModel : ObservableObject
 {
     private readonly IUserSessionService _sessionService;
     private readonly IPrescriptionService _prescriptionService;
+    private readonly INotificationService _notificationService;
 
     [ObservableProperty]
     private string _welcomeText;
@@ -28,10 +29,12 @@ public partial class PatientHomePageViewModel : ObservableObject
 
     public PatientHomePageViewModel(
         IUserSessionService sessionService,
-        IPrescriptionService prescriptionService)
+        IPrescriptionService prescriptionService,
+        INotificationService notificationService)
     {
         _sessionService = sessionService;
         _prescriptionService = prescriptionService;
+        _notificationService = notificationService;
     }
 
     public async Task OnAppearingAsync()
@@ -56,7 +59,19 @@ public partial class PatientHomePageViewModel : ObservableObject
             if (prescriptions == null || !prescriptions.Any())
             {
                 HasNewPrescriptions = false;
+                await _notificationService.CancelAllRemindersAsync();
                 return;
+            }
+
+            // Логика напоминаний
+            bool hasActive = prescriptions.Any(p => p.EndDate.Date >= DateTime.Today);
+            if (hasActive)
+            {
+                await _notificationService.ScheduleDailyRemindersAsync();
+            }
+            else
+            {
+                await _notificationService.CancelAllRemindersAsync();
             }
 
             var withDate = prescriptions
@@ -128,5 +143,11 @@ public partial class PatientHomePageViewModel : ObservableObject
             _sessionService.EndSession();
             await Shell.Current.GoToAsync("//Login");
         }
+    }
+
+    [RelayCommand]
+    private async Task SendTestNotificationAsync()
+    {
+        await _notificationService.SendTestNotificationAsync();
     }
 }
