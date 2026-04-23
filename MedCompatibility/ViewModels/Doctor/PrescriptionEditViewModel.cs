@@ -294,6 +294,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
     {
         List<interaction> allConflicts = new();
         bool isCritical = false;
+        List<medicine> pastConflictingDrugs = new();
 
         try
         {
@@ -340,6 +341,10 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
                         {
                             c.Description = $"Конфликт с «{p.Medicine?.TradeName ?? "препаратом"}» из прошлого назначения (прием завершен {daysAgo} дн. назад). {c.Description}";
                         }
+                        if (p.Medicine != null && !pastConflictingDrugs.Any(m => m.MedicineId == p.MedicineId))
+                        {
+                            pastConflictingDrugs.Add(p.Medicine);
+                        }
                     }
                     allConflicts.AddRange(conflicts);
                 }
@@ -360,8 +365,12 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
             _loadingService.Hide();
         }
 
+        // Fetch patient
+        var patient = await _userService.GetUserByIdAsync(_patientId);
+        var doctorName = _session.CurrentUser?.FullName ?? "Врач";
+
         // Показываем попап ПОСЛЕ того, как лоадер скрыт
-        var result = await Shell.Current.ShowPopupAsync(new InteractionsDetailsPopup(allConflicts, isCritical));
+        var result = await Shell.Current.ShowPopupAsync(new InteractionsDetailsPopup(allConflicts, isCritical, patient, doctorName, pastConflictingDrugs));
         return result is bool ok && ok;
     }
 

@@ -60,6 +60,16 @@ public class UserService : IUserService
             .CountAsync();
     }
     
+    public async Task<user> GetUserByIdAsync(int userId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        return await context.users
+            .Include(u => u.Allergies)
+            .Include(u => u.Role)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.UserId == userId);
+    }
+    
     public async Task<List<user>> GetUsersFilteredAsync(string? searchText, string? roleName, string? status)
     {
         using var context = await _contextFactory.CreateDbContextAsync();

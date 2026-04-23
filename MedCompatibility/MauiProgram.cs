@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Storage;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 using MedCompatibility.Pages.Doctor;
 using MedCompatibility.Pages.Patient;
 using MedCompatibility.Pages.Shared.Popups;
@@ -25,6 +27,7 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
         var builder = MauiApp.CreateBuilder();
 
         // 1) App + Fonts
@@ -93,10 +96,16 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDoctorStatsService, DoctorStatsService>();
         builder.Services.AddSingleton<MedCompatibility.Services.Interfaces.INotificationService, NotificationService>();
         
+        // IFileSaver, IShare and IPdfReportService
+        builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
+        builder.Services.AddSingleton<IShare>(Share.Default);
+        builder.Services.AddTransient<IPdfReportService, PdfReportService>();
+        
 
         // 5) ViewModels
         builder.Services.AddTransient<PatientSearchPopup>();
         builder.Services.AddTransient<UniversalSearchPopup>();
+        builder.Services.AddTransient<InteractionsDetailsPopupViewModel>();
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddTransient<PatientHomePageViewModel>();

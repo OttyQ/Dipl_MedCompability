@@ -1,13 +1,24 @@
-﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Maui.Views;
 using MedCompatibility.Models;
+using MedCompatibility.ViewModels;
 
 namespace MedCompatibility.Pages.Shared.Popups;
 
 public partial class InteractionsDetailsPopup : Popup
 {
-    public InteractionsDetailsPopup(List<interaction> interactions, bool hasCritical)
+    public InteractionsDetailsPopup(List<interaction> interactions, bool hasCritical, user patient = null, string doctorName = "", List<medicine> pastConflictingDrugs = null)
     {
         InitializeComponent();
+
+        var vm = App.Current.Handler.MauiContext.Services.GetService<InteractionsDetailsPopupViewModel>();
+        if (vm != null)
+        {
+            vm.Interactions = interactions;
+            vm.Patient = patient;
+            vm.DoctorName = doctorName;
+            vm.PastConflictingDrugs = pastConflictingDrugs ?? new List<medicine>();
+            BindingContext = vm;
+        }
 
         // Настройка заголовка
         if (hasCritical)
