@@ -60,10 +60,15 @@
 
                     <Label
                         FontAttributes="Bold"
-                        FontSize="26"
-                        HorizontalTextAlignment="Center"
-                        Text="MedCompatibility"
-                        TextColor="{StaticResource TextPrimary}" />
+                        FontSize="32"
+                        HorizontalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Veri" TextColor="{StaticResource TextPrimary}" />
+                                <Span Text="Pharm" TextColor="{StaticResource Primary}" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
 
                     <Label
                         FontSize="13"

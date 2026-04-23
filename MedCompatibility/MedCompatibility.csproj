@@ -22,7 +22,7 @@
         <Nullable>enable</Nullable>
 
         <!-- Display name -->
-        <ApplicationTitle>MedCompatibility</ApplicationTitle>
+        <ApplicationTitle>VeriPharm</ApplicationTitle>
 
         <!-- App Identifier -->
         <ApplicationId>com.companyname.medcompatibility</ApplicationId>
@@ -41,7 +41,7 @@
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#FFFFFF" />
 
         <!-- Splash Screen -->
-        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#FFFFFF" BaseSize="128,128" />
+        <MauiSplashScreen Include="Resources\Splash\splash_logo.svg" Color="#FFFFFF" BaseSize="256,256" />
 
         <!-- Images -->
         <MauiImage Include="Resources\Images\*" />
