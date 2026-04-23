@@ -11,6 +11,8 @@ public interface IUserService
     Task<int> GetPatientsCountAsync();
     Task<int> GetActiveDoctorsCountAsync();
 
+    Task<user> GetUserByIdAsync(int userId);
+
     Task<List<user>> GetUsersFilteredAsync(string? searchText, string? roleName, string? status);
 
     // Удаление

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     BackgroundColor="{StaticResource AppBackground}"
     Shell.NavBarIsVisible="False"
@@ -301,6 +301,28 @@
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </VerticalStackLayout>
+                                
+                                <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,10,0,0">
+                                    <Button Text="Скачать PDF" 
+                                            Command="{Binding SaveReportCommand}"
+                                            BackgroundColor="White" 
+                                            TextColor="{StaticResource Primary}" 
+                                            BorderColor="{StaticResource Primary}" 
+                                            BorderWidth="1.5" 
+                                            CornerRadius="10" 
+                                            Padding="20,10" 
+                                            FontAttributes="Bold" />
+                                    <Button Text="Поделиться" 
+                                            Command="{Binding ShareReportCommand}"
+                                            BackgroundColor="White" 
+                                            TextColor="{StaticResource Primary}" 
+                                            BorderColor="{StaticResource Primary}" 
+                                            BorderWidth="1.5" 
+                                            CornerRadius="10" 
+                                            Padding="20,10" 
+                                            FontAttributes="Bold" />
+                                </HorizontalStackLayout>
+                                
                             </VerticalStackLayout>
                         </Border>
                     </VerticalStackLayout>
