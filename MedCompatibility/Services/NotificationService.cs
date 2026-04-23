@@ -62,7 +62,7 @@ public class NotificationService : MedCompatibility.Services.Interfaces.INotific
         return new NotificationRequest
         {
             NotificationId = id,
-            Title = "MedCompatibility",
+            Title = "VeriPharm",
             Subtitle = "Напоминание о приёме",
             Description = "Пора проверить график приёма лекарств.",
             CategoryType = NotificationCategoryType.Reminder,
