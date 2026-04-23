@@ -1,4 +1,5 @@
 using Plugin.LocalNotification;
+using Plugin.LocalNotification.AndroidOption;
 using MedCompatibility.Services.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -62,9 +63,15 @@ public class NotificationService : MedCompatibility.Services.Interfaces.INotific
         {
             NotificationId = id,
             Title = "MedCompatibility",
-            Subtitle = subtitle,
+            Subtitle = "Напоминание о приёме",
             Description = "Пора проверить график приёма лекарств.",
             CategoryType = NotificationCategoryType.Reminder,
+            Android = new AndroidOptions
+            {
+                IconSmallName = new AndroidIcon("ic_notification"),
+                Priority = AndroidPriority.High
+                // Цвет отключен, так как вызывает сбои на Android
+            },
             Schedule = new NotificationRequestSchedule
             {
                 NotifyTime = notifyTime,
@@ -87,11 +94,8 @@ public class NotificationService : MedCompatibility.Services.Interfaces.INotific
             if (!await CheckAndRequestPermissions())
                 return;
 
-            // Используем ТОТ ЖЕ САМЫЙ метод создания запроса, что и для реальных уведомлений
-            // но ставим время через 10 секунд
+            // Используем ту же логику, что и в реальных уведомлениях
             var testReq = CreateReminderRequest(999, "ТЕСТ: Напоминание", DateTime.Now.AddSeconds(10));
-            
-            // Для теста отключаем повторение, чтобы не спамить
             testReq.Schedule.RepeatType = NotificationRepeat.No;
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
