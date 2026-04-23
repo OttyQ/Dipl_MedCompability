@@ -114,7 +114,7 @@
                         Command="{Binding SendTestNotificationCommand}" 
                         Margin="0,10"
                         Style="{StaticResource SecondaryButton}"
-                        IsVisible="{Binding IsUser}" />
+                        IsVisible="{Binding IsDebug}" />
 
                 </VerticalStackLayout>
             </ScrollView>
