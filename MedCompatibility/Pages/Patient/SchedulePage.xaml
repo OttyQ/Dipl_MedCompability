@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    BackgroundColor="{StaticResource AppBackground}"
+    Shell.NavBarIsVisible="False"
+    x:Class="MedCompatibility.Pages.Patient.SchedulePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:vm="clr-namespace:MedCompatibility.ViewModels.Patient"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid>
+        <controls:BackgroundBubblesView />
+
+        <Grid
+            HorizontalOptions="{OnPlatform WinUI=Center,
+                                           Default=Fill}"
+            MaximumWidthRequest="{OnPlatform WinUI=800,
+                                             Default=9999}"
+            RowDefinitions="Auto, Auto, *">
+
+            <controls:CustomHeader
+                Grid.Row="0"
+                IsBackButtonVisible="True"
+                Margin="{OnPlatform WinUI='0,40,0,20',
+                                    Default='20,20,20,10'}"
+                Title="Мои назначения" />
+
+            <Border
+                BackgroundColor="White"
+                Grid.Row="1"
+                HorizontalOptions="{OnPlatform WinUI=Center,
+                                               Default=Fill}"
+                Margin="{OnPlatform WinUI='0,0,0,20',
+                                    Default='20,0,20,10'}"
+                MaximumWidthRequest="{OnPlatform WinUI=600,
+                                                 Default=9999}"
+                Padding="16,16"
+                StrokeShape="RoundRectangle 20"
+                StrokeThickness="0">
+                <Border.Shadow>
+                    <Shadow
+                        Brush="Black"
+                        Offset="0,4"
+                        Opacity="0.06"
+                        Radius="10" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="15">
+
+                    <Grid ColumnDefinitions="36,*,36">
+
+                        <Button
+                            BackgroundColor="Transparent"
+                            Command="{Binding PreviousWeekCommand}"
+                            FontSize="18"
+                            Grid.Column="0"
+                            HeightRequest="36"
+                            Padding="0"
+                            Text="←"
+                            TextColor="{StaticResource TextPrimary}"
+                            WidthRequest="36" />
+
+                        <Grid Grid.Column="1" HorizontalOptions="Center">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding MonthYearLabel}"
+                                TextColor="{StaticResource TextPrimary}"
+                                VerticalOptions="Center" />
+
+                            <DatePicker
+                                Date="{Binding SelectedDate}"
+                                DateSelected="OnDatePickerSelected"
+                                HorizontalOptions="Fill"
+                                InputTransparent="False"
+                                IsVisible="True"
+                                Opacity="0.02"
+                                VerticalOptions="Fill"
+                                x:Name="WeekDatePicker" />
+                        </Grid>
+
+                        <Button
+                            BackgroundColor="Transparent"
+                            Command="{Binding NextWeekCommand}"
+                            FontSize="18"
+                            Grid.Column="2"
+                            HeightRequest="36"
+                            Padding="0"
+                            Text="→"
+                            TextColor="{StaticResource TextPrimary}"
+                            WidthRequest="36" />
+
+                    </Grid>
+
+                    <CollectionView
+                        HeightRequest="70"
+                        HorizontalOptions="Center"
+                        HorizontalScrollBarVisibility="Never"
+                        ItemsSource="{Binding WeekDays}"
+                        VerticalScrollBarVisibility="Never">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout ItemSpacing="{OnPlatform WinUI=16, Default=2}" Orientation="Horizontal" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="sys:DateTime">
+                                <Grid
+                                    HeightRequest="68"
+                                    HorizontalOptions="Center"
+                                    Padding="2"
+                                    WidthRequest="{OnPlatform WinUI=52,
+                                                              Default=44}">
+                                    <Border
+                                        BackgroundColor="Transparent"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0">
+                                        <Border.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding Converter={StaticResource IsEqualToTodayConverter}}"
+                                                TargetType="Border"
+                                                Value="True">
+                                                <Setter Property="BackgroundColor" Value="#00796B" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                    </Border>
+
+                                    <VerticalStackLayout
+                                        HorizontalOptions="Center"
+                                        Spacing="2"
+                                        VerticalOptions="Center">
+
+                                        <Label
+                                            FontSize="11"
+                                            HorizontalOptions="Center"
+                                            TextColor="{StaticResource TextSecondary}">
+                                            <Label.Text>
+                                                <Binding Converter="{StaticResource DateToDayNameConverter}" />
+                                            </Label.Text>
+                                        </Label>
+
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="15"
+                                            HorizontalOptions="Center"
+                                            TextColor="{StaticResource TextPrimary}">
+                                            <Label.Text>
+                                                <Binding StringFormat="{}{0:%d}" />
+                                            </Label.Text>
+                                        </Label>
+
+                                        <Ellipse
+                                            Fill="Transparent"
+                                            HeightRequest="5"
+                                            HorizontalOptions="Center"
+                                            WidthRequest="5" />
+
+                                    </VerticalStackLayout>
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ScheduleViewModel}}, Path=SelectDateCommand}" CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                Grid.Row="2"
+                HorizontalOptions="Center"
+                Text="Список назначений появится в следующем этапе"
+                TextColor="{StaticResource TextSecondary}"
+                VerticalOptions="Center" />
+
+        </Grid>
+    </Grid>
+</ContentPage>

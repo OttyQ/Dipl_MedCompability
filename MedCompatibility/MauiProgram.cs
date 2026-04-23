@@ -110,6 +110,7 @@ public static class MauiProgram
         builder.Services.AddTransient<DoctorHomeViewModel>();
         builder.Services.AddTransient<DoctorPatientsViewModel>();
         builder.Services.AddTransient<PrescriptionEditViewModel>();
+        builder.Services.AddTransient<ScheduleViewModel>();
         
         
 
@@ -126,6 +127,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<CompatibilityPage>();
         builder.Services.AddTransient<MedicineDetailsPage>();
+        builder.Services.AddTransient<SchedulePage>();
         //Admin
         builder.Services.AddTransient<Pages.Admin.AdminHomePage>();
         builder.Services.AddTransient<Pages.Admin.UsersListPage>();

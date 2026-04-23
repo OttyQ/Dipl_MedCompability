@@ -114,8 +114,7 @@ public partial class PatientHomePageViewModel : ObservableObject
     [RelayCommand]
     private async Task GoToScheduleAsync()
     {
-        // Навигация будет подключена в следующем этапе
-        await Task.CompletedTask;
+        await Shell.Current.GoToAsync(nameof(SchedulePage));
     }
     
     [RelayCommand]
