@@ -377,6 +377,8 @@
             <local:DateToDayNameConverter x:Key="DateToDayNameConverter" />
             <local:IsEqualToTodayConverter x:Key="IsEqualToTodayConverter" />
             <local:DayTypeToColorConverter x:Key="DayTypeToColorConverter" />
+            <local:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <local:IsDateExpiredConverter x:Key="IsDateExpiredConverter" />
 
 
 
