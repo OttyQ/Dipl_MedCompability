@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Maui.Views;
@@ -6,6 +6,9 @@ using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
 using MedCompatibility.Pages.Shared.Popups;
 using MedCompatibility.Pages.Shared; // Для доступа к CodeScannerPage
+using CommunityToolkit.Maui.Storage;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
+using System.IO;
 
 namespace MedCompatibility.ViewModels;
 
@@ -48,6 +51,10 @@ public partial class MedicineSlot : ObservableObject
 public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttributable
 {
     private readonly IMedicineService _medicineService;
+    private readonly IPdfReportService _pdfReportService;
+    private readonly IShare _share;
+    private readonly IFileSaver _fileSaver;
+    private readonly IUserSessionService _sessionService;
 
     // Ссылка на слот, который мы сейчас наполняем (через поиск или сканер)
     private MedicineSlot? _activeSlot;
@@ -56,9 +63,18 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
     [ObservableProperty] private ObservableCollection<CrossInteractionReport> _analysisReport; 
     [ObservableProperty] private bool _isAnalysisDone;
 
-    public DoctorCrossAnalysisViewModel(IMedicineService medicineService)
+    public DoctorCrossAnalysisViewModel(
+        IMedicineService medicineService,
+        IPdfReportService pdfReportService,
+        IShare share,
+        IFileSaver fileSaver,
+        IUserSessionService sessionService)
     {
         _medicineService = medicineService;
+        _pdfReportService = pdfReportService;
+        _share = share;
+        _fileSaver = fileSaver;
+        _sessionService = sessionService;
         _slots = new ObservableCollection<MedicineSlot> { new(), new() };
         _analysisReport = new ObservableCollection<CrossInteractionReport>();
     }
@@ -194,5 +210,62 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
         }
 
         IsAnalysisDone = true;
+    }
+
+    private async Task<byte[]> GeneratePdfBytesAsync()
+    {
+        var doctorName = _sessionService.CurrentUser?.FullName ?? "Врач";
+        var validSlots = Slots.Where(s => s.HasMedicine).Select(s => s.SelectedMedicine!).ToList();
+        
+        var interactions = AnalysisReport
+            .Where(r => r.IsConflict && r.Interaction != null)
+            .Select(r => r.Interaction!)
+            .ToList();
+
+        return await _pdfReportService.GenerateCrossAnalysisReportAsync(doctorName, validSlots, interactions);
+    }
+
+    [RelayCommand]
+    private async Task ShareReportAsync()
+    {
+        try
+        {
+            var pdfBytes = await GeneratePdfBytesAsync();
+            var fileName = $"Анализ_препаратов_{DateTime.Now:ddMMyyyy}.pdf";
+            var tempPath = Path.Combine(FileSystem.CacheDirectory, fileName);
+            await File.WriteAllBytesAsync(tempPath, pdfBytes);
+
+            await _share.RequestAsync(new ShareFileRequest
+            {
+                Title = "Отчет о совместимости препаратов",
+                File = new ShareFile(tempPath)
+            });
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", $"Не удалось поделиться отчетом: {ex.Message}", "OK");
+        }
+    }
+
+    [RelayCommand]
+    private async Task SaveReportAsync()
+    {
+        try
+        {
+            var pdfBytes = await GeneratePdfBytesAsync();
+            var fileName = $"Анализ_препаратов_{DateTime.Now:ddMMyyyy}.pdf";
+            
+            using var stream = new MemoryStream(pdfBytes);
+            var result = await _fileSaver.SaveAsync(fileName, stream, CancellationToken.None);
+            
+            if (result.IsSuccessful)
+            {
+                await Shell.Current.DisplayAlert("Успешно", $"Отчет сохранен по пути:\n{result.FilePath}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", $"Не удалось сохранить отчет: {ex.Message}", "OK");
+        }
     }
 }
