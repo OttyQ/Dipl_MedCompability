@@ -374,6 +374,8 @@
             <local:BoolToColorConverter x:Key="BoolToColorConverter" />
             <local:RoleToColorConverter x:Key="RoleToColorConverter" />
             <local:StringFirstCharConverter x:Key="StringFirstCharConverter" />
+            <local:DateToDayNameConverter x:Key="DateToDayNameConverter" />
+            <local:IsEqualToTodayConverter x:Key="IsEqualToTodayConverter" />
 
 
 
