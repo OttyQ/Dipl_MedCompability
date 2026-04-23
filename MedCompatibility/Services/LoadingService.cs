@@ -7,30 +7,22 @@ namespace MedCompatibility.Services;
 public class LoadingService : ILoadingService
 {
     private Popup? _popup;
-    private int _showCount = 0;
-    private readonly object _lock = new();
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     public void Show()
     {
-        lock (_lock)
-        {
-            _showCount++;
-            if (_showCount > 1) return;
-        }
-
         MainThread.BeginInvokeOnMainThread(() =>
         {
             if (_popup != null) return;
-
             try
             {
+                var page = GetTopPage();
+                if (page == null) return;
                 _popup = new LoadingPopup();
-                // Используем CurrentPage для более надежного отображения
-                Shell.Current?.CurrentPage?.ShowPopup(_popup);
+                page.ShowPopup(_popup);
             }
             catch
             {
-                lock (_lock) { _showCount = 0; }
                 _popup = null;
             }
         });
@@ -38,27 +30,32 @@ public class LoadingService : ILoadingService
 
     public void Hide()
     {
-        lock (_lock)
-        {
-            if (_showCount > 0) _showCount--;
-            if (_showCount > 0) return;
-        }
-
-        MainThread.BeginInvokeOnMainThread(() =>
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
             var p = _popup;
             _popup = null;
-
+            if (p == null) return;
             try
             {
-                p?.Close();
+                await p.CloseAsync();
             }
             catch
             {
-                // Игнорируем ошибки при закрытии
+                // игнорируем
             }
         });
     }
 
-    public bool IsShown => _showCount > 0;
+    public bool IsShown => _popup != null;
+
+    private static Page? GetTopPage()
+    {
+        var root = Application.Current?.Windows
+            .FirstOrDefault()?.Page;
+
+        if (root is Shell shell)
+            return shell.CurrentPage ?? shell;
+
+        return root;
+    }
 }
