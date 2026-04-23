@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     Shell.NavBarIsVisible="False"
     x:Class="MedCompatibility.Pages.Patient.PatientHomePage"
@@ -43,7 +43,7 @@
                     <Grid
                         ColumnDefinitions="*,*"
                         ColumnSpacing="15"
-                        RowDefinitions="Auto,Auto"
+                        RowDefinitions="Auto,Auto,Auto"
                         RowSpacing="15">
 
                         <controls:ActionTile
@@ -84,7 +84,38 @@
                             IsVisible="{Binding IsUser}"
                             Title="Профиль" />
 
+                        <controls:ActionTile
+                            Command="{Binding GoToScheduleCommand}"
+                            Description="Курсы лечения"
+                            Grid.Column="0"
+                            Grid.Row="2"
+                            IconBackgroundColor="#2643A047"
+                            IconText="📅"
+                            IsVisible="{Binding IsUser}"
+                            Title="Мои назначения" />
+
+                        <Ellipse
+                            Fill="#FFC107"
+                            Grid.Column="0"
+                            Grid.Row="2"
+                            HeightRequest="12"
+                            HorizontalOptions="End"
+                            InputTransparent="True"
+                            IsVisible="{Binding HasNewPrescriptions}"
+                            Margin="0,8,8,0"
+                            VerticalOptions="Start"
+                            WidthRequest="12"
+                            ZIndex="10" />
+
                     </Grid>
+
+                    <Button 
+                        Text="Тест уведомлений (5 сек)" 
+                        Command="{Binding SendTestNotificationCommand}" 
+                        Margin="0,10"
+                        Style="{StaticResource SecondaryButton}"
+                        IsVisible="{Binding IsDebug}" />
+
                 </VerticalStackLayout>
             </ScrollView>
         </Grid>

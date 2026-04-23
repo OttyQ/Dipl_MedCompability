@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Pages.Admin;
+using MedCompatibility.Pages.Admin;
 using MedCompatibility.Pages.Doctor;
 using MedCompatibility.Pages.Patient;
 
@@ -31,6 +31,7 @@ public partial class AppShell : Shell
         // Маршруты зоны пациента
         Routing.RegisterRoute(nameof(ScanPage), typeof(Pages.Patient.ScanPage));
         Routing.RegisterRoute(nameof(HistoryPage), typeof(Pages.Patient.HistoryPage));
+        Routing.RegisterRoute(nameof(SchedulePage), typeof(SchedulePage));
         //Routing.RegisterRoute(nameof(CompatibilityPage), typeof(Pages.Patient.CompatibilityPage));
         //Routing.RegisterRoute(nameof(ProfilePage), typeof(Pages.Patient.ProfilePage));
         Routing.RegisterRoute(nameof(DoctorCrossAnalysisPage), typeof(DoctorCrossAnalysisPage));

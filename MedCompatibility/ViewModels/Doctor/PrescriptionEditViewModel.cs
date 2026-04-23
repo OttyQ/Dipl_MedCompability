@@ -405,8 +405,6 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
                     Dosage.Trim(),
                     string.IsNullOrWhiteSpace(Notes) ? null : Notes.Trim());
             }
-
-            await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)
         {
@@ -416,6 +414,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         {
             _loadingService.Hide();
         }
+        await Shell.Current.GoToAsync("..");
     }
 
     [RelayCommand]
@@ -433,7 +432,6 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         {
             _loadingService.Show();
             await _prescriptionService.DeleteAsync(_prescriptionId!.Value, doctor.UserId);
-            await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)
         {
@@ -443,6 +441,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         {
             _loadingService.Hide();
         }
+        await Shell.Current.GoToAsync("..");
     }
 
     [RelayCommand]

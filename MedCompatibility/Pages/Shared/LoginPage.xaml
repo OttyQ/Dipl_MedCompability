@@ -51,36 +51,24 @@
                 <!--  Шапка: стикер + название + слоган  -->
                 <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
 
-                    <Border
-                        BackgroundColor="{StaticResource Surface}"
-                        HeightRequest="54"
-                        HorizontalOptions="Center"
-                        Padding="10"
-                        Stroke="#E6EAF0"
-                        StrokeShape="RoundRectangle 999"
-                        StrokeThickness="1"
-                        WidthRequest="54">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="#90A4AE"
-                                Offset="0,8"
-                                Opacity="0.10"
-                                Radius="20" />
-                        </Border.Shadow>
-
-                        <Label
-                            FontSize="26"
-                            HorizontalOptions="Center"
-                            Text="🩺"
-                            VerticalOptions="Center" />
-                    </Border>
+                    <Image 
+                        Source="logo.png" 
+                        HeightRequest="120" 
+                        WidthRequest="120" 
+                        HorizontalOptions="Center" 
+                        Margin="0, 20, 0, 30" />
 
                     <Label
                         FontAttributes="Bold"
-                        FontSize="26"
-                        HorizontalTextAlignment="Center"
-                        Text="MedCompatibility"
-                        TextColor="{StaticResource TextPrimary}" />
+                        FontSize="32"
+                        HorizontalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Veri" TextColor="{StaticResource TextPrimary}" />
+                                <Span Text="Pharm" TextColor="{StaticResource Primary}" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
 
                     <Label
                         FontSize="13"
