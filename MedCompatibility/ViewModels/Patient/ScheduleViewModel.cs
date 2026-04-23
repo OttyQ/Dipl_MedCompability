@@ -17,6 +17,10 @@ public partial class ScheduleViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<CalendarDayItem> _weekDays = new();
     [ObservableProperty] private string _monthYearLabel = string.Empty;
 
+    [ObservableProperty] private ObservableCollection<prescription> _prescriptionsForDay = new();
+    [ObservableProperty] private bool _isEmpty = true;
+    [ObservableProperty] private string _selectedDateSummaryLabel = string.Empty;
+
     public ScheduleViewModel(IUserSessionService sessionService, IPrescriptionService prescriptionService)
     {
         _sessionService = sessionService;
@@ -31,7 +35,9 @@ public partial class ScheduleViewModel : ObservableObject
             _allPrescriptions = await _prescriptionService.GetPatientPrescriptionsAsync(_sessionService.CurrentUser.UserId);
         }
         
+        // Перестраиваем неделю и загружаем данные для выбранного дня
         BuildWeek(SelectedDate);
+        UpdatePrescriptionsForDate(SelectedDate);
     }
 
     [RelayCommand]
@@ -67,18 +73,54 @@ public partial class ScheduleViewModel : ObservableObject
 
         SelectedDate = date;
         
-        // Если выбранная дата не в текущем списке WeekDays, перестраиваем неделю
+        // 1. Если выбранная дата не в текущем списке WeekDays, перестраиваем неделю
         if (!WeekDays.Any(d => d.Date.Date == SelectedDate.Date))
         {
             BuildWeek(SelectedDate);
         }
         else
         {
-            // Иначе просто обновляем IsSelected
+            // Иначе просто обновляем IsSelected в ленте
             foreach (var day in WeekDays)
             {
                 day.IsSelected = day.Date.Date == SelectedDate.Date;
             }
+        }
+
+        // 2. Фильтрация и обновление списка назначений
+        UpdatePrescriptionsForDate(date);
+    }
+
+    private void UpdatePrescriptionsForDate(DateTime date)
+    {
+        // Фильтрация локально — без повторного запроса к БД
+        var filtered = _allPrescriptions
+            .Where(p => p.StartDate.Date <= date.Date && p.EndDate.Date >= date.Date)
+            .ToList();
+
+        PrescriptionsForDay = new ObservableCollection<prescription>(filtered);
+        IsEmpty = !PrescriptionsForDay.Any();
+
+        // Формирование строки заголовка (например: "Среда, 22 апреля — 2 назначения")
+        string dayName = date.ToString("dddd, d MMMM", new CultureInfo("ru-RU"));
+        dayName = char.ToUpper(dayName[0]) + dayName.Substring(1);
+
+        string countText = PrescriptionsForDay.Count switch
+        {
+            1 => "1 назначение",
+            > 1 and < 5 => $"{PrescriptionsForDay.Count} назначения",
+            _ => $"{PrescriptionsForDay.Count} назначений"
+        };
+        SelectedDateSummaryLabel = $"{dayName} — {countText}";
+
+        // Сброс индикатора новых назначений (запись в SecureStorage)
+        if (_sessionService.CurrentUser != null && _allPrescriptions.Any(p => p.PrescribedAt.HasValue))
+        {
+            var maxPrescribedAt = _allPrescriptions
+                .Where(p => p.PrescribedAt.HasValue)
+                .Max(p => p.PrescribedAt!.Value);
+            
+            _ = SecureStorage.SetAsync($"last_checked_prescriptions_{_sessionService.CurrentUser.UserId}", maxPrescribedAt.ToString("O"));
         }
     }
 
