@@ -20,7 +20,7 @@ public class AlternativeSearchService : IAlternativeSearchService
         _userService = userService;
     }
 
-    public async Task<List<medicine>> GetSafeAlternativesAsync(medicine targetDrug, user patient, List<medicine> currentPrescriptions, bool onlyBelarusian, bool searchByAtc)
+    public async Task<List<medicine>> GetSafeAlternativesAsync(medicine targetDrug, user? patient, List<medicine> currentPrescriptions, bool onlyBelarusian, bool searchByAtc)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -51,11 +51,15 @@ public class AlternativeSearchService : IAlternativeSearchService
             ).ToList();
         }
 
-        var fullPatient = await context.users
-            .Include(u => u.Allergies)
-            .FirstOrDefaultAsync(u => u.UserId == patient.UserId);
+        var patientAllergiesIds = new HashSet<int>();
+        if (patient != null)
+        {
+            var fullPatient = await context.users
+                .Include(u => u.Allergies)
+                .FirstOrDefaultAsync(u => u.UserId == patient.UserId);
 
-        var patientAllergiesIds = fullPatient?.Allergies?.Select(a => a.SubstanceId).ToHashSet() ?? new HashSet<int>();
+            patientAllergiesIds = fullPatient?.Allergies?.Select(a => a.SubstanceId).ToHashSet() ?? new HashSet<int>();
+        }
 
         var safeAlternatives = new List<medicine>();
 

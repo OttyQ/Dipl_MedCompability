@@ -6,6 +6,7 @@
     x:DataType="viewModels:DoctorCrossAnalysisViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:controls="clr-namespace:MedCompatibility.Pages.Shared.Controls"
+    xmlns:models="clr-namespace:MedCompatibility.Models"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewModels="clr-namespace:MedCompatibility.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
@@ -140,10 +141,16 @@
                                                     Text="{Binding SelectedMedicine.ATCCode, StringFormat='АТХ: {0}'}"
                                                     TextColor="{StaticResource TextSecondary}">
                                                     <Label.Triggers>
-                                                        <DataTrigger Binding="{Binding SelectedMedicine.ATCCode}" TargetType="Label" Value="{x:Null}">
+                                                        <DataTrigger
+                                                            Binding="{Binding SelectedMedicine.ATCCode}"
+                                                            TargetType="Label"
+                                                            Value="{x:Null}">
                                                             <Setter Property="IsVisible" Value="False" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding SelectedMedicine.ATCCode}" TargetType="Label" Value="">
+                                                        <DataTrigger
+                                                            Binding="{Binding SelectedMedicine.ATCCode}"
+                                                            TargetType="Label"
+                                                            Value="">
                                                             <Setter Property="IsVisible" Value="False" />
                                                         </DataTrigger>
                                                     </Label.Triggers>
@@ -155,26 +162,184 @@
                                                     TextColor="{StaticResource Primary}" />
                                             </VerticalStackLayout>
                                         </VerticalStackLayout>
-                                        <Border
-                                            BackgroundColor="#FFEBEE"
+                                        <HorizontalStackLayout
                                             Grid.Column="1"
-                                            HeightRequest="40"
-                                            StrokeShape="RoundRectangle 10"
-                                            WidthRequest="40">
-                                            <Border.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:DoctorCrossAnalysisViewModel}}, Path=RemoveSlotCommand}" CommandParameter="{Binding .}" />
-                                            </Border.GestureRecognizers>
-                                            <Label
-                                                FontSize="16"
-                                                HorizontalOptions="Center"
-                                                Text="🗑"
-                                                TextColor="#E53935"
-                                                VerticalOptions="Center" />
-                                        </Border>
+                                            Spacing="8"
+                                            VerticalOptions="Center">
+                                            <Border
+                                                BackgroundColor="#E3F2FD"
+                                                HeightRequest="40"
+                                                IsVisible="{Binding HasMedicine}"
+                                                StrokeShape="RoundRectangle 10"
+                                                WidthRequest="40">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:DoctorCrossAnalysisViewModel}}, Path=FindAlternativeCommand}" CommandParameter="{Binding SelectedMedicine}" />
+                                                </Border.GestureRecognizers>
+                                                <Label
+                                                    FontSize="16"
+                                                    HorizontalOptions="Center"
+                                                    Text="🔄"
+                                                    TextColor="{StaticResource Primary}"
+                                                    VerticalOptions="Center" />
+                                            </Border>
+                                            <Border
+                                                BackgroundColor="#FFEBEE"
+                                                HeightRequest="40"
+                                                StrokeShape="RoundRectangle 10"
+                                                WidthRequest="40">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:DoctorCrossAnalysisViewModel}}, Path=RemoveSlotCommand}" CommandParameter="{Binding .}" />
+                                                </Border.GestureRecognizers>
+                                                <Label
+                                                    FontSize="16"
+                                                    HorizontalOptions="Center"
+                                                    Text="🗑"
+                                                    TextColor="#E53935"
+                                                    VerticalOptions="Center" />
+                                            </Border>
+                                        </HorizontalStackLayout>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <!--  Панель подбора аналогов  -->
+                    <VerticalStackLayout
+                        IsVisible="{Binding IsAlternativesPanelVisible}"
+                        Margin="0,10,0,0"
+                        Spacing="10">
+                        <Border
+                            BackgroundColor="{StaticResource Surface}"
+                            Padding="16"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0">
+                            <Border.Shadow>
+                                <Shadow
+                                    Brush="Black"
+                                    Offset="0,4"
+                                    Opacity="0.05"
+                                    Radius="8" />
+                            </Border.Shadow>
+
+                            <VerticalStackLayout Spacing="8">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="{Binding TargetAlternativeDrug.TradeName, StringFormat='Замена для: {0}'}"
+                                    TextColor="{StaticResource TextPrimary}" />
+
+                                <Grid
+                                    ColumnDefinitions="Auto, *"
+                                    ColumnSpacing="5"
+                                    Margin="0,10"
+                                    RowDefinitions="Auto, Auto"
+                                    RowSpacing="5">
+                                    <CheckBox
+                                        Color="{StaticResource Primary}"
+                                        Grid.Column="0"
+                                        Grid.Row="0"
+                                        IsChecked="{Binding SearchOnlyBelarusian}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontSize="12"
+                                        Grid.Column="1"
+                                        Grid.Row="0"
+                                        Text="Только производство РБ"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        VerticalOptions="Center" />
+
+                                    <CheckBox
+                                        Color="{StaticResource Primary}"
+                                        Grid.Column="0"
+                                        Grid.Row="1"
+                                        IsChecked="{Binding SearchByATC}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontSize="12"
+                                        Grid.Column="1"
+                                        Grid.Row="1"
+                                        Text="Искать терапевтические аналоги (АТХ)"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+
+                                <Button
+                                    Command="{Binding FindAlternativeCommand}"
+                                    CommandParameter="{Binding TargetAlternativeDrug}"
+                                    HeightRequest="40"
+                                    Padding="0"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Text="Найти" />
+
+                                <ActivityIndicator
+                                    Color="{StaticResource Primary}"
+                                    HorizontalOptions="Center"
+                                    IsRunning="{Binding IsSearchLoading}"
+                                    IsVisible="{Binding IsSearchLoading}"
+                                    Margin="0,10,0,0" />
+
+                                <CollectionView
+                                    IsVisible="{Binding HasAlternatives}"
+                                    ItemsSource="{Binding SafeAlternatives}"
+                                    Margin="0,10,0,0"
+                                    MaximumHeightRequest="250">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:medicine">
+                                            <Border
+                                                BackgroundColor="#FAFAFA"
+                                                Margin="0,0,0,8"
+                                                Padding="12"
+                                                Stroke="#E0E0E0"
+                                                StrokeShape="RoundRectangle 8">
+                                                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                                                    <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                                        <Label
+                                                            FontAttributes="Bold"
+                                                            FontSize="14"
+                                                            Text="{Binding TradeName}"
+                                                            TextColor="{StaticResource TextPrimary}" />
+                                                        <Label
+                                                            FontSize="12"
+                                                            Text="{Binding INN}"
+                                                            TextColor="{StaticResource TextSecondary}" />
+                                                        <HorizontalStackLayout Spacing="8">
+                                                            <Border
+                                                                BackgroundColor="#E3F2FD"
+                                                                IsVisible="{Binding ATCCode, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                                                                Padding="4,2"
+                                                                StrokeShape="RoundRectangle 4"
+                                                                StrokeThickness="0">
+                                                                <Label
+                                                                    FontAttributes="Bold"
+                                                                    FontSize="11"
+                                                                    Text="{Binding ATCCode}"
+                                                                    TextColor="{StaticResource Primary}" />
+                                                            </Border>
+                                                            <Label
+                                                                FontSize="11"
+                                                                Text="{Binding Manufacturer.Name}"
+                                                                TextColor="{StaticResource TextSecondary}"
+                                                                VerticalOptions="Center" />
+                                                        </HorizontalStackLayout>
+                                                    </VerticalStackLayout>
+
+                                                    <Button
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:DoctorCrossAnalysisViewModel}}, Path=ReplaceDrugCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Grid.Column="1"
+                                                        HeightRequest="36"
+                                                        Padding="12,0"
+                                                        Style="{StaticResource PrimaryButton}"
+                                                        Text="Заменить"
+                                                        VerticalOptions="Center" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </VerticalStackLayout>
+                        </Border>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout
@@ -223,10 +388,16 @@
                                                             Text="{Binding Medicine1.ATCCode, StringFormat='АТХ: {0}'}"
                                                             TextColor="{StaticResource TextSecondary}">
                                                             <Label.Triggers>
-                                                                <DataTrigger Binding="{Binding Medicine1.ATCCode}" TargetType="Label" Value="{x:Null}">
+                                                                <DataTrigger
+                                                                    Binding="{Binding Medicine1.ATCCode}"
+                                                                    TargetType="Label"
+                                                                    Value="{x:Null}">
                                                                     <Setter Property="IsVisible" Value="False" />
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Medicine1.ATCCode}" TargetType="Label" Value="">
+                                                                <DataTrigger
+                                                                    Binding="{Binding Medicine1.ATCCode}"
+                                                                    TargetType="Label"
+                                                                    Value="">
                                                                     <Setter Property="IsVisible" Value="False" />
                                                                 </DataTrigger>
                                                             </Label.Triggers>
@@ -268,10 +439,16 @@
                                                             Text="{Binding Medicine2.ATCCode, StringFormat='АТХ: {0}'}"
                                                             TextColor="{StaticResource TextSecondary}">
                                                             <Label.Triggers>
-                                                                <DataTrigger Binding="{Binding Medicine2.ATCCode}" TargetType="Label" Value="{x:Null}">
+                                                                <DataTrigger
+                                                                    Binding="{Binding Medicine2.ATCCode}"
+                                                                    TargetType="Label"
+                                                                    Value="{x:Null}">
                                                                     <Setter Property="IsVisible" Value="False" />
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Medicine2.ATCCode}" TargetType="Label" Value="">
+                                                                <DataTrigger
+                                                                    Binding="{Binding Medicine2.ATCCode}"
+                                                                    TargetType="Label"
+                                                                    Value="">
                                                                     <Setter Property="IsVisible" Value="False" />
                                                                 </DataTrigger>
                                                             </Label.Triggers>
@@ -342,28 +519,33 @@
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </VerticalStackLayout>
-                                
-                                <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,10,0,0">
-                                    <Button Text="Скачать PDF" 
-                                            Command="{Binding SaveReportCommand}"
-                                            BackgroundColor="White" 
-                                            TextColor="{StaticResource Primary}" 
-                                            BorderColor="{StaticResource Primary}" 
-                                            BorderWidth="1.5" 
-                                            CornerRadius="10" 
-                                            Padding="20,10" 
-                                            FontAttributes="Bold" />
-                                    <Button Text="Поделиться" 
-                                            Command="{Binding ShareReportCommand}"
-                                            BackgroundColor="White" 
-                                            TextColor="{StaticResource Primary}" 
-                                            BorderColor="{StaticResource Primary}" 
-                                            BorderWidth="1.5" 
-                                            CornerRadius="10" 
-                                            Padding="20,10" 
-                                            FontAttributes="Bold" />
+
+                                <HorizontalStackLayout
+                                    HorizontalOptions="Center"
+                                    Margin="0,10,0,0"
+                                    Spacing="10">
+                                    <Button
+                                        BackgroundColor="White"
+                                        BorderColor="{StaticResource Primary}"
+                                        BorderWidth="1.5"
+                                        Command="{Binding SaveReportCommand}"
+                                        CornerRadius="10"
+                                        FontAttributes="Bold"
+                                        Padding="20,10"
+                                        Text="Скачать PDF"
+                                        TextColor="{StaticResource Primary}" />
+                                    <Button
+                                        BackgroundColor="White"
+                                        BorderColor="{StaticResource Primary}"
+                                        BorderWidth="1.5"
+                                        Command="{Binding ShareReportCommand}"
+                                        CornerRadius="10"
+                                        FontAttributes="Bold"
+                                        Padding="20,10"
+                                        Text="Поделиться"
+                                        TextColor="{StaticResource Primary}" />
                                 </HorizontalStackLayout>
-                                
+
                             </VerticalStackLayout>
                         </Border>
                     </VerticalStackLayout>
