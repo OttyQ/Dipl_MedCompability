@@ -6,7 +6,7 @@ namespace MedCompatibility.Pages.Shared.Popups;
 
 public partial class InteractionsDetailsPopup : Popup
 {
-    public InteractionsDetailsPopup(List<interaction> interactions, bool hasCritical, user patient = null, string doctorName = "", List<medicine> pastConflictingDrugs = null)
+    public InteractionsDetailsPopup(List<interaction> interactions, bool hasCritical, user patient = null, string doctorName = "", List<medicine> pastConflictingDrugs = null, medicine targetDrug = null, List<medicine> currentPrescriptions = null)
     {
         InitializeComponent();
 
@@ -17,6 +17,8 @@ public partial class InteractionsDetailsPopup : Popup
             vm.Patient = patient;
             vm.DoctorName = doctorName;
             vm.PastConflictingDrugs = pastConflictingDrugs ?? new List<medicine>();
+            vm.TargetDrug = targetDrug;
+            vm.CurrentPrescriptions = currentPrescriptions ?? new List<medicine>();
             BindingContext = vm;
         }
 

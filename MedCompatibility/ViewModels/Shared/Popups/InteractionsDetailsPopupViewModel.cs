@@ -19,12 +19,56 @@ public partial class InteractionsDetailsPopupViewModel : ObservableObject
     public user Patient { get; set; } = null!;
     public string DoctorName { get; set; } = string.Empty;
     public List<medicine> PastConflictingDrugs { get; set; } = new();
+    public medicine TargetDrug { get; set; } = null!;
+    public List<medicine> CurrentPrescriptions { get; set; } = new();
 
-    public InteractionsDetailsPopupViewModel(IPdfReportService pdfReportService, IShare share, IFileSaver fileSaver)
+    [ObservableProperty] private bool _searchOnlyBelarusian = true;
+    [ObservableProperty] private bool _searchByATC = false;
+    [ObservableProperty] private ObservableCollection<medicine> _safeAlternatives = new();
+    [ObservableProperty] private bool _isSearchLoading;
+    [ObservableProperty] private bool _hasAlternatives;
+
+    private readonly IAlternativeSearchService _alternativeSearchService;
+
+    public InteractionsDetailsPopupViewModel(IPdfReportService pdfReportService, IShare share, IFileSaver fileSaver, IAlternativeSearchService alternativeSearchService)
     {
         _pdfReportService = pdfReportService;
         _share = share;
         _fileSaver = fileSaver;
+        _alternativeSearchService = alternativeSearchService;
+    }
+
+    [RelayCommand]
+    private async Task FindAlternativesAsync()
+    {
+        IsSearchLoading = true;
+        try
+        {
+            var results = await _alternativeSearchService.GetSafeAlternativesAsync(
+                TargetDrug,
+                Patient,
+                CurrentPrescriptions,
+                SearchOnlyBelarusian,
+                SearchByATC);
+
+            SafeAlternatives.Clear();
+            foreach (var r in results)
+                SafeAlternatives.Add(r);
+
+            HasAlternatives = SafeAlternatives.Any();
+            if (!HasAlternatives)
+            {
+                await Application.Current!.MainPage!.DisplayAlert("Результат", "Безопасных аналогов не найдено по заданным критериям.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+        finally
+        {
+            IsSearchLoading = false;
+        }
     }
 
     private async Task<byte[]> GeneratePdfBytesAsync()

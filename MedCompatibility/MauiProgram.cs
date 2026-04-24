@@ -100,6 +100,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
         builder.Services.AddSingleton<IShare>(Share.Default);
         builder.Services.AddTransient<IPdfReportService, PdfReportService>();
+        builder.Services.AddTransient<IAlternativeSearchService, AlternativeSearchService>();
         
 
         // 5) ViewModels
