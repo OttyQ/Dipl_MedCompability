@@ -101,6 +101,26 @@
                             <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontSize="12"
+                                    Text="Код АТХ (опционально)"
+                                    TextColor="{StaticResource TextSecondary}" />
+                                <Border
+                                    HeightRequest="48"
+                                    Padding="12,0"
+                                    Stroke="Transparent"
+                                    StrokeThickness="1"
+                                    Style="{StaticResource MedInputContainer}"
+                                    x:Name="AtcBorder">
+                                    <Entry
+                                        FontSize="15"
+                                        MaxLength="7"
+                                        Placeholder="Например: N02BE01"
+                                        Text="{Binding NewMedicine.ATCCode}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="6">
+                                <Label
+                                    FontSize="12"
                                     Text="Форма выпуска *"
                                     TextColor="{StaticResource TextSecondary}" />
                                 <Border

@@ -136,6 +136,19 @@
                                                     Text="{Binding DisplayName}"
                                                     TextColor="{StaticResource TextPrimary}" />
                                                 <Label
+                                                    FontSize="12"
+                                                    Text="{Binding SelectedMedicine.ATCCode, StringFormat='АТХ: {0}'}"
+                                                    TextColor="{StaticResource TextSecondary}">
+                                                    <Label.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedMedicine.ATCCode}" TargetType="Label" Value="{x:Null}">
+                                                            <Setter Property="IsVisible" Value="False" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding SelectedMedicine.ATCCode}" TargetType="Label" Value="">
+                                                            <Setter Property="IsVisible" Value="False" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                                <Label
                                                     FontAttributes="Bold"
                                                     FontSize="12"
                                                     Text="{Binding InnMunText}"
@@ -205,6 +218,20 @@
                                                             Text="{Binding Medicine1.TradeName}"
                                                             TextColor="{StaticResource TextPrimary}" />
                                                         <Label
+                                                            FontSize="11"
+                                                            HorizontalTextAlignment="Center"
+                                                            Text="{Binding Medicine1.ATCCode, StringFormat='АТХ: {0}'}"
+                                                            TextColor="{StaticResource TextSecondary}">
+                                                            <Label.Triggers>
+                                                                <DataTrigger Binding="{Binding Medicine1.ATCCode}" TargetType="Label" Value="{x:Null}">
+                                                                    <Setter Property="IsVisible" Value="False" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Medicine1.ATCCode}" TargetType="Label" Value="">
+                                                                    <Setter Property="IsVisible" Value="False" />
+                                                                </DataTrigger>
+                                                            </Label.Triggers>
+                                                        </Label>
+                                                        <Label
                                                             FontAttributes="Italic"
                                                             FontSize="10"
                                                             HorizontalTextAlignment="Center"
@@ -235,6 +262,20 @@
                                                             LineBreakMode="WordWrap"
                                                             Text="{Binding Medicine2.TradeName}"
                                                             TextColor="{StaticResource TextPrimary}" />
+                                                        <Label
+                                                            FontSize="11"
+                                                            HorizontalTextAlignment="Center"
+                                                            Text="{Binding Medicine2.ATCCode, StringFormat='АТХ: {0}'}"
+                                                            TextColor="{StaticResource TextSecondary}">
+                                                            <Label.Triggers>
+                                                                <DataTrigger Binding="{Binding Medicine2.ATCCode}" TargetType="Label" Value="{x:Null}">
+                                                                    <Setter Property="IsVisible" Value="False" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Medicine2.ATCCode}" TargetType="Label" Value="">
+                                                                    <Setter Property="IsVisible" Value="False" />
+                                                                </DataTrigger>
+                                                            </Label.Triggers>
+                                                        </Label>
                                                         <Label
                                                             FontAttributes="Italic"
                                                             FontSize="10"
