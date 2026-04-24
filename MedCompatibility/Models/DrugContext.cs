@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -170,6 +170,7 @@ public partial class DrugContext : DbContext
             entity.Property(e => e.GTIN).HasMaxLength(14);
             entity.Property(e => e.INN).HasMaxLength(200);
             entity.Property(e => e.TradeName).HasMaxLength(200);
+            entity.Property(e => e.ATCCode).HasMaxLength(7).HasColumnName("ATCCode");
 
             entity.HasOne(d => d.Manufacturer).WithMany(p => p.medicines)
                 .HasForeignKey(d => d.ManufacturerId)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MedCompatibility.Models;
@@ -10,6 +10,8 @@ public partial class medicine
     public string TradeName { get; set; } = null!;
 
     public string? INN { get; set; }
+
+    public string? ATCCode { get; set; }
 
     public int ManufacturerId { get; set; }
 

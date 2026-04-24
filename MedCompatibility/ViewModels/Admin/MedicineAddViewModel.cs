@@ -201,6 +201,7 @@ public partial class MedicineAddViewModel : ObservableObject, IQueryAttributable
                 MedicineId = fullMedicine.MedicineId,
                 TradeName = fullMedicine.TradeName,
                 INN = fullMedicine.INN,
+                ATCCode = fullMedicine.ATCCode,
                 Form = fullMedicine.Form,
                 GTIN = fullMedicine.GTIN,
                 Description = fullMedicine.Description,

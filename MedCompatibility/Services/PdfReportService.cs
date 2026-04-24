@@ -154,7 +154,8 @@ public class PdfReportService : IPdfReportService
             {
                 var tradeName = drug?.TradeName ?? "Неизвестный препарат";
                 var inn = drug?.INN ?? "Без МНН";
-                list.Add(new ListItem($"{tradeName} ({inn})"));
+                var atc = string.IsNullOrEmpty(drug?.ATCCode) ? "" : $" [АТХ: {drug.ATCCode}]";
+                list.Add(new ListItem($"{tradeName} ({inn}){atc}"));
             }
             drugsTable.AddCell(new iText.Layout.Element.Cell().Add(list).SetBorder(iText.Layout.Borders.Border.NO_BORDER).SetPadding(5));
             document.Add(drugsTable);
@@ -319,9 +320,10 @@ public class PdfReportService : IPdfReportService
                         if (drug == null) continue;
                         var tradeName = drug.TradeName ?? "Неизвестный препарат";
                         var inn = drug.INN ?? "Без МНН";
+                        var atc = string.IsNullOrEmpty(drug.ATCCode) ? "" : $" [АТХ: {drug.ATCCode}]";
                         
                         var li = new ListItem();
-                        li.Add(new Paragraph($"{tradeName} ({inn})").SetFontColor(new DeviceRgb(211, 47, 47)));
+                        li.Add(new Paragraph($"{tradeName} ({inn}){atc}").SetFontColor(new DeviceRgb(211, 47, 47)));
                         pastDrugsList.Add(li);
                     }
                     document.Add(pastDrugsList);
