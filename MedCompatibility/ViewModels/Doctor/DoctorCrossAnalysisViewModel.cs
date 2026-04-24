@@ -55,6 +55,7 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
     private readonly IShare _share;
     private readonly IFileSaver _fileSaver;
     private readonly IUserSessionService _sessionService;
+    private readonly IAlternativeSearchService _alternativeSearchService;
 
     // Ссылка на слот, который мы сейчас наполняем (через поиск или сканер)
     private MedicineSlot? _activeSlot;
@@ -63,18 +64,29 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
     [ObservableProperty] private ObservableCollection<CrossInteractionReport> _analysisReport; 
     [ObservableProperty] private bool _isAnalysisDone;
 
+    // Свойства для Умного поиска
+    [ObservableProperty] private bool _searchOnlyBelarusian = true;
+    [ObservableProperty] private bool _searchByATC = false;
+    [ObservableProperty] private ObservableCollection<medicine> _safeAlternatives = new();
+    [ObservableProperty] private bool _isSearchLoading;
+    [ObservableProperty] private bool _hasAlternatives;
+    [ObservableProperty] private medicine? _targetAlternativeDrug;
+    [ObservableProperty] private bool _isAlternativesPanelVisible;
+
     public DoctorCrossAnalysisViewModel(
         IMedicineService medicineService,
         IPdfReportService pdfReportService,
         IShare share,
         IFileSaver fileSaver,
-        IUserSessionService sessionService)
+        IUserSessionService sessionService,
+        IAlternativeSearchService alternativeSearchService)
     {
         _medicineService = medicineService;
         _pdfReportService = pdfReportService;
         _share = share;
         _fileSaver = fileSaver;
         _sessionService = sessionService;
+        _alternativeSearchService = alternativeSearchService;
         _slots = new ObservableCollection<MedicineSlot> { new(), new() };
         _analysisReport = new ObservableCollection<CrossInteractionReport>();
     }
@@ -266,6 +278,63 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Ошибка", $"Не удалось сохранить отчет: {ex.Message}", "OK");
+        }
+    }
+
+    [RelayCommand]
+    private async Task FindAlternativeAsync(medicine drug)
+    {
+        if (drug == null) return;
+        TargetAlternativeDrug = drug;
+        IsAlternativesPanelVisible = true;
+        IsSearchLoading = true;
+        HasAlternatives = false;
+        SafeAlternatives.Clear();
+
+        try
+        {
+            var validSlots = Slots.Where(s => s.HasMedicine && s.SelectedMedicine!.MedicineId != drug.MedicineId)
+                                  .Select(s => s.SelectedMedicine!).ToList();
+                                  
+            var alternatives = await _alternativeSearchService.GetSafeAlternativesAsync(
+                TargetAlternativeDrug,
+                null,
+                validSlots,
+                SearchOnlyBelarusian,
+                SearchByATC);
+
+            foreach (var alt in alternatives)
+            {
+                SafeAlternatives.Add(alt);
+            }
+            HasAlternatives = SafeAlternatives.Any();
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            IsSearchLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ReplaceDrugAsync(medicine replacement)
+    {
+        if (replacement == null || TargetAlternativeDrug == null) return;
+
+        var slotToReplace = Slots.FirstOrDefault(s => s.SelectedMedicine?.MedicineId == TargetAlternativeDrug.MedicineId);
+        if (slotToReplace != null)
+        {
+            var fullMed = await _medicineService.GetMedicineByIdAsync(replacement.MedicineId);
+            slotToReplace.SelectedMedicine = fullMed ?? replacement;
+            
+            IsAlternativesPanelVisible = false;
+            SafeAlternatives.Clear();
+            TargetAlternativeDrug = null;
+
+            await AnalyzeAsync();
         }
     }
 }
