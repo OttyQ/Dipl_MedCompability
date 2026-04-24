@@ -295,6 +295,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         List<interaction> allConflicts = new();
         bool isCritical = false;
         List<medicine> pastConflictingDrugs = new();
+        List<medicine> currentMedicines = new();
 
         try
         {
@@ -326,6 +327,8 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
             var current = allPrescriptions.Where(p => p.EndDate >= windowStart).ToList();
             if (IsEditMode)
                 current = current.Where(p => p.PrescriptionId != _prescriptionId!.Value).ToList();
+
+            currentMedicines = current.Select(p => p.Medicine).Where(m => m != null).ToList();
 
             foreach (var p in current)
             {
@@ -370,7 +373,7 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         var doctorName = _session.CurrentUser?.FullName ?? "Врач";
 
         // Показываем попап ПОСЛЕ того, как лоадер скрыт
-        var result = await Shell.Current.ShowPopupAsync(new InteractionsDetailsPopup(allConflicts, isCritical, patient, doctorName, pastConflictingDrugs));
+        var result = await Shell.Current.ShowPopupAsync(new InteractionsDetailsPopup(allConflicts, isCritical, patient, doctorName, pastConflictingDrugs, SelectedMedicine, currentMedicines));
         return result is bool ok && ok;
     }
 
