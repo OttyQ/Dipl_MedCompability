@@ -6,7 +6,15 @@ namespace MedCompatibility.Pages.Shared.Popups;
 
 public partial class InteractionsDetailsPopup : Popup
 {
-    public InteractionsDetailsPopup(List<interaction> interactions, bool hasCritical, user patient = null, string doctorName = "", List<medicine> pastConflictingDrugs = null, medicine targetDrug = null, List<medicine> currentPrescriptions = null)
+    public InteractionsDetailsPopup(
+        List<interaction> interactions,
+        bool hasCritical,
+        user patient = null,
+        string doctorName = "",
+        List<medicine> pastConflictingDrugs = null,
+        medicine targetDrug = null,
+        List<medicine> currentPrescriptions = null,
+        Dictionary<int, (bool IsResidual, int DaysAgoEnded)> residualInfo = null)
     {
         InitializeComponent();
 
@@ -19,6 +27,7 @@ public partial class InteractionsDetailsPopup : Popup
             vm.PastConflictingDrugs = pastConflictingDrugs ?? new List<medicine>();
             vm.TargetDrug = targetDrug;
             vm.CurrentPrescriptions = currentPrescriptions ?? new List<medicine>();
+            vm.ResidualInfo = residualInfo ?? new Dictionary<int, (bool IsResidual, int DaysAgoEnded)>();
             BindingContext = vm;
         }
 
@@ -39,8 +48,15 @@ public partial class InteractionsDetailsPopup : Popup
             ? "Найдено 1 взаимодействие"
             : $"Найдено {interactions.Count} взаимодействий";
 
-        // Загрузка списка
-        InteractionsList.ItemsSource = interactions;
+        // Правка 3: строим обёртки ConflictCardModel для визуального разделения
+        var cardModels = interactions.Select(i =>
+        {
+            bool isResidual = residualInfo != null && residualInfo.TryGetValue(i.InteractionId, out var meta) && meta.IsResidual;
+            int daysAgo    = isResidual ? residualInfo![i.InteractionId].DaysAgoEnded : 0;
+            return new ConflictCardModel { Interaction = i, IsResidual = isResidual, DaysAgoEnded = daysAgo };
+        }).ToList();
+
+        InteractionsList.ItemsSource = cardModels;
     }
 
     private void OnCancelClicked(object sender, EventArgs e)
@@ -52,4 +68,4 @@ public partial class InteractionsDetailsPopup : Popup
     {
         Close(true);
     }
-}
+}

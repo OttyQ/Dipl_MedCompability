@@ -22,6 +22,17 @@ public partial class InteractionsDetailsPopupViewModel : ObservableObject
     public medicine TargetDrug { get; set; } = null!;
     public List<medicine> CurrentPrescriptions { get; set; } = new();
 
+    /// <summary>Правка 3: метаданные остаточных взаимодействий (InteractionId → IsResidual, DaysAgoEnded)</summary>
+    public Dictionary<int, (bool IsResidual, int DaysAgoEnded)> ResidualInfo { get; set; } = new();
+
+    /// <summary>Получить IsResidual для конкретного InteractionId</summary>
+    public bool IsResidualInteraction(int interactionId) =>
+        ResidualInfo.TryGetValue(interactionId, out var v) && v.IsResidual;
+
+    /// <summary>Получить DaysAgoEnded для конкретного InteractionId (0 если не остаточный)</summary>
+    public int GetDaysAgoEnded(int interactionId) =>
+        ResidualInfo.TryGetValue(interactionId, out var v) ? v.DaysAgoEnded : 0;
+
     [ObservableProperty] private bool _searchOnlyBelarusian = true;
     [ObservableProperty] private bool _searchByATC = false;
     [ObservableProperty] private ObservableCollection<medicine> _safeAlternatives = new();
@@ -44,12 +55,25 @@ public partial class InteractionsDetailsPopupViewModel : ObservableObject
         IsSearchLoading = true;
         try
         {
+            // Определяем конфликтующее вещество из TargetDrug, чтобы исключить аналоги,
+            // содержащие то же вещество (причину конфликта).
+            int? conflictingSubstanceId = null;
+            if (TargetDrug?.Substances != null && Interactions?.Count > 0)
+            {
+                var targetSubIds = TargetDrug.Substances.Select(s => s.SubstanceId).ToHashSet();
+                conflictingSubstanceId = Interactions
+                    .SelectMany(i => new[] { i.SubstanceId1, i.SubstanceId2 })
+                    .FirstOrDefault(sid => targetSubIds.Contains(sid));
+                if (conflictingSubstanceId == 0) conflictingSubstanceId = null;
+            }
+
             var results = await _alternativeSearchService.GetSafeAlternativesAsync(
                 TargetDrug,
                 Patient,
                 CurrentPrescriptions,
                 SearchOnlyBelarusian,
-                SearchByATC);
+                SearchByATC,
+                conflictingSubstanceId);
 
             SafeAlternatives.Clear();
             foreach (var r in results)

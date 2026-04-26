@@ -146,88 +146,136 @@
                 <VerticalStackLayout Spacing="16">
                     <!--  Разделитель  -->
                     <BoxView Color="#E6EAF0" HeightRequest="1" />
-                <CollectionView SelectionMode="None" x:Name="InteractionsList">
+                    <CollectionView SelectionMode="None" x:Name="InteractionsList">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout ItemSpacing="16" Orientation="Vertical" />
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:interaction">
-                            <VerticalStackLayout Spacing="12">
-                                <!--  Верхняя часть: Препараты  -->
-                                <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="13"
-                                        Grid.Column="0"
-                                        HorizontalTextAlignment="Center"
-                                        LineBreakMode="WordWrap"
-                                        Text="{Binding SubstanceId1Navigation.Name}"
-                                        TextColor="{StaticResource TextPrimary}" />
-
-                                    <Label
-                                        FontSize="20"
-                                        Grid.Column="1"
-                                        HorizontalOptions="Center"
-                                        Text="⚡"
-                                        TextColor="#E53935" />
-
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="13"
-                                        Grid.Column="2"
-                                        HorizontalTextAlignment="Center"
-                                        LineBreakMode="WordWrap"
-                                        Text="{Binding SubstanceId2Navigation.Name}"
-                                        TextColor="{StaticResource TextPrimary}" />
-                                </Grid>
-
-                                <!--  Инфо-плашки  -->
-                                <FlexLayout Direction="Row" Wrap="Wrap">
-                                    <Border Style="{StaticResource RiskBadgeBorderStyle}">
-                                        <Label Style="{StaticResource RiskLevelLabelStyle}" />
-                                    </Border>
-
-                                    <Border Margin="0,0,0,8" Style="{StaticResource InteractionTypeBadgeStyle}">
+                        <!-- Правка 3+4: DataTemplate привязан к ConflictCardModel -->
+                        <DataTemplate x:DataType="models:ConflictCardModel">
+                            <Border
+                                BackgroundColor="{Binding CardBackgroundColor}"
+                                Opacity="{Binding CardOpacity}"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="0"
+                                Padding="10">
+                                <VerticalStackLayout Spacing="12">
+                                    <!-- Правка 3: Заголовок типа конфликта (активное / остаточный) -->
+                                    <HorizontalStackLayout Spacing="6">
+                                        <Label
+                                            FontSize="12"
+                                            Text="{Binding ConflictTypeIcon}"
+                                            VerticalOptions="Center" />
                                         <Label
                                             FontAttributes="Bold"
+                                            FontSize="12"
+                                            Text="{Binding ConflictTypeLabel}"
+                                            TextColor="{StaticResource TextSecondary}"
+                                            VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+
+                                    <!-- Правка 3: Подпись об остаточном эффекте (видима только если IsResidual=true) -->
+                                    <Border
+                                        IsVisible="{Binding IsResidual}"
+                                        BackgroundColor="#FFF9C4"
+                                        StrokeShape="RoundRectangle 6"
+                                        StrokeThickness="0"
+                                        Padding="8,4">
+                                        <Label
                                             FontSize="11"
-                                            Text="{Binding InteractionType.Name}"
-                                            TextColor="{StaticResource Primary}" />
+                                            FontAttributes="Italic"
+                                            Text="{Binding ResidualLabel}"
+                                            TextColor="#795548"
+                                            LineBreakMode="WordWrap" />
                                     </Border>
-                                </FlexLayout>
 
-                                <!--  Описание  -->
-                                <Label
-                                    FontSize="13"
-                                    LineBreakMode="WordWrap"
-                                    Text="{Binding Description}"
-                                    TextColor="{StaticResource TextPrimary}" />
+                                    <!--  Верхняя часть: Вещества  -->
+                                    <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="13"
+                                            Grid.Column="0"
+                                            HorizontalTextAlignment="Center"
+                                            LineBreakMode="WordWrap"
+                                            Text="{Binding SubstanceId1Navigation.Name}"
+                                            TextColor="{StaticResource TextPrimary}" />
 
-                                <!--  Рекомендация (оформлена как в отчете)  -->
-                                <Border
-                                    BackgroundColor="#F0F7F7"
-                                    IsVisible="{Binding Recommendation, Converter={StaticResource StringNotNullOrEmptyConverter}}"
-                                    Padding="12"
-                                    StrokeShape="RoundRectangle 10">
+                                        <Label
+                                            FontSize="20"
+                                            Grid.Column="1"
+                                            HorizontalOptions="Center"
+                                            Text="⚡"
+                                            TextColor="#E53935" />
+
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="13"
+                                            Grid.Column="2"
+                                            HorizontalTextAlignment="Center"
+                                            LineBreakMode="WordWrap"
+                                            Text="{Binding SubstanceId2Navigation.Name}"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                    </Grid>
+
+                                    <!--  Инфо-плашки: уровень риска + тип  -->
+                                    <FlexLayout Direction="Row" Wrap="Wrap">
+                                        <Border Style="{StaticResource RiskBadgeBorderStyle}">
+                                            <Label Style="{StaticResource RiskLevelLabelStyle}" />
+                                        </Border>
+
+                                        <VerticalStackLayout Margin="0,0,8,8" Spacing="2">
+                                            <Border Style="{StaticResource InteractionTypeBadgeStyle}">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="11"
+                                                    Text="{Binding InteractionType.Name}"
+                                                    TextColor="{StaticResource Primary}" />
+                                            </Border>
+                                            <!-- Правка 4: InteractionType.Description — клинический контекст -->
+                                            <Label
+                                                FontSize="12"
+                                                LineBreakMode="WordWrap"
+                                                Text="{Binding InteractionType.Description}"
+                                                TextColor="{StaticResource TextSecondary}"
+                                                IsVisible="{Binding InteractionType.Description, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                                                Margin="4,0,0,0" />
+                                        </VerticalStackLayout>
+                                    </FlexLayout>
+
+                                    <!--  Описание  -->
                                     <Label
-                                        FontAttributes="Italic"
                                         FontSize="13"
                                         LineBreakMode="WordWrap"
-                                        Text="{Binding Recommendation}"
-                                        TextColor="{StaticResource Primary}" />
-                                </Border>
+                                        Text="{Binding Description}"
+                                        TextColor="{StaticResource TextPrimary}" />
 
-                                <!--  Разделитель между карточками  -->
-                                <BoxView
-                                    Color="{StaticResource TextSecondary}"
-                                    HeightRequest="1"
-                                    Margin="0,5,0,0"
-                                    Opacity="0.1" />
-                            </VerticalStackLayout>
+                                    <!--  Рекомендация  -->
+                                    <Border
+                                        BackgroundColor="#F0F7F7"
+                                        IsVisible="{Binding Recommendation, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                                        Padding="12"
+                                        StrokeShape="RoundRectangle 10">
+                                        <Label
+                                            FontAttributes="Italic"
+                                            FontSize="13"
+                                            LineBreakMode="WordWrap"
+                                            Text="{Binding Recommendation}"
+                                            TextColor="{StaticResource Primary}" />
+                                    </Border>
+
+                                    <!--  Разделитель между карточками  -->
+                                    <BoxView
+                                        Color="{StaticResource TextSecondary}"
+                                        HeightRequest="1"
+                                        Margin="0,5,0,0"
+                                        Opacity="0.1" />
+                                </VerticalStackLayout>
+                            </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+
 
                     <!--  Подбор аналогов  -->
                     <VerticalStackLayout Spacing="8">
