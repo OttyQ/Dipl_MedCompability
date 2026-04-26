@@ -296,6 +296,8 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         bool isCritical = false;
         List<medicine> pastConflictingDrugs = new();
         List<medicine> currentMedicines = new();
+        // Правка 3: словарь остаточных взаимодействий (InteractionId → метаданные)
+        var residualInfo = new Dictionary<int, (bool IsResidual, int DaysAgoEnded)>();
 
         try
         {
@@ -337,11 +339,16 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
                 var conflicts = await _interactionService.CheckInteractionAsync(p.MedicineId, selectedMedicineId);
                 if (conflicts != null && conflicts.Count > 0)
                 {
-                    if (p.EndDate < today)
+                    bool isResidual = p.EndDate < today;
+                    int daysAgo = isResidual ? (today - p.EndDate).Days : 0;
+
+                    if (isResidual)
                     {
-                        var daysAgo = (today - p.EndDate).Days;
+                        // Сохраняем пометку для UI (не мутируем Description — он используется в PDF)
                         foreach (var c in conflicts)
                         {
+                            residualInfo[c.InteractionId] = (true, daysAgo);
+                            // Fallback-метка в Description для PDF/отчётов (обратная совместимость)
                             c.Description = $"Конфликт с «{p.Medicine?.TradeName ?? "препаратом"}» из прошлого назначения (прием завершен {daysAgo} дн. назад). {c.Description}";
                         }
                         if (p.Medicine != null && !pastConflictingDrugs.Any(m => m.MedicineId == p.MedicineId))
@@ -373,9 +380,10 @@ public partial class PrescriptionEditViewModel : ObservableObject, IQueryAttribu
         var doctorName = _session.CurrentUser?.FullName ?? "Врач";
 
         // Показываем попап ПОСЛЕ того, как лоадер скрыт
-        var result = await Shell.Current.ShowPopupAsync(new InteractionsDetailsPopup(allConflicts, isCritical, patient, doctorName, pastConflictingDrugs, SelectedMedicine, currentMedicines));
+        var result = await Shell.Current.ShowPopupAsync(new InteractionsDetailsPopup(allConflicts, isCritical, patient, doctorName, pastConflictingDrugs, SelectedMedicine, currentMedicines, residualInfo));
         return result is bool ok && ok;
     }
+
 
     [RelayCommand]
     private async Task SaveAsync()

@@ -44,15 +44,29 @@ public partial class CodeScannerPage : ContentPage, INotifyPropertyChanged
         if (IsFlashlightOn)
         {
             FlashlightBorder.BackgroundColor = Colors.White;
-            FlashlightIcon.Text = "💡"; // Можно оставить или поменять
+            FlashlightIcon.Text = "💡";
             FlashlightBorder.Shadow = new Shadow { Brush = Brush.White, Opacity = 0.5f, Radius = 10, Offset = new Point(0, 0) };
         }
         else
         {
-            FlashlightBorder.BackgroundColor = Color.FromRgba("#80000000"); // Полупрозрачный черный
+            FlashlightBorder.BackgroundColor = Color.FromRgba("#80000000");
             FlashlightIcon.Text = "💡";
             FlashlightBorder.Shadow = null;
         }
+    }
+
+    /// <summary>Гасит фонарик, если он включён. Безопасен для вызова в любом контексте.</summary>
+    private void TurnOffFlashlight()
+    {
+        if (IsFlashlightOn)
+            IsFlashlightOn = false;
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        // Защитный слой: гасим фонарик при любом уходе со страницы
+        TurnOffFlashlight();
     }
 
     private void OnToggleFlashlightClicked(object sender, EventArgs e)
@@ -79,17 +93,20 @@ public partial class CodeScannerPage : ContentPage, INotifyPropertyChanged
 
         MainThread.BeginInvokeOnMainThread(async () =>
         {
+            TurnOffFlashlight();
+
             var navigationParameter = new Dictionary<string, object>
             {
                 { "ScannedCode", first.Value }
             };
-            
+
             await Shell.Current.GoToAsync("..", navigationParameter);
         });
     }
 
     private async void OnCancelClicked(object sender, EventArgs e)
     {
+        TurnOffFlashlight();
         await Shell.Current.GoToAsync("..");
     }
 }

@@ -20,7 +20,7 @@ public class AlternativeSearchService : IAlternativeSearchService
         _userService = userService;
     }
 
-    public async Task<List<medicine>> GetSafeAlternativesAsync(medicine targetDrug, user? patient, List<medicine> currentPrescriptions, bool onlyBelarusian, bool searchByAtc)
+    public async Task<List<medicine>> GetSafeAlternativesAsync(medicine targetDrug, user? patient, List<medicine> currentPrescriptions, bool onlyBelarusian, bool searchByAtc, int? conflictingSubstanceId = null)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -65,6 +65,11 @@ public class AlternativeSearchService : IAlternativeSearchService
 
         foreach (var candidate in candidates)
         {
+            // Исключаем кандидатов, содержащих то же конфликтующее вещество, что и заменяемый препарат
+            if (conflictingSubstanceId.HasValue &&
+                candidate.Substances.Any(s => s.SubstanceId == conflictingSubstanceId.Value))
+                continue;
+
             bool hasAllergy = candidate.Substances.Any(s => patientAllergiesIds.Contains(s.SubstanceId));
             if (hasAllergy)
                 continue;
@@ -73,7 +78,8 @@ public class AlternativeSearchService : IAlternativeSearchService
             foreach (var pres in currentPrescriptions)
             {
                 var interactions = await _interactionService.CheckInteractionAsync(candidate.MedicineId, pres.MedicineId);
-                if (interactions.Any(i => i.RiskLevel != null && (i.RiskLevel.Severity >= 4))) // Warning or critical. Check if Severity 4 and 5 are critical/high risk. Wait, we should probably check if interactions.Any() and Severity >= 3 or 4.
+                // Severity >= 3 (high/significant) исключает кандидата
+                if (interactions.Any(i => i.RiskLevel != null && i.RiskLevel.Severity >= 3))
                 {
                     hasConflict = true;
                     break;

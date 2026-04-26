@@ -295,13 +295,32 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
         {
             var validSlots = Slots.Where(s => s.HasMedicine && s.SelectedMedicine!.MedicineId != drug.MedicineId)
                                   .Select(s => s.SelectedMedicine!).ToList();
-                                  
+
+            // Определяем конфликтующее вещество: ищем вещество из состава drug,
+            // участвующее хотя бы в одном из найденных взаимодействий.
+            int? conflictingSubstanceId = null;
+            var drugSubIds = drug.Substances?.Select(s => s.SubstanceId).ToHashSet() ?? new HashSet<int>();
+            var relevantConflicts = AnalysisReport
+                .Where(r => r.IsConflict && r.Interaction != null &&
+                            (r.Medicine1?.MedicineId == drug.MedicineId || r.Medicine2?.MedicineId == drug.MedicineId))
+                .Select(r => r.Interaction!)
+                .ToList();
+
+            if (drugSubIds.Any() && relevantConflicts.Any())
+            {
+                var cid = relevantConflicts
+                    .SelectMany(i => new[] { i.SubstanceId1, i.SubstanceId2 })
+                    .FirstOrDefault(sid => drugSubIds.Contains(sid));
+                if (cid != 0) conflictingSubstanceId = cid;
+            }
+
             var alternatives = await _alternativeSearchService.GetSafeAlternativesAsync(
                 TargetAlternativeDrug,
                 null,
                 validSlots,
                 SearchOnlyBelarusian,
-                SearchByATC);
+                SearchByATC,
+                conflictingSubstanceId);
 
             foreach (var alt in alternatives)
             {
