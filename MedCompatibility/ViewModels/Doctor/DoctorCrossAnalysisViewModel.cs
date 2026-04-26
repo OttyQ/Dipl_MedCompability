@@ -56,6 +56,7 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
     private readonly IFileSaver _fileSaver;
     private readonly IUserSessionService _sessionService;
     private readonly IAlternativeSearchService _alternativeSearchService;
+    private readonly IAiInteractionService _aiInteractionService;
 
     // Ссылка на слот, который мы сейчас наполняем (через поиск или сканер)
     private MedicineSlot? _activeSlot;
@@ -73,13 +74,19 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
     [ObservableProperty] private medicine? _targetAlternativeDrug;
     [ObservableProperty] private bool _isAlternativesPanelVisible;
 
+    // Свойства для ИИ-анализа
+    [ObservableProperty] private string _aiAnalysisResult = string.Empty;
+    [ObservableProperty] private bool _isAiLoading;
+    [ObservableProperty] private bool _aiAnalysisVisible;
+
     public DoctorCrossAnalysisViewModel(
         IMedicineService medicineService,
         IPdfReportService pdfReportService,
         IShare share,
         IFileSaver fileSaver,
         IUserSessionService sessionService,
-        IAlternativeSearchService alternativeSearchService)
+        IAlternativeSearchService alternativeSearchService,
+        IAiInteractionService aiInteractionService)
     {
         _medicineService = medicineService;
         _pdfReportService = pdfReportService;
@@ -87,8 +94,22 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
         _fileSaver = fileSaver;
         _sessionService = sessionService;
         _alternativeSearchService = alternativeSearchService;
+        _aiInteractionService = aiInteractionService;
         _slots = new ObservableCollection<MedicineSlot> { new(), new() };
         _analysisReport = new ObservableCollection<CrossInteractionReport>();
+
+        // Подписка на изменения коллекции слотов для автоочистки ИИ-результата
+        _slots.CollectionChanged += (_, _) => ClearAiResult();
+    }
+
+    /// <summary>
+    /// Сбрасывает результат ИИ-анализа (автоочистка при изменении списка препаратов).
+    /// </summary>
+    private void ClearAiResult()
+    {
+        AiAnalysisResult = string.Empty;
+        AiAnalysisVisible = false;
+        IsAiLoading = false;
     }
 
     // 1. Обработка возврата со страницы сканера
@@ -117,6 +138,7 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
                 
                 IsAnalysisDone = false;
                 AnalysisReport.Clear();
+                ClearAiResult();
             }
             else
             {
@@ -154,6 +176,7 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
             slot.SelectedMedicine = fullMed ?? med;
             IsAnalysisDone = false;
             AnalysisReport.Clear();
+            ClearAiResult();
         }
     }
 
@@ -163,6 +186,7 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
         Slots.Add(new MedicineSlot());
         IsAnalysisDone = false;
         AnalysisReport.Clear();
+        ClearAiResult();
     }
 
     [RelayCommand]
@@ -174,6 +198,7 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
 
         IsAnalysisDone = false;
         AnalysisReport.Clear();
+        ClearAiResult();
     }
 
     [RelayCommand]
@@ -356,4 +381,61 @@ public partial class DoctorCrossAnalysisViewModel : ObservableObject, IQueryAttr
             await AnalyzeAsync();
         }
     }
+
+    [RelayCommand] // ВАЖНО: Убрали CanExecute
+    private async Task RunAiAnalysisAsync()
+    {
+        System.Diagnostics.Debug.WriteLine("=== AI Analysis Started ===");
+
+        // --- One-time disclaimer ---
+        bool disclaimerShown = Preferences.Default.Get("ai_disclaimer_shown", false);
+        if (!disclaimerShown)
+        {
+            await Shell.Current.DisplayAlert(
+                "ИИ анализ",
+                "Результат формируется языковой моделью и может содержать неточности. Используйте как вспомогательный инструмент, решение принимает врач.",
+                "Понятно");
+            Preferences.Default.Set("ai_disclaimer_shown", true);
+        }
+
+        try
+        {
+            var medicines = Slots
+                .Where(s => s.HasMedicine && s.SelectedMedicine != null)
+                .Select(s => s.SelectedMedicine!)
+                .ToList();
+
+            System.Diagnostics.Debug.WriteLine($"Medicines count: {medicines.Count}");
+            
+            if (medicines.Count < 2)
+            {
+                AiAnalysisVisible = true;
+                AiAnalysisResult = "⚠️ Для анализа ИИ необходимо минимум 2 добавленных препарата.";
+                System.Diagnostics.Debug.WriteLine("AI Analysis aborted: Less than 2 medicines.");
+                return;
+            }
+
+            IsAiLoading = true;
+            AiAnalysisVisible = true; 
+            AiAnalysisResult = "⏳ Анализирую данные...";
+
+            System.Diagnostics.Debug.WriteLine("Calling AiInteractionService...");
+            var result = await _aiInteractionService.AnalyzeInteractionsAsync(medicines);
+            
+            AiAnalysisResult = result;
+            System.Diagnostics.Debug.WriteLine("AI Service returned response.");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"CRITICAL ERROR in ViewModel: {ex.Message}");
+            AiAnalysisResult = $"⚠️ Ошибка: {ex.Message}";
+        }
+        finally
+        {
+            IsAiLoading = false;
+            System.Diagnostics.Debug.WriteLine("=== AI Analysis Finished ===");
+        }
+    }
+
+    private bool CanRunAiAnalysis() => !IsAiLoading && Slots.Count(s => s.HasMedicine) >= 2;
 }
