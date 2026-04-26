@@ -30,6 +30,9 @@ public partial class LoginViewModel : ObservableObject
     [ObservableProperty] private string eyeIconText = "🙈";
     [ObservableProperty] private bool isAuthInProgress;
 
+    // Согласие на обработку персональных данных (Закон РБ № 99-З)
+    [ObservableProperty] private bool isDataProcessingAccepted;
+
     public bool IsDebugMode =>
 #if DEBUG && (ANDROID || WINDOWS)
         true;
@@ -215,6 +218,13 @@ private async Task GoogleLoginAsync()
     if (IsAuthInProgress)
         return;
 
+    // Проверка согласия на обработку ПД (может создать новый аккаунт)
+    if (!IsDataProcessingAccepted)
+    {
+        ShowInlineError("Необходимо дать согласие на обработку персональных данных");
+        return;
+    }
+
     IsAuthInProgress = true;
 
     // id попытки (чтобы игнорировать "долетающие" результаты)
@@ -360,6 +370,12 @@ private async Task GoogleLoginAsync()
     {
         IsPasswordHidden = !IsPasswordHidden;
         EyeIconText = IsPasswordHidden ? "🙈" : "🙉";
+    }
+
+    [RelayCommand]
+    private async Task ShowPrivacyPolicyAsync()
+    {
+        await Shell.Current.ShowPopupAsync(new PrivacyPolicyPopup());
     }
     
     public void CancelGoogleAuthUiFromPage()
