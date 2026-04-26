@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Pages.Shared.Popups;
@@ -28,6 +28,9 @@ public partial class RegisterViewModel : ObservableObject
     private string selectedRole = "Пациент"; // По умолчанию
     // ----------------------------
 
+    // Согласие на обработку персональных данных (Закон РБ № 99-З)
+    [ObservableProperty] private bool isDataProcessingAccepted;
+
     public RegisterViewModel(IAuthService authService, ILoadingService loading)
     {
         _authService = authService;
@@ -38,6 +41,13 @@ public partial class RegisterViewModel : ObservableObject
     private async Task RegisterAsync()
     {
         IsErrorVisible = false;
+
+        // Проверка согласия на обработку ПД
+        if (!IsDataProcessingAccepted)
+        {
+            ShowError("Необходимо дать согласие на обработку персональных данных");
+            return;
+        }
 
         // 1. Валидация
         if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) || 
@@ -104,6 +114,12 @@ public partial class RegisterViewModel : ObservableObject
     private async Task GoBackAsync()
     {
         await Shell.Current.GoToAsync("..");
+    }
+
+    [RelayCommand]
+    private async Task ShowPrivacyPolicyAsync()
+    {
+        await Shell.Current.ShowPopupAsync(new PrivacyPolicyPopup());
     }
 
     private void ShowError(string message)

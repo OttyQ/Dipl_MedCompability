@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     BackgroundColor="{StaticResource AppBackground}"
     Shell.NavBarIsVisible="False"
@@ -12,11 +12,12 @@
         <controls:BackgroundBubblesView BottomBubbleBounds="0, 0, 0, 0" />
 
         <ScrollView VerticalScrollBarVisibility="Never">
-            <Grid Padding="20" RowDefinitions="*">
+            <Grid Padding="{OnIdiom Phone='20', Desktop='32'}" RowDefinitions="*">
 
                 <VerticalStackLayout
                     HorizontalOptions="Center"
-                    Spacing="25"
+                    MaximumWidthRequest="{OnIdiom Phone=440, Desktop=520}"
+                    Spacing="{OnIdiom Phone=25, Desktop=30}"
                     VerticalOptions="Center">
 
                     <!--  Заголовок  -->
@@ -36,9 +37,9 @@
                         BackgroundColor="{StaticResource Surface}"
                         CornerRadius="24"
                         HasShadow="True"
-                        Padding="24"
-                        WidthRequest="380">
-                        <VerticalStackLayout Spacing="15">
+                        Padding="{OnIdiom Phone=24, Desktop=32}"
+                        WidthRequest="{OnIdiom Phone=380, Desktop=460}">
+                        <VerticalStackLayout Spacing="{OnIdiom Phone=15, Desktop=18}">
 
                             <!--  Блок ФИО  -->
                             <VerticalStackLayout Spacing="10">
@@ -47,7 +48,7 @@
                                 <VerticalStackLayout Spacing="6">
                                     <Label
                                         FontAttributes="Bold"
-                                        FontSize="13"
+                                        FontSize="{OnIdiom Phone=13, Desktop=14}"
                                         Text="Фамилия"
                                         TextColor="{StaticResource TextPrimary}" />
                                     <Border Style="{StaticResource InputFrame}">
@@ -60,7 +61,7 @@
                                     <VerticalStackLayout Grid.Column="0" Spacing="6">
                                         <Label
                                             FontAttributes="Bold"
-                                            FontSize="13"
+                                            FontSize="{OnIdiom Phone=13, Desktop=14}"
                                             Text="Имя"
                                             TextColor="{StaticResource TextPrimary}" />
                                         <Border Style="{StaticResource InputFrame}">
@@ -71,7 +72,7 @@
                                     <VerticalStackLayout Grid.Column="1" Spacing="6">
                                         <Label
                                             FontAttributes="Bold"
-                                            FontSize="13"
+                                            FontSize="{OnIdiom Phone=13, Desktop=14}"
                                             Text="Отчество"
                                             TextColor="{StaticResource TextPrimary}" />
                                         <Border Style="{StaticResource InputFrame}">
@@ -86,7 +87,7 @@
                             <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontAttributes="Bold"
-                                    FontSize="13"
+                                    FontSize="{OnIdiom Phone=13, Desktop=14}"
                                     Text="Логин"
                                     TextColor="{StaticResource TextPrimary}" />
                                 <Border Style="{StaticResource InputFrame}">
@@ -98,7 +99,7 @@
                             <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontAttributes="Bold"
-                                    FontSize="13"
+                                    FontSize="{OnIdiom Phone=13, Desktop=14}"
                                     Text="Пароль"
                                     TextColor="{StaticResource TextPrimary}" />
                                 <Border Style="{StaticResource InputFrame}">
@@ -113,7 +114,7 @@
                             <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontAttributes="Bold"
-                                    FontSize="13"
+                                    FontSize="{OnIdiom Phone=13, Desktop=14}"
                                     Text="Повторите пароль"
                                     TextColor="{StaticResource TextPrimary}" />
                                 <Border Style="{StaticResource InputFrame}">
@@ -128,7 +129,7 @@
                             <VerticalStackLayout Spacing="6">
                                 <Label
                                     FontAttributes="Bold"
-                                    FontSize="13"
+                                    FontSize="{OnIdiom Phone=13, Desktop=14}"
                                     Text="Тип аккаунта"
                                     TextColor="{StaticResource TextPrimary}" />
 
@@ -177,9 +178,43 @@
                                 </Border>
                             </VerticalStackLayout>
 
+                            <!-- Согласие на обработку ПД -->
+                            <Grid ColumnDefinitions="Auto, *" ColumnSpacing="{OnIdiom Phone=6, Desktop=2}" Margin="0,4,0,0">
+                                <CheckBox
+                                    Grid.Column="0"
+                                    Color="{StaticResource Primary}"
+                                    IsChecked="{Binding IsDataProcessingAccepted}"
+                                    WidthRequest="{OnIdiom Phone=-1, Desktop=40}"
+                                    MinimumWidthRequest="{OnIdiom Phone=-1, Desktop=40}"
+                                    VerticalOptions="Start" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="{OnIdiom Phone=12, Desktop=13}"
+                                    LineBreakMode="WordWrap"
+                                    MaximumWidthRequest="340"
+                                    VerticalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Я даю согласие на " TextColor="{StaticResource TextSecondary}" />
+                                            <Span Text="обработку моих персональных данных" TextColor="{StaticResource Primary}" TextDecorations="Underline">
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding ShowPrivacyPolicyCommand}" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                            <Span Text=" и принимаю условия " TextColor="{StaticResource TextSecondary}" />
+                                            <Span Text="Политики конфиденциальности" TextColor="{StaticResource Primary}" TextDecorations="Underline">
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding ShowPrivacyPolicyCommand}" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </Grid>
+
                             <!--  Ошибка  -->
                             <Label
-                                FontSize="13"
+                                FontSize="{OnIdiom Phone=13, Desktop=14}"
                                 HorizontalTextAlignment="Center"
                                 IsVisible="{Binding IsErrorVisible}"
                                 Text="{Binding ErrorMessage}"

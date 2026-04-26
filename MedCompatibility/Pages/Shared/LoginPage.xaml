@@ -43,9 +43,9 @@
         <ScrollView VerticalScrollBarVisibility="Never">
             <VerticalStackLayout
                 HorizontalOptions="Center"
-                MaximumWidthRequest="440"
-                Padding="20"
-                Spacing="16"
+                MaximumWidthRequest="{OnIdiom Phone=440, Desktop=500}"
+                Padding="{OnIdiom Phone='20', Desktop='32'}"
+                Spacing="{OnIdiom Phone=16, Desktop=24}"
                 VerticalOptions="Center">
 
                 <!--  Шапка: стикер + название + слоган  -->
@@ -60,7 +60,7 @@
 
                     <Label
                         FontAttributes="Bold"
-                        FontSize="32"
+                        FontSize="{OnIdiom Phone=32, Desktop=36}"
                         HorizontalTextAlignment="Center">
                         <Label.FormattedText>
                             <FormattedString>
@@ -71,7 +71,7 @@
                     </Label>
 
                     <Label
-                        FontSize="13"
+                        FontSize="{OnIdiom Phone=13, Desktop=15}"
                         HorizontalTextAlignment="Center"
                         Text="Безопасность вашего здоровья"
                         TextColor="{StaticResource TextSecondary}" />
@@ -80,15 +80,15 @@
 
                 <!--  Карточка логина  -->
                 <Frame
-                    Padding="22"
+                    Padding="{OnIdiom Phone=22, Desktop=30}"
                     Style="{StaticResource CardFrame}"
-                    WidthRequest="380">
+                    WidthRequest="{OnIdiom Phone=380, Desktop=440}">
 
-                    <VerticalStackLayout Spacing="14">
+                    <VerticalStackLayout Spacing="{OnIdiom Phone=14, Desktop=18}">
 
                         <VerticalStackLayout Spacing="6">
                             <Label
-                                FontSize="12"
+                                FontSize="{OnIdiom Phone=12, Desktop=14}"
                                 Text="Логин"
                                 TextColor="{StaticResource TextSecondary}" />
                             <Border Style="{StaticResource InputFrame}">
@@ -102,7 +102,7 @@
 
                         <VerticalStackLayout Spacing="6">
                             <Label
-                                FontSize="12"
+                                FontSize="{OnIdiom Phone=12, Desktop=14}"
                                 Text="Пароль"
                                 TextColor="{StaticResource TextSecondary}" />
                             <Border Style="{StaticResource InputFrame}">
@@ -127,8 +127,42 @@
                             </Border>
                         </VerticalStackLayout>
 
+                        <!-- Согласие на обработку ПД -->
+                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="{OnIdiom Phone=6, Desktop=2}" Margin="0,4,0,0">
+                            <CheckBox
+                                Grid.Column="0"
+                                Color="{StaticResource Primary}"
+                                IsChecked="{Binding IsDataProcessingAccepted}"
+                                WidthRequest="{OnIdiom Phone=-1, Desktop=40}"
+                                MinimumWidthRequest="{OnIdiom Phone=-1, Desktop=40}"
+                                VerticalOptions="Start" />
+                            <Label
+                                Grid.Column="1"
+                                FontSize="{OnIdiom Phone=12, Desktop=13}"
+                                LineBreakMode="WordWrap"
+                                MaximumWidthRequest="320"
+                                VerticalOptions="Center">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Я даю согласие на " TextColor="{StaticResource TextSecondary}" />
+                                        <Span Text="обработку моих персональных данных" TextColor="{StaticResource Primary}" TextDecorations="Underline">
+                                            <Span.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding ShowPrivacyPolicyCommand}" />
+                                            </Span.GestureRecognizers>
+                                        </Span>
+                                        <Span Text=" и принимаю условия " TextColor="{StaticResource TextSecondary}" />
+                                        <Span Text="Политики конфиденциальности" TextColor="{StaticResource Primary}" TextDecorations="Underline">
+                                            <Span.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding ShowPrivacyPolicyCommand}" />
+                                            </Span.GestureRecognizers>
+                                        </Span>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </Grid>
+
                         <Label
-                            FontSize="13"
+                            FontSize="{OnIdiom Phone=13, Desktop=14}"
                             HorizontalTextAlignment="Center"
                             IsVisible="{Binding IsErrorVisible}"
                             Text="{Binding ErrorMessage}"
