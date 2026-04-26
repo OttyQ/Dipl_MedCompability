@@ -101,6 +101,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IShare>(Share.Default);
         builder.Services.AddTransient<IPdfReportService, PdfReportService>();
         builder.Services.AddTransient<IAlternativeSearchService, AlternativeSearchService>();
+        builder.Services.AddSingleton<IAiInteractionService, AiInteractionService>();
         
 
         // 5) ViewModels
