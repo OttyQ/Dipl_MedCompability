@@ -1,4 +1,4 @@
-﻿using MySqlConnector;
+using MySqlConnector;
 
 namespace MedCompatibility.Configuration;
 using Microsoft.Extensions.Options;
@@ -34,7 +34,8 @@ public class ConnectionStringFactory : IConnectionStringFactory
             Password = config.Password,
             Database = config.Name,
             SslMode = MySqlSslMode.Required,
-            Pooling = false,
+            Pooling = true,
+            ConnectionReset = true,
             // Для локальной можно поменьше, для облака - побольше
             ConnectionTimeout = UseLocalDatabase ? 10u : 20u 
         };
