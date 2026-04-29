@@ -21,15 +21,7 @@ public class AuthService : IAuthService
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Login == login);
         if (user == null) return null;
-        bool isPasswordValid = false;
-        try 
-        {
-            isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
-        }
-        catch
-        {
-            isPasswordValid = (user.PasswordHash == password);
-        }
+        bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
         if (!isPasswordValid) return null;
         return user;
     }
