@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +16,39 @@ public class InteractionService : IInteractionService
 
     public async Task<List<interaction>> GetAllInteractionsAsync()
     {
+        return await GetInteractionsFilteredAsync(null, null, null);
+    }
+
+    public async Task<List<interaction>> GetInteractionsFilteredAsync(string searchText, int? riskLevelId, int? interactionTypeId)
+    {
         using var context = await _contextFactory.CreateDbContextAsync();
-        return await context.interactions
+        var query = context.interactions
             .Include(i => i.SubstanceId1Navigation)
             .Include(i => i.SubstanceId2Navigation)
             .Include(i => i.InteractionType)
             .Include(i => i.RiskLevel)
-            .OrderBy(i => i.SubstanceId1Navigation.Name)
             .AsNoTracking()
-            .ToListAsync();
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            var lowerSearch = searchText.ToLower();
+            query = query.Where(i => 
+                i.SubstanceId1Navigation.Name.ToLower().Contains(lowerSearch) ||
+                i.SubstanceId2Navigation.Name.ToLower().Contains(lowerSearch));
+        }
+
+        if (riskLevelId.HasValue && riskLevelId.Value != 0)
+        {
+            query = query.Where(i => i.RiskLevelId == riskLevelId.Value);
+        }
+
+        if (interactionTypeId.HasValue && interactionTypeId.Value != 0)
+        {
+            query = query.Where(i => i.InteractionTypeId == interactionTypeId.Value);
+        }
+
+        return await query.OrderBy(i => i.SubstanceId1Navigation.Name).ToListAsync();
     }
     
 
@@ -47,9 +71,11 @@ public class InteractionService : IInteractionService
 
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var exists = await context.interactions.AnyAsync(i => 
-            (i.SubstanceId1 == subId1 && i.SubstanceId2 == subId2) ||
-            (i.SubstanceId1 == subId2 && i.SubstanceId2 == subId1));
+        if (subId1 > subId2)
+            (subId1, subId2) = (subId2, subId1);
+
+        var exists = await context.interactions.AnyAsync(i =>
+            i.SubstanceId1 == subId1 && i.SubstanceId2 == subId2);
 
         if (exists)
             throw new Exception("Такое взаимодействие уже существует.");
@@ -93,11 +119,16 @@ public class InteractionService : IInteractionService
 
     public async Task UpdateInteractionAsync(interaction item)
     {
-         using var context = await _contextFactory.CreateDbContextAsync();
-        var exists = await context.interactions.AnyAsync(i => 
-            i.InteractionId != item.InteractionId && 
-            ((i.SubstanceId1 == item.SubstanceId1 && i.SubstanceId2 == item.SubstanceId2) ||
-             (i.SubstanceId1 == item.SubstanceId2 && i.SubstanceId2 == item.SubstanceId1)));
+        // Гарантируем порядок: меньший ID всегда первый
+        if (item.SubstanceId1 > item.SubstanceId2)
+            (item.SubstanceId1, item.SubstanceId2) = (item.SubstanceId2, item.SubstanceId1);
+
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var exists = await context.interactions.AnyAsync(i =>
+            i.InteractionId != item.InteractionId &&
+            i.SubstanceId1 == item.SubstanceId1 &&
+            i.SubstanceId2 == item.SubstanceId2);
 
         if (exists) throw new Exception("Такое взаимодействие уже существует.");
 
