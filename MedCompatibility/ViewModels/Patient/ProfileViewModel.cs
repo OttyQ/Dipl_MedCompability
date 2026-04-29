@@ -12,7 +12,9 @@ public partial class ProfileViewModel : ObservableObject
 {
     private readonly IUserSessionService _sessionService;
     private readonly IUserService _userService;
-    private readonly IMedicineService _medicineService; // Добавлено для поиска веществ
+    private readonly IMedicineService _medicineService;
+    private readonly IAuthService _authService;
+    private readonly ILoadingService _loadingService;
 
     [ObservableProperty]
     private string fullName;
@@ -56,11 +58,13 @@ public partial class ProfileViewModel : ObservableObject
     private bool _isPatient;
 
     // Обновленный конструктор с IMedicineService
-    public ProfileViewModel(IUserSessionService sessionService, IUserService userService, IMedicineService medicineService)
+    public ProfileViewModel(IUserSessionService sessionService, IUserService userService, IMedicineService medicineService, IAuthService authService, ILoadingService loadingService)
     {
         _sessionService = sessionService;
         _userService = userService;
         _medicineService = medicineService;
+        _authService = authService;
+        _loadingService = loadingService;
     }
 
     [RelayCommand]
@@ -206,6 +210,36 @@ public partial class ProfileViewModel : ObservableObject
         _sessionService.EndSession();
         Application.Current.MainPage = new AppShell();
         await Shell.Current.GoToAsync("//Login");
+    }
+
+    [RelayCommand]
+    private async Task ChangePasswordAsync()
+    {
+        var result = await Shell.Current.ShowPopupAsync(new ChangePasswordPopup());
+
+        if (result is ValueTuple<string, string> passwords)
+        {
+            _loadingService.Show();
+            try
+            {
+                var error = await _authService.ChangePasswordAsync(_sessionService.CurrentUser.UserId, passwords.Item1, passwords.Item2);
+                _loadingService.Hide();
+
+                if (error == null)
+                {
+                    await Shell.Current.DisplayAlert("Успех", "Пароль успешно изменен", "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Ошибка", error, "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                _loadingService.Hide();
+                await Shell.Current.DisplayAlert("Ошибка", "Произошла непредвиденная ошибка", "OK");
+            }
+        }
     }
     
     [RelayCommand]

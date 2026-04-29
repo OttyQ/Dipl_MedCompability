@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <toolkit:Popup
-    CanBeDismissedByTappingOutsideOfPopup="True"
+    CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent"
     x:Class="MedCompatibility.Pages.Shared.Popups.UniversalSearchPopup"
     x:Name="_root"

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     BackgroundColor="{StaticResource AppBackground}"
     Shell.NavBarIsVisible="False"
@@ -303,6 +303,27 @@
                                 </Label>
                             </VerticalStackLayout>
                         </Border>
+                        <Button
+                            BackgroundColor="{StaticResource Surface}"
+                            BorderColor="{StaticResource BorderLight}"
+                            BorderWidth="1"
+                            Command="{Binding ChangePasswordCommand}"
+                            CornerRadius="16"
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HeightRequest="54"
+                            HorizontalOptions="Fill"
+                            Text="Изменить пароль"
+                            TextColor="{StaticResource TextSecondary}">
+                            <Button.Shadow>
+                                <Shadow
+                                    Brush="#90A4AE"
+                                    Offset="0,4"
+                                    Opacity="0.1"
+                                    Radius="10" />
+                            </Button.Shadow>
+                        </Button>
+
                         <Button
                             BackgroundColor="#FFEBEE"
                             BorderColor="#D32F2F"

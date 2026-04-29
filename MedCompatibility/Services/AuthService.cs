@@ -127,4 +127,26 @@ public class AuthService : IAuthService
         await _appLogService.LogAsync("Info", "Auth", "Регистрация и вход через Google", newUser.UserId);
         return newUser;
     }
+
+    public async Task<string?> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        var user = await context.users.FirstOrDefaultAsync(u => u.UserId == userId);
+        
+        if (user == null) 
+            return "Пользователь не найден";
+
+        if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
+            return "Неверный текущий пароль";
+
+        if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+            return "Новый пароль должен содержать минимум 6 символов";
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        await context.SaveChangesAsync();
+
+        await _appLogService.LogAsync("Info", "Auth", "Смена пароля", user.UserId);
+
+        return null; // Успех
+    }
 }
