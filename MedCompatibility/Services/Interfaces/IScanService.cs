@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 
 namespace MedCompatibility.Services.Interfaces;
 
@@ -8,6 +8,6 @@ public interface IScanService
     Task LogScanAsync(int medicineId);
     
     // Получает историю для текущего пользователя
-    Task<List<scan>> GetUserHistoryAsync();
-    Task<List<scan>> GetAllScansAsync();
+    Task<List<scan>> GetUserHistoryAsync(int skip = 0, int take = 50);
+    Task<List<scan>> GetAllScansAsync(int skip = 0, int take = 50);
 }

@@ -26,6 +26,20 @@ public class ScanService : IScanService
         {
             using var context = await _contextFactory.CreateDbContextAsync();
 
+            var lastScan = await context.scans
+                .Where(s => s.UserId == _sessionService.CurrentUser.UserId && s.MedicineId == medicineId)
+                .OrderByDescending(s => s.ScannedAt)
+                .FirstOrDefaultAsync();
+
+            if (lastScan != null && lastScan.ScannedAt.HasValue)
+            {
+                var diff = (DateTime.Now - lastScan.ScannedAt.Value).TotalSeconds;
+                if (diff < 60)
+                {
+                    return; // Debounce: игнорируем повторные сканирования одного и того же препарата в течение 60 секунд
+                }
+            }
+
             var newScan = new scan
             {
                 UserId = _sessionService.CurrentUser.UserId,
@@ -48,7 +62,7 @@ public class ScanService : IScanService
         }
     }
 
-    public async Task<List<scan>> GetUserHistoryAsync()
+    public async Task<List<scan>> GetUserHistoryAsync(int skip = 0, int take = 50)
     {
         if (!_sessionService.IsAuthenticated || _sessionService.CurrentUser == null)
             return new List<scan>();
@@ -59,19 +73,21 @@ public class ScanService : IScanService
             .Include(s => s.Medicine) // Подгружаем лекарство
             .Where(s => s.UserId == _sessionService.CurrentUser.UserId)
             .OrderByDescending(s => s.ScannedAt)
+            .Skip(skip)
+            .Take(take)
             .AsNoTracking()
             .ToListAsync();
     }
     
-    public async Task<List<scan>> GetAllScansAsync()
+    public async Task<List<scan>> GetAllScansAsync(int skip = 0, int take = 50)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
-        // Берем последние 100 записей, чтобы не грузить все миллионы
         return await context.scans
             .Include(s => s.Medicine)
             .Include(s => s.User) 
             .OrderByDescending(s => s.ScannedAt)
-            .Take(100)
+            .Skip(skip)
+            .Take(take)
             .ToListAsync();
     }
 
