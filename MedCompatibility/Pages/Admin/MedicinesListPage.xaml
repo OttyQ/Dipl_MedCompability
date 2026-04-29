@@ -17,26 +17,25 @@
             RightBubbleBounds="0.06, 0.45, 460, 460"
             TopBubbleBounds="0.55, 0.98, 320, 320" />
 
-        <Grid
-            HorizontalOptions="{OnPlatform WinUI=Center,
-                                           MacCatalyst=Center,
-                                           Default=Fill}"
-            MaximumWidthRequest="800"
-            Padding="10"
-            RowDefinitions="Auto, *, Auto"
-            WidthRequest="{OnPlatform WinUI=800,
-                                      MacCatalyst=800}">
+        <Grid RowDefinitions="Auto, *, Auto" Style="{StaticResource PageContentGrid}">
+
+
+
+
 
             <controls:CustomHeader
                 Grid.Row="0"
                 Margin="10,10,10,5"
                 Title="Лекарства" />
 
-            <Grid Grid.Row="1" RowDefinitions="Auto, *">
+            <Grid
+                Grid.Row="1"
+                Padding="10,0"
+                RowDefinitions="Auto, *">
 
                 <Frame
                     Grid.Row="0"
-                    Margin="10,5"
+                    Margin="0,5"
                     Padding="16"
                     Style="{StaticResource MedCard}">
                     <VerticalStackLayout Spacing="12">
@@ -116,10 +115,13 @@
                     Grid.Row="1"
                     IsRefreshing="{Binding IsBusy}"
                     Margin="0,5,0,0">
-                    <CollectionView ItemsSource="{Binding Medicines}" VerticalScrollBarVisibility="Never">
+                    <CollectionView
+                        ItemsSource="{Binding Medicines}"
+                        SelectionMode="None"
+                        VerticalScrollBarVisibility="Never">
 
                         <CollectionView.ItemsLayout>
-                            <LinearItemsLayout ItemSpacing="16" Orientation="Vertical" />
+                            <LinearItemsLayout ItemSpacing="15" Orientation="Vertical" />
                         </CollectionView.ItemsLayout>
 
                         <CollectionView.Header>
@@ -137,22 +139,14 @@
 
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:medicine">
-                                <Border
-                                    BackgroundColor="White"
-                                    Margin="10,0"
-                                    Padding="16"
-                                    StrokeShape="RoundRectangle 20"
-                                    StrokeThickness="0">
-                                    <Border.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Offset="0,6"
-                                            Opacity="0.08"
-                                            Radius="12" />
-                                    </Border.Shadow>
-                                    <Border.GestureRecognizers>
+                                <Frame
+                                    Margin="0,0,0,12"
+                                    Padding="15"
+                                    Style="{StaticResource MedListCard}">
+
+                                    <Frame.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MedicinesListViewModel}}, Path=EditMedicineCommand}" CommandParameter="{Binding .}" />
-                                    </Border.GestureRecognizers>
+                                    </Frame.GestureRecognizers>
 
                                     <Grid ColumnDefinitions="40,*,Auto" ColumnSpacing="15">
                                         <Border
@@ -232,7 +226,7 @@
                                             VerticalOptions="Center"
                                             WidthRequest="40" />
                                     </Grid>
-                                </Border>
+                                </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
