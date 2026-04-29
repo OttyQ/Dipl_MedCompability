@@ -333,14 +333,14 @@ public partial class DrugContext : DbContext
             });
 });
         
-        // ==========================================================
-        // НОВАЯ СЕКЦИЯ DOCTOR_PATIENT (МНОГИЕ-КО-МНОГИМ)
-        // ==========================================================
         modelBuilder.Entity<doctor_patient>(entity =>
         {
-            entity.HasKey(e => new { e.DoctorId, e.PatientId }).HasName("PRIMARY");
+            entity.HasKey(e => e.Id).HasName("PRIMARY");  // суррогатный PK
 
             entity.ToTable("doctor_patient");
+
+            entity.HasIndex(e => new { e.DoctorId, e.PatientId }, "UK_Doc_Pat")
+                .IsUnique();
 
             entity.Property(e => e.AddedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
