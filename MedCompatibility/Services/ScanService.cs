@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +8,13 @@ public class ScanService : IScanService
 {
     private readonly IDbContextFactory<DrugContext> _contextFactory;
     private readonly IUserSessionService _sessionService;
+    private readonly IAppLogService _appLogService;
 
-    public ScanService(IDbContextFactory<DrugContext> contextFactory, IUserSessionService sessionService)
+    public ScanService(IDbContextFactory<DrugContext> contextFactory, IUserSessionService sessionService, IAppLogService appLogService)
     {
         _contextFactory = contextFactory;
         _sessionService = sessionService;
+        _appLogService = appLogService;
     }
 
     public async Task LogScanAsync(int medicineId)
@@ -33,6 +35,11 @@ public class ScanService : IScanService
 
             context.scans.Add(newScan);
             await context.SaveChangesAsync();
+
+            // Аудит: записываем факт сканирования в системный лог
+            var medicine = await context.medicines.FindAsync(medicineId);
+            var tradeName = medicine?.TradeName ?? $"ID={medicineId}";
+            await _appLogService.LogAsync("Info", "Scan", $"Пользователь отсканировал препарат: {tradeName}", _sessionService.CurrentUser.UserId);
         }
         catch (Exception ex)
         {

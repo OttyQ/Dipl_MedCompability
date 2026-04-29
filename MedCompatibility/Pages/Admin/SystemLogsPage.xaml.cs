@@ -1,4 +1,4 @@
-﻿using MedCompatibility.ViewModels.Admin;
+using MedCompatibility.ViewModels.Admin;
 
 namespace MedCompatibility.Pages.Admin;
 
@@ -17,11 +17,5 @@ public partial class SystemLogsPage : ContentPage
         base.OnAppearing();
         // Автоматическая загрузка при открытии
         _viewModel.LoadLogsCommand.Execute(null);
-    }
-
-    // Обработчик кнопки "Назад"
-    private async void OnBackClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
     }
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     Shell.NavBarIsVisible="False"
     Title="Системные логи"
@@ -32,75 +32,85 @@
                 </VerticalStackLayout.HorizontalOptions>
 
                 <!--  1) Шапка  -->
-                <Grid
-                    ColumnDefinitions="48,*,48"
-                    HeightRequest="48"
-                    Margin="0,0,0,5">
+                <controls:CustomHeader Margin="10,10,10,5" Title="Системные логи" />
 
-                    <Border
-                        HeightRequest="48"
-                        Style="{StaticResource BackButton}"
-                        WidthRequest="48">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnBackClicked" />
-                        </Border.GestureRecognizers>
-                        <Label
-                            FontSize="26"
-                            HorizontalOptions="Center"
-                            Margin="0,0,0,2"
-                            Text="←"
-                            TextColor="{StaticResource TextPrimary}"
-                            VerticalOptions="Center" />
-                    </Border>
+                <!--  2) Инфо-панель: БД + ИИ  -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
 
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="20"
-                        Grid.Column="1"
-                        HorizontalOptions="Center"
-                        Text="История активности"
-                        TextColor="{StaticResource TextPrimary}"
-                        VerticalOptions="Center" />
-                </Grid>
-
-                <!--  2) Инфо-панель  -->
-                <Frame
-                    Margin="0"
-                    Padding="16"
-                    Style="{StaticResource MedCard}">
-
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-
-                        <VerticalStackLayout Spacing="2">
+                    <!--  Карточка БД  -->
+                    <Frame
+                        Padding="16"
+                        Style="{StaticResource MedCard}">
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontSize="22"
+                                HorizontalOptions="Center"
+                                Text="🗄️" />
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="Статус системы"
+                                HorizontalTextAlignment="Center"
+                                Text="База данных"
                                 TextColor="{StaticResource TextSecondary}" />
+                            <Border
+                                BackgroundColor="{Binding DbStatusColor}"
+                                HorizontalOptions="Center"
+                                Padding="10,5"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="0">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="11"
+                                    Text="{Binding DbStatusText}"
+                                    TextColor="White" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!--  Карточка ИИ  -->
+                    <Frame
+                        Grid.Column="1"
+                        Padding="16"
+                        Style="{StaticResource MedCard}">
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontSize="22"
+                                HorizontalOptions="Center"
+                                Text="🤖" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="Нейросеть"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Border
+                                BackgroundColor="{Binding AiStatusColor}"
+                                HorizontalOptions="Center"
+                                Padding="10,5"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="0">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="11"
+                                    Text="{Binding AiStatusText}"
+                                    TextColor="White" />
+                            </Border>
                             <Label
                                 FontSize="11"
-                                Opacity="0.85"
-                                Text="Мониторинг базы данных и действий пользователей"
+                                HorizontalTextAlignment="Center"
+                                Text="{Binding AiLatency, StringFormat='Пинг: {0}'}"
                                 TextColor="{StaticResource TextSecondary}" />
                         </VerticalStackLayout>
+                    </Frame>
+                </Grid>
 
-                        <!--  Индикатор БД  -->
-                        <Border
-                            BackgroundColor="{Binding DbStatusColor}"
-                            Grid.Column="1"
-                            Padding="12,6"
-                            StrokeShape="RoundRectangle 10"
-                            StrokeThickness="0"
-                            VerticalOptions="Center">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                Text="{Binding DbStatusText}"
-                                TextColor="White" />
-                        </Border>
+                <!--  Заголовок списка  -->
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Последние события"
+                    TextColor="{StaticResource TextPrimary}" />
 
-                    </Grid>
-                </Frame>
             </VerticalStackLayout>
 
             <!--  3) Список логов  -->
@@ -108,11 +118,11 @@
                 Command="{Binding LoadLogsCommand}"
                 Grid.Row="1"
                 IsRefreshing="{Binding IsBusy}"
-                Margin="0,15,0,0">
+                Margin="0,10,0,0">
 
                 <CollectionView
                     HorizontalOptions="Fill"
-                    ItemsSource="{Binding Logs}"
+                    ItemsSource="{Binding RecentLogs}"
                     WidthRequest="{OnPlatform WinUI='800',
                                               Default='-1'}">
 
@@ -140,7 +150,7 @@
                     </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:scan">
+                        <DataTemplate x:DataType="models:SystemLog">
                             <Frame
                                 Margin="0,0,0,10"
                                 Padding="12"
@@ -148,20 +158,63 @@
 
                                 <Grid ColumnDefinitions="40,*,Auto" ColumnSpacing="12">
 
-                                    <!--  Иконка  -->
+                                    <!--  Иконка по типу действия  -->
                                     <Border
-                                        BackgroundColor="#E3F2FD"
                                         HeightRequest="40"
                                         HorizontalOptions="Start"
                                         StrokeShape="RoundRectangle 10"
                                         StrokeThickness="0"
                                         VerticalOptions="Start"
                                         WidthRequest="40">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BackgroundColor" Value="#E3F2FD" />
+                                                <Style.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding Action}"
+                                                        TargetType="Border"
+                                                        Value="Auth">
+                                                        <Setter Property="BackgroundColor" Value="#E8F5E9" />
+                                                    </DataTrigger>
+                                                    <DataTrigger
+                                                        Binding="{Binding Level}"
+                                                        TargetType="Border"
+                                                        Value="Error">
+                                                        <Setter Property="BackgroundColor" Value="#FFEBEE" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
                                         <Label
                                             FontSize="18"
                                             HorizontalOptions="Center"
-                                            Text="🔎"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center">
+                                            <Label.Style>
+                                                <Style TargetType="Label">
+                                                    <Setter Property="Text" Value="📋" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger
+                                                            Binding="{Binding Action}"
+                                                            TargetType="Label"
+                                                            Value="Auth">
+                                                            <Setter Property="Text" Value="🔐" />
+                                                        </DataTrigger>
+                                                        <DataTrigger
+                                                            Binding="{Binding Action}"
+                                                            TargetType="Label"
+                                                            Value="Scan">
+                                                            <Setter Property="Text" Value="🔎" />
+                                                        </DataTrigger>
+                                                        <DataTrigger
+                                                            Binding="{Binding Level}"
+                                                            TargetType="Label"
+                                                            Value="Error">
+                                                            <Setter Property="Text" Value="⚠️" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
                                     </Border>
 
                                     <!--  Текст  -->
@@ -171,25 +224,22 @@
                                         VerticalOptions="Center">
                                         <Label
                                             FontAttributes="Bold"
-                                            FontSize="15"
+                                            FontSize="14"
                                             LineBreakMode="TailTruncation"
-                                            Text="{Binding User.Login}"
+                                            Text="{Binding Action}"
                                             TextColor="{StaticResource TextPrimary}" />
 
                                         <Label
-                                            FontSize="13"
+                                            FontSize="12"
                                             LineBreakMode="TailTruncation"
-                                            TextColor="{StaticResource TextSecondary}">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="Сканировал: " />
-                                                    <Span
-                                                        FontAttributes="Bold"
-                                                        Text="{Binding Medicine.TradeName}"
-                                                        TextColor="{StaticResource Primary}" />
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
+                                            Text="{Binding Message}"
+                                            TextColor="{StaticResource TextSecondary}" />
+
+                                        <Label
+                                            FontSize="11"
+                                            Opacity="0.7"
+                                            Text="{Binding User.Login}"
+                                            TextColor="{StaticResource Primary}" />
                                     </VerticalStackLayout>
 
                                     <!--  Время  -->
@@ -202,13 +252,13 @@
                                             FontAttributes="Bold"
                                             FontSize="14"
                                             HorizontalOptions="End"
-                                            Text="{Binding ScannedAt, StringFormat='{0:HH:mm}'}"
+                                            Text="{Binding Timestamp, StringFormat='{0:HH:mm}'}"
                                             TextColor="{StaticResource TextPrimary}" />
                                         <Label
                                             FontSize="11"
                                             HorizontalOptions="End"
                                             Opacity="0.85"
-                                            Text="{Binding ScannedAt, StringFormat='{0:dd.MM}'}"
+                                            Text="{Binding Timestamp, StringFormat='{0:dd.MM}'}"
                                             TextColor="{StaticResource TextSecondary}" />
                                     </VerticalStackLayout>
 

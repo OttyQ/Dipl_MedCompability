@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 using MedCompatibility.Services.Interfaces;
@@ -8,9 +8,12 @@ namespace MedCompatibility.Services;
 public class AuthService : IAuthService
 {
     private readonly IDbContextFactory<DrugContext> _contextFactory;
-    public AuthService(IDbContextFactory<DrugContext> contextFactory)
+    private readonly IAppLogService _appLogService;
+
+    public AuthService(IDbContextFactory<DrugContext> contextFactory, IAppLogService appLogService)
     {
         _contextFactory = contextFactory;
+        _appLogService = appLogService;
     }
 
     public async Task<user?> LoginAsync(string login, string password)
@@ -23,6 +26,8 @@ public class AuthService : IAuthService
         if (user == null) return null;
         bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
         if (!isPasswordValid) return null;
+
+        await _appLogService.LogAsync("Info", "Auth", "Успешный вход в систему", user.UserId);
         return user;
     }
 
@@ -52,5 +57,74 @@ public class AuthService : IAuthService
         } catch (Exception ex) {
             return $"Ошибка базы данных: {ex.Message}";
         }
+    }
+
+    public async Task<user?> LoginWithGoogleAsync(string email, string sub, string firstName, string lastName, string? roleName = null)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        
+        var externalLogin = await context.userexternallogins
+            .Include(e => e.User)
+            .Include(e => e.User.Role)
+            .FirstOrDefaultAsync(e => e.ProviderName == "Google" && e.ProviderKey == sub);
+
+        if (externalLogin != null)
+        {
+            if (externalLogin.User.IsDeleted) return null;
+            await _appLogService.LogAsync("Info", "Auth", "Успешный вход через Google", externalLogin.User.UserId);
+            return externalLogin.User;
+        }
+
+        var user = await context.users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Login == email);
+        if (user != null)
+        {
+            if (user.IsDeleted) return null;
+
+            context.userexternallogins.Add(new userexternallogin
+            {
+                UserId = user.UserId,
+                ProviderName = "Google",
+                ProviderKey = sub
+            });
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString());
+            
+            await context.SaveChangesAsync();
+            await _appLogService.LogAsync("Info", "Auth", "Миграция OAuth и вход через Google", user.UserId);
+            return user;
+        }
+
+        if (roleName == null) return null;
+
+        var role = await context.roles.FirstOrDefaultAsync(r => r.Name.ToLower() == roleName.ToLower());
+        if (role == null) throw new Exception($"Role '{roleName}' not found");
+
+        var newUser = new user
+        {
+            Login = email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString()),
+            FirstName = firstName,
+            LastName = lastName,
+            MiddleName = "",
+            RoleId = role.RoleId,
+            IsApproved = true,
+            CreatedAt = DateTime.Now
+        };
+
+        context.users.Add(newUser);
+        await context.SaveChangesAsync();
+
+        context.userexternallogins.Add(new userexternallogin
+        {
+            UserId = newUser.UserId,
+            ProviderName = "Google",
+            ProviderKey = sub
+        });
+
+        await context.SaveChangesAsync();
+        
+        newUser.Role = role;
+        await _appLogService.LogAsync("Info", "Auth", "Регистрация и вход через Google", newUser.UserId);
+        return newUser;
     }
 }

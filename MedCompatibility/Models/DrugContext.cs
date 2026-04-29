@@ -35,6 +35,10 @@ public partial class DrugContext : DbContext
     
     public virtual DbSet<doctor_patient> doctor_patient { get; set; }
 
+    public virtual DbSet<userexternallogin> userexternallogins { get; set; }
+
+    public virtual DbSet<SystemLog> SystemLogs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -333,6 +337,35 @@ public partial class DrugContext : DbContext
             });
 });
         
+        modelBuilder.Entity<userexternallogin>(entity =>
+        {
+            entity.HasKey(e => e.ExternalLoginId).HasName("PRIMARY");
+            entity.ToTable("user_external_login");
+
+            entity.HasOne(d => d.User).WithMany(p => p.ExternalLogins)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_UserExternalLogin_User");
+        });
+        
+        modelBuilder.Entity<SystemLog>(entity =>
+        {
+            entity.HasKey(e => e.LogId).HasName("PRIMARY");
+            entity.ToTable("system_log");
+
+            entity.Property(e => e.Timestamp)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Level).HasMaxLength(20);
+            entity.Property(e => e.Action).HasMaxLength(100);
+            entity.Property(e => e.Message).HasMaxLength(500);
+
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_SystemLog_User");
+        });
+
         modelBuilder.Entity<doctor_patient>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");  // суррогатный PK

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MedCompatibility.Models;
@@ -37,4 +37,6 @@ public partial class user
     
     // Добавляем навигационное свойство для связи "Многие-ко-многим" с веществами (аллергиями)
     public virtual ICollection<activesubstance> Allergies { get; set; } = new List<activesubstance>();
+
+    public virtual ICollection<userexternallogin> ExternalLogins { get; set; } = new List<userexternallogin>();
 }
