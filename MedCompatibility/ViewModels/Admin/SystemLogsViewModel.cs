@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MedCompatibility.Models;
 using MedCompatibility.Services.Interfaces;
@@ -8,25 +8,25 @@ namespace MedCompatibility.ViewModels.Admin;
 
 public partial class SystemLogsViewModel : ObservableObject
 {
-    private readonly IScanService _scanService;
+    private readonly IAppLogService _logService;
     private readonly IDatabaseHealthService _dbHealth;
+    private readonly IAiHealthService _aiHealth;
 
-    [ObservableProperty]
-    private ObservableCollection<scan> logs = new();
-
-    [ObservableProperty]
-    private bool isBusy;
+    [ObservableProperty] private ObservableCollection<SystemLog> recentLogs = new();
+    [ObservableProperty] private bool isBusy;
     
-    [ObservableProperty]
-    private string dbStatusText;
+    [ObservableProperty] private string dbStatusText = "Проверка...";
+    [ObservableProperty] private Color dbStatusColor = Colors.Gray;
 
-    [ObservableProperty]
-    private Color dbStatusColor;
+    [ObservableProperty] private string aiStatusText = "Проверка...";
+    [ObservableProperty] private Color aiStatusColor = Colors.Gray;
+    [ObservableProperty] private string aiLatency = "";
 
-    public SystemLogsViewModel(IScanService scanService, IDatabaseHealthService dbHealth)
+    public SystemLogsViewModel(IAppLogService logService, IDatabaseHealthService dbHealth, IAiHealthService aiHealth)
     {
-        _scanService = scanService;
+        _logService = logService;
         _dbHealth = dbHealth;
+        _aiHealth = aiHealth;
     }
 
     [RelayCommand]
@@ -37,26 +37,32 @@ public partial class SystemLogsViewModel : ObservableObject
 
         try
         {
-            // 1. Обновляем статус БД
-            await _dbHealth.CheckAsync();
-            if (_dbHealth.IsAvailable)
+            var dbTask = _dbHealth.CheckAsync();
+            var aiTask = _aiHealth.CheckAsync();
+            await Task.WhenAll(dbTask, aiTask);
+
+            DbStatusText = _dbHealth.IsAvailable ? "БД: Подключено" : "БД: Ошибка";
+            DbStatusColor = _dbHealth.IsAvailable ? Colors.Green : Colors.Red;
+
+            if (_aiHealth.IsAvailable)
             {
-                DbStatusText = "База данных: Подключено";
-                DbStatusColor = Colors.Green;
+                AiStatusText = "ИИ: Готов к работе";
+                AiStatusColor = Colors.Green;
+                AiLatency = $"{_aiHealth.Latency} мс";
             }
             else
             {
-                DbStatusText = "База данных: Ошибка соединения";
-                DbStatusColor = Colors.Red;
+                AiStatusText = "ИИ: Недоступен";
+                AiStatusColor = Colors.Red;
+                AiLatency = "-";
             }
 
-            // 2. Грузим логи
-            var list = await _scanService.GetAllScansAsync();
-            Logs = new ObservableCollection<scan>(list);
+            var list = await _logService.GetRecentLogsAsync(50);
+            RecentLogs = new ObservableCollection<SystemLog>(list);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Ошибка загрузки", ex.Message, "OK");
         }
         finally
         {

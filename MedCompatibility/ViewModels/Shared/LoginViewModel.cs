@@ -161,15 +161,24 @@ public partial class LoginViewModel : ObservableObject
 
     [RelayCommand]
     private async Task LoginAsync()
-
     {
+        IsErrorVisible = false;
+
+        if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
+        {
+            ShowInlineError("Пожалуйста, заполните логин и пароль");
+            return;
+        }
+
+        if (!IsDataProcessingAccepted)
+        {
+            ShowInlineError("Необходимо дать согласие на обработку персональных данных");
+            return;
+        }
+
         try
         {
             _loading.Show();
-            IsErrorVisible = false;
-
-            if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
-                return;
 
             if (!_dbHealth.IsAvailable)
                 await _dbHealth.CheckAsync();
@@ -280,7 +289,7 @@ private async Task GoogleLoginAsync()
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(sub))
             throw new Exception("Google token has no email/sub");
 
-        var user = await _authService.LoginAsync(email, sub);
+        var user = await _authService.LoginWithGoogleAsync(email, sub, payload.given_name ?? "Google", payload.family_name ?? "User");
 
         if (attemptId != _googleAttemptId)
             return;
@@ -299,25 +308,14 @@ private async Task GoogleLoginAsync()
 
             _loading.Show();
 
-            var regError = await _authService.RegisterUserAsync(
-                login: email,
-                password: sub,
-                firstName: payload.given_name ?? "Google",
-                lastName: payload.family_name ?? "User",
-                middleName: "",
-                roleName: role);
-
-            if (regError != null)
-                throw new Exception(regError);
-
-            user = await _authService.LoginAsync(email, sub);
+            user = await _authService.LoginWithGoogleAsync(email, sub, payload.given_name ?? "Google", payload.family_name ?? "User", role);
         }
 
         if (attemptId != _googleAttemptId)
             return;
 
-        if (user == null)
-            throw new Exception("Не удалось войти после регистрации.");
+        if (user == null || user.IsDeleted)
+            throw new Exception("Не удалось войти после регистрации или аккаунт удален.");
 
         if (await HandleNotApprovedAsync(user))
         {

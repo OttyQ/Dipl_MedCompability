@@ -102,6 +102,8 @@ public static class MauiProgram
         builder.Services.AddTransient<IPdfReportService, PdfReportService>();
         builder.Services.AddTransient<IAlternativeSearchService, AlternativeSearchService>();
         builder.Services.AddSingleton<IAiInteractionService, AiInteractionService>();
+        builder.Services.AddSingleton<IAiHealthService, AiHealthService>();
+        builder.Services.AddTransient<IAppLogService, AppLogService>();
         
 
         // 5) ViewModels
