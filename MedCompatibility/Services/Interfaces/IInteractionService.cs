@@ -1,4 +1,4 @@
-﻿using MedCompatibility.Models;
+using MedCompatibility.Models;
 
 namespace MedCompatibility.Services.Interfaces;
 
@@ -6,6 +6,9 @@ public interface IInteractionService
 {
     // Получить список конфликтов (с include всех связей)
     Task<List<interaction>> GetAllInteractionsAsync();
+
+    // Получить отфильтрованный список
+    Task<List<interaction>> GetInteractionsFilteredAsync(string searchText, int? riskLevelId, int? interactionTypeId);
 
     // Справочники для выпадающих списков
     Task<List<interactiontype>> GetInteractionTypesAsync();
